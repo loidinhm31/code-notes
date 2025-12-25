@@ -1,0 +1,132 @@
+import { StateCreator } from "zustand";
+import { questionsService } from "@/services/tauri";
+import type { Question, CreateQuestionDto, UpdateQuestionDto } from "@/types";
+
+export interface QuestionsSlice {
+  questions: Question[];
+  currentQuestion: Question | null;
+  loading: boolean;
+  error: string | null;
+  fetchQuestions: () => Promise<void>;
+  fetchQuestionsByTopic: (topicId: string) => Promise<void>;
+  getQuestionById: (id: string) => Promise<Question | null>;
+  setCurrentQuestion: (question: Question | null) => void;
+  addQuestion: (dto: CreateQuestionDto) => Promise<string>;
+  updateQuestion: (id: string, dto: UpdateQuestionDto) => Promise<boolean>;
+  deleteQuestion: (id: string) => Promise<boolean>;
+}
+
+export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
+  set,
+  get,
+) => ({
+  questions: [],
+  currentQuestion: null,
+  loading: false,
+  error: null,
+
+  fetchQuestions: async () => {
+    set({ loading: true, error: null });
+    try {
+      const questions = await questionsService.getAll();
+      set({ questions, loading: false });
+    } catch (error) {
+      set({
+        error:
+          error instanceof Error ? error.message : "Failed to fetch questions",
+        loading: false,
+      });
+      throw error;
+    }
+  },
+
+  fetchQuestionsByTopic: async (topicId: string) => {
+    set({ loading: true, error: null });
+    try {
+      const questions = await questionsService.getByTopicId(topicId);
+      set({ questions, loading: false });
+    } catch (error) {
+      set({
+        error:
+          error instanceof Error ? error.message : "Failed to fetch questions",
+        loading: false,
+      });
+      throw error;
+    }
+  },
+
+  getQuestionById: async (id: string) => {
+    try {
+      const question = await questionsService.getById(id);
+      if (question) {
+        set({ currentQuestion: question });
+      }
+      return question;
+    } catch (error) {
+      set({
+        error:
+          error instanceof Error ? error.message : "Failed to get question",
+      });
+      throw error;
+    }
+  },
+
+  setCurrentQuestion: (question: Question | null) => {
+    set({ currentQuestion: question });
+  },
+
+  addQuestion: async (dto: CreateQuestionDto) => {
+    set({ error: null });
+    try {
+      const id = await questionsService.create(dto);
+      // Refresh questions after creation
+      await get().fetchQuestionsByTopic(dto.topicId);
+      return id;
+    } catch (error) {
+      set({
+        error:
+          error instanceof Error ? error.message : "Failed to create question",
+      });
+      throw error;
+    }
+  },
+
+  updateQuestion: async (id: string, dto: UpdateQuestionDto) => {
+    set({ error: null });
+    try {
+      const success = await questionsService.update(id, dto);
+      if (success && get().currentQuestion?.id === id) {
+        // Refresh current question if it was updated
+        await get().getQuestionById(id);
+      }
+      return success;
+    } catch (error) {
+      set({
+        error:
+          error instanceof Error ? error.message : "Failed to update question",
+      });
+      throw error;
+    }
+  },
+
+  deleteQuestion: async (id: string) => {
+    set({ error: null });
+    try {
+      const success = await questionsService.delete(id);
+      if (success) {
+        // Remove from local state
+        set({ questions: get().questions.filter((q) => q.id !== id) });
+        if (get().currentQuestion?.id === id) {
+          set({ currentQuestion: null });
+        }
+      }
+      return success;
+    } catch (error) {
+      set({
+        error:
+          error instanceof Error ? error.message : "Failed to delete question",
+      });
+      throw error;
+    }
+  },
+});
