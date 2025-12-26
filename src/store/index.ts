@@ -16,7 +16,7 @@ export const useStore = create<StoreState>()(
         ...createUISlice(...a),
       }),
       {
-        name: "ya-tua-storage",
+        name: "code-notes-storage",
         // Only persist non-sensitive, cacheable data
         partialize: (state) => ({
           topics: state.topics,

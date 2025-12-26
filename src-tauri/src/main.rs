@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    ya_boom_lib::run()
+    code_notes_lib::run()
 }

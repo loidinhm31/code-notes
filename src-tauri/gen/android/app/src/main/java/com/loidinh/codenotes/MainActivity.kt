@@ -1,8 +1,8 @@
-package com.loidi.ya_tua
+package com.loidinh.codenotes
 
  import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import com.loidi.ya_tua.TauriActivity
+import com.loidinh.codenotes.TauriActivity
 
 class MainActivity : TauriActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

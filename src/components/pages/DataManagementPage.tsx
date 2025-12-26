@@ -41,7 +41,7 @@ export const DataManagementPage = () => {
       setLoading(true);
       setStatus('');
 
-      const defaultFilename = `ya-tua-backup-${new Date().toISOString().split('T')[0]}.json`;
+      const defaultFilename = `code-notes-backup-${new Date().toISOString().split('T')[0]}.json`;
 
       const filePath = await save({
         filters: [

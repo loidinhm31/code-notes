@@ -1,4 +1,4 @@
-name: Build Ya-Tua App
+name: Build Code Notes App
 
 on:
   push:
@@ -93,7 +93,7 @@ jobs:
           VITE_GOOGLE_CLIENT_SECRET: ${{ secrets.VITE_GOOGLE_CLIENT_SECRET }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: "Ya-tua v__VERSION__"
+          releaseName: "Code Notes v__VERSION__"
           releaseBody: "See the assets to download and install this version."
           releaseDraft: true
           prerelease: false
