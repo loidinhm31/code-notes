@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { open, save } from '@tauri-apps/plugin-dialog';
 import { confirm } from '@tauri-apps/plugin-dialog';
+import { readTextFile } from '@tauri-apps/plugin-fs';
 import { DataManagementService, type DatabaseStats } from '@/services/tauri/dataManagement.service';
 import { useStore } from '@/store';
 
@@ -105,8 +106,11 @@ export const DataManagementPage = () => {
       if (selected && typeof selected === 'string') {
         const filePath = selected;
 
+        // Read the file content using Tauri FS plugin (works on Android with content URIs)
+        const fileContent = await readTextFile(filePath);
+
         const result = await DataManagementService.importDatabase(
-          filePath,
+          fileContent,
           importMode === 'merge'
         );
 

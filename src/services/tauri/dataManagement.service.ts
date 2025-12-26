@@ -24,8 +24,8 @@ export class DataManagementService {
     return invoke<ExportResult>('export_database', { exportPath });
   }
 
-  static async importDatabase(importPath: string, merge: boolean): Promise<ImportResult> {
-    return invoke<ImportResult>('import_database', { importPath, merge });
+  static async importDatabase(importContent: string, merge: boolean): Promise<ImportResult> {
+    return invoke<ImportResult>('import_database', { importContent, merge });
   }
 
   static async getDatabaseStats(): Promise<DatabaseStats> {

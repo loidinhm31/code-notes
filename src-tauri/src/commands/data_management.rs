@@ -73,16 +73,12 @@ pub async fn export_database(
 #[tauri::command]
 pub async fn import_database(
     app: AppHandle,
-    import_path: String,
+    import_content: String,
     merge: bool,
 ) -> Result<ImportResult, String> {
-    // Read import file
-    let json =
-        fs::read_to_string(&import_path).map_err(|e| format!("Failed to read file: {}", e))?;
-
-    // Parse JSON
+    // Parse JSON from the provided content
     let imported_data: DatabaseV1Export =
-        serde_json::from_str(&json).map_err(|e| format!("Invalid JSON format: {}", e))?;
+        serde_json::from_str(&import_content).map_err(|e| format!("Invalid JSON format: {}", e))?;
 
     // Validate the imported data
     validate_database(&imported_data)?;
