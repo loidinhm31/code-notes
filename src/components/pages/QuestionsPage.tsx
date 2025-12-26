@@ -1,17 +1,49 @@
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { useStore } from "@/store";
-import { ArrowLeft, Plus } from "lucide-react";
-import { Modal } from "@/components/molecules/Modal/Modal";
-import { QuestionForm } from "@/components/organisms/QuestionForm/QuestionForm";
+import {useEffect, useState} from "react";
+import {Link, useParams} from "react-router-dom";
+import {useStore} from "@/store";
+import {ArrowLeft, Plus} from "lucide-react";
+import {Modal} from "@/components/molecules/Modal/Modal";
+import {QuestionForm} from "@/components/organisms/QuestionForm/QuestionForm";
 
 export const QuestionsPage = () => {
   const { topicId } = useParams<{ topicId: string }>();
-  const { questions, loading, error, fetchQuestionsByTopic, topics } =
-    useStore();
+  const {
+    questions,
+    questionsSearchResults,
+    searchFilters,
+    loading,
+    error,
+    fetchQuestionsByTopic,
+    searchQuestions,
+    clearQuestionsSearch,
+    topics
+  } = useStore();
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const topic = topics.find((t) => t.id === topicId);
+
+  const getAvailableTags = () => {
+    const allTags = new Set<string>();
+    questions.forEach(q => q.tags.forEach(tag => allTags.add(tag)));
+    return Array.from(allTags).sort();
+  };
+
+  const handleSearch = () => {
+    if (searchInput.trim()) {
+      searchQuestions(searchInput.trim(), {
+        tags: selectedTags.length > 0 ? selectedTags : undefined,
+        topicId: topicId || undefined,
+      });
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput("");
+    setSelectedTags([]);
+    clearQuestionsSearch();
+  };
 
   useEffect(() => {
     if (topicId) {
@@ -81,21 +113,115 @@ export const QuestionsPage = () => {
         </div>
       </div>
 
-      {questions.length === 0 ? (
-        <div className="text-center py-12 clay-card p-8 max-w-md mx-auto">
-          <p style={{ color: "var(--color-text-muted)" }} className="mb-4">
-            No questions yet. Create your first question!
-          </p>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="clay-button"
-          >
-            Create Question
-          </button>
+      {/* Search and Filter UI */}
+      <div className="mb-6 w-full max-w-2xl">
+        <div className="space-y-3">
+          {/* Search Input */}
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search questions..."
+              value={searchInput}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchInput(value);
+                // Auto-clear search when input is emptied
+                if (value === "" && searchFilters && selectedTags.length === 0) {
+                  clearQuestionsSearch();
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchInput.trim()) {
+                  handleSearch();
+                } else if (e.key === 'Escape') {
+                  handleClearSearch();
+                }
+              }}
+              className="clay-input w-full"
+            />
+          </div>
+
+          {/* Filters Row */}
+          <div className="flex gap-2 flex-wrap items-center">
+            {/* Tag Filter */}
+            <select
+              value=""
+              onChange={(e) => {
+                if (e.target.value && !selectedTags.includes(e.target.value)) {
+                  setSelectedTags([...selectedTags, e.target.value]);
+                }
+              }}
+              className="clay-input text-sm"
+            >
+              <option value="">Add tag filter...</option>
+              {getAvailableTags().map(tag => (
+                <option key={tag} value={tag}>{tag}</option>
+              ))}
+            </select>
+
+            {/* Search/Clear Buttons */}
+            <button onClick={handleSearch} className="clay-button text-sm px-4 py-2">
+              Search
+            </button>
+            {(searchInput || selectedTags.length > 0) && (
+              <button onClick={handleClearSearch} className="text-sm"
+                style={{ color: "var(--color-text-muted)" }}>
+                Clear All
+              </button>
+            )}
+          </div>
+
+          {/* Selected Tags Display */}
+          {selectedTags.length > 0 && (
+            <div className="flex gap-2 flex-wrap">
+              {selectedTags.map(tag => (
+                <span key={tag} className="clay-badge flex items-center gap-1">
+                  {tag}
+                  <button
+                    onClick={() => setSelectedTags(selectedTags.filter(t => t !== tag))}
+                    className="ml-1 font-bold"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="space-y-4">
-          {questions.map((question) => (
+      </div>
+
+      {/* Search Results Indicator */}
+      {searchFilters && (
+        <div className="mb-4">
+          <p style={{ color: "var(--color-text-muted)" }}>
+            Found {questionsSearchResults.length} questions
+            {searchFilters.keyword && ` matching "${searchFilters.keyword}"`}
+          </p>
+        </div>
+      )}
+
+      {(() => {
+        const displayQuestions = searchFilters ? questionsSearchResults : questions;
+
+        return displayQuestions.length === 0 ? (
+          <div className="text-center py-12 clay-card p-8 max-w-md mx-auto">
+            <p style={{ color: "var(--color-text-muted)" }} className="mb-4">
+              {searchFilters
+                ? "No questions found matching your search criteria"
+                : "No questions yet. Create your first question!"}
+            </p>
+            {!searchFilters && (
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="clay-button"
+              >
+                Create Question
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {displayQuestions.map((question) => (
             <Link
               key={question.id}
               to={`/questions/${question.id}`}
@@ -146,7 +272,8 @@ export const QuestionsPage = () => {
             </Link>
           ))}
         </div>
-      )}
+        );
+      })()}
 
       {topicId && (
         <Modal

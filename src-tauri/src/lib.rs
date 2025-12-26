@@ -44,6 +44,7 @@ pub fn run() {
             // Query commands
             query_database, // Uses jql for raw JSON queries
             search_questions,
+            search_topics,
             get_topic_stats,
             // Debug commands
             debug_database,

@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { Question } from "@/types";
+import type { Question, Topic } from "@/types";
 
 export interface TopicStats {
   id: string;
@@ -28,6 +28,13 @@ export const queryService = {
    */
   searchQuestions: async (keyword: string): Promise<Question[]> => {
     return await invoke<Question[]>("search_questions", { keyword });
+  },
+
+  /**
+   * Search topics by keyword
+   */
+  searchTopics: async (keyword: string): Promise<Topic[]> => {
+    return await invoke<Topic[]>("search_topics", { keyword });
   },
 
   /**

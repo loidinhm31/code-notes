@@ -1,9 +1,18 @@
 import { StateCreator } from "zustand";
-import { questionsService } from "@/services/tauri";
+import { questionsService, queryService } from "@/services/tauri";
 import type { Question, CreateQuestionDto, UpdateQuestionDto } from "@/types";
+
+export interface QuestionFilters {
+  keyword: string;
+  tags?: string[];
+  topicId?: string;
+}
 
 export interface QuestionsSlice {
   questions: Question[];
+  questionsSearchResults: Question[];
+  isSearchingQuestions: boolean;
+  searchFilters: QuestionFilters | null;
   currentQuestion: Question | null;
   loading: boolean;
   error: string | null;
@@ -14,6 +23,8 @@ export interface QuestionsSlice {
   addQuestion: (dto: CreateQuestionDto) => Promise<string>;
   updateQuestion: (id: string, dto: UpdateQuestionDto) => Promise<boolean>;
   deleteQuestion: (id: string) => Promise<boolean>;
+  searchQuestions: (keyword: string, filters?: Partial<QuestionFilters>) => Promise<void>;
+  clearQuestionsSearch: () => void;
 }
 
 export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
@@ -21,6 +32,9 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
   get,
 ) => ({
   questions: [],
+  questionsSearchResults: [],
+  isSearchingQuestions: false,
+  searchFilters: null,
   currentQuestion: null,
   loading: false,
   error: null,
@@ -128,5 +142,46 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
       });
       throw error;
     }
+  },
+
+  searchQuestions: async (keyword: string, filters?: Partial<QuestionFilters>) => {
+    set({ isSearchingQuestions: true, error: null });
+
+    const searchFilters: QuestionFilters = {
+      keyword,
+      ...filters
+    };
+
+    try {
+      // Backend search by keyword
+      let results = await queryService.searchQuestions(keyword);
+
+      // Client-side filtering by tags
+      if (filters?.tags && filters.tags.length > 0) {
+        results = results.filter(q =>
+          filters.tags!.some(tag => q.tags.includes(tag))
+        );
+      }
+
+      if (filters?.topicId) {
+        results = results.filter(q => q.topicId === filters.topicId);
+      }
+
+      set({
+        questionsSearchResults: results,
+        searchFilters,
+        isSearchingQuestions: false
+      });
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : "Failed to search questions",
+        isSearchingQuestions: false,
+      });
+      throw error;
+    }
+  },
+
+  clearQuestionsSearch: () => {
+    set({ questionsSearchResults: [], searchFilters: null, isSearchingQuestions: false });
   },
 });

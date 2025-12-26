@@ -1,9 +1,12 @@
 import { StateCreator } from "zustand";
-import { topicsService } from "@/services/tauri";
+import { topicsService, queryService } from "@/services/tauri";
 import type { Topic, CreateTopicDto, UpdateTopicDto } from "@/types";
 
 export interface TopicsSlice {
   topics: Topic[];
+  topicsSearchResults: Topic[];
+  isSearchingTopics: boolean;
+  searchKeyword: string | null;
   loading: boolean;
   error: string | null;
   fetchTopics: () => Promise<void>;
@@ -11,10 +14,15 @@ export interface TopicsSlice {
   addTopic: (dto: CreateTopicDto) => Promise<string>;
   updateTopic: (id: string, dto: UpdateTopicDto) => Promise<boolean>;
   deleteTopic: (id: string) => Promise<boolean>;
+  searchTopics: (keyword: string) => Promise<void>;
+  clearTopicsSearch: () => void;
 }
 
 export const createTopicsSlice: StateCreator<TopicsSlice> = (set, get) => ({
   topics: [],
+  topicsSearchResults: [],
+  isSearchingTopics: false,
+  searchKeyword: null,
   loading: false,
   error: null,
 
@@ -94,5 +102,23 @@ export const createTopicsSlice: StateCreator<TopicsSlice> = (set, get) => ({
       });
       throw error;
     }
+  },
+
+  searchTopics: async (keyword: string) => {
+    set({ isSearchingTopics: true, searchKeyword: keyword, error: null });
+    try {
+      const results = await queryService.searchTopics(keyword);
+      set({ topicsSearchResults: results, isSearchingTopics: false });
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : "Failed to search topics",
+        isSearchingTopics: false,
+      });
+      throw error;
+    }
+  },
+
+  clearTopicsSearch: () => {
+    set({ topicsSearchResults: [], searchKeyword: null, isSearchingTopics: false });
   },
 });

@@ -7,10 +7,21 @@ import { TopicForm } from "@/components/organisms/TopicForm/TopicForm";
 import type { Topic } from "@/types";
 
 export const TopicsPage = () => {
-  const { topics, loading, error, fetchTopics, deleteTopic } = useStore();
+  const {
+    topics,
+    topicsSearchResults,
+    searchKeyword,
+    loading,
+    error,
+    fetchTopics,
+    searchTopics,
+    clearTopicsSearch,
+    deleteTopic
+  } = useStore();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTopic, setEditingTopic] = useState<Topic | null>(null);
   const [deletingTopic, setDeletingTopic] = useState<Topic | null>(null);
+  const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     fetchTopics();
@@ -144,21 +155,77 @@ export const TopicsPage = () => {
         </div>
       </div>
 
-      {topics.length === 0 ? (
-        <div className="text-center py-12 clay-card p-8 max-w-md mx-auto">
-          <p style={{ color: "var(--color-text-muted)" }} className="mb-4">
-            No topics yet. Create your first topic to get started!
-          </p>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="clay-button"
-          >
-            Create Topic
-          </button>
+      {/* Search Input */}
+      <div className="mb-6 w-full max-w-md">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search topics by name or description..."
+            value={searchInput}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearchInput(value);
+              // Auto-clear search when input is emptied
+              if (value === "" && searchKeyword) {
+                clearTopicsSearch();
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && searchInput.trim()) {
+                searchTopics(searchInput.trim());
+              } else if (e.key === 'Escape') {
+                setSearchInput("");
+                clearTopicsSearch();
+              }
+            }}
+            className="clay-input w-full pr-24"
+          />
+          {searchInput && (
+            <button
+              onClick={() => {
+                setSearchInput("");
+                clearTopicsSearch();
+              }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-sm"
+              style={{ color: "var(--color-text-muted)" }}
+            >
+              Clear
+            </button>
+          )}
         </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {topics.map((topic) => (
+      </div>
+
+      {/* Search Results Indicator */}
+      {searchKeyword && (
+        <div className="mb-4">
+          <p style={{ color: "var(--color-text-muted)" }}>
+            Found {topicsSearchResults.length} topics matching "{searchKeyword}"
+          </p>
+        </div>
+      )}
+
+      {(() => {
+        const displayTopics = searchKeyword ? topicsSearchResults : topics;
+
+        return displayTopics.length === 0 ? (
+          <div className="text-center py-12 clay-card p-8 max-w-md mx-auto">
+            <p style={{ color: "var(--color-text-muted)" }} className="mb-4">
+              {searchKeyword
+                ? `No topics found matching "${searchKeyword}"`
+                : "No topics yet. Create your first topic to get started!"}
+            </p>
+            {!searchKeyword && (
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="clay-button"
+              >
+                Create Topic
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {displayTopics.map((topic) => (
             <div key={topic.id} className="clay-card p-6 relative group">
               {/* Action buttons */}
               <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -232,7 +299,8 @@ export const TopicsPage = () => {
             </div>
           ))}
         </div>
-      )}
+        );
+      })()}
 
       {/* Create Topic Modal */}
       <Modal
