@@ -478,12 +478,13 @@ dependencies = [
 
 [[package]]
 name = "code-notes"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "chrono",
  "jql-parser",
  "jql-runner",
  "lru",
+ "rand 0.8.5",
  "regex",
  "serde",
  "serde_json",

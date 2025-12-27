@@ -21,7 +21,7 @@ export const ImportForm: React.FC = () => {
   // Detect if we're on mobile
   useEffect(() => {
     const isMobile = /Android|webOS|iPhone|iPad|iPod/i.test(
-      navigator.userAgent
+      navigator.userAgent,
     );
     if (isMobile) {
       setUseMobileInput(true);
@@ -30,7 +30,7 @@ export const ImportForm: React.FC = () => {
 
   // Handle native file input (works on all platforms including Android)
   const handleFileInputChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -87,7 +87,7 @@ export const ImportForm: React.FC = () => {
           content = await readTextFile(selectedFile);
         } catch (error) {
           throw new Error(
-            `Failed to read file: ${error instanceof Error ? error.message : String(error)}`
+            `Failed to read file: ${error instanceof Error ? error.message : String(error)}`,
           );
         }
       }
@@ -276,46 +276,51 @@ export const ImportForm: React.FC = () => {
           )}
 
           {/* Detailed breakdown by topic */}
-          {result.success && result.topics_details && result.topics_details.length > 0 && (
-            <div className="mt-4 border-t border-green-200 dark:border-green-800 pt-4">
-              <h4 className="font-semibold text-green-800 dark:text-green-200 mb-3">
-                Import Details
-              </h4>
-              <div className="space-y-4">
-                {result.topics_details.map((topic) => (
-                  <div
-                    key={topic.topic_id}
-                    className="bg-white dark:bg-gray-800 border border-green-100 dark:border-green-900 rounded-md p-3"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <h5 className="font-medium text-gray-900 dark:text-gray-100">
-                        {topic.topic_name}
-                      </h5>
-                      <span className="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">
-                        {topic.questions_count} question{topic.questions_count !== 1 ? 's' : ''}
-                      </span>
-                    </div>
+          {result.success &&
+            result.topics_details &&
+            result.topics_details.length > 0 && (
+              <div className="mt-4 border-t border-green-200 dark:border-green-800 pt-4">
+                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-3">
+                  Import Details
+                </h4>
+                <div className="space-y-4">
+                  {result.topics_details.map((topic) => (
+                    <div
+                      key={topic.topic_id}
+                      className="bg-white dark:bg-gray-800 border border-green-100 dark:border-green-900 rounded-md p-3"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <h5 className="font-medium text-gray-900 dark:text-gray-100">
+                          {topic.topic_name}
+                        </h5>
+                        <span className="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">
+                          {topic.questions_count} question
+                          {topic.questions_count !== 1 ? "s" : ""}
+                        </span>
+                      </div>
 
-                    {topic.questions.length > 0 && (
-                      <ul className="mt-2 space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                        {topic.questions.map((question) => (
-                          <li
-                            key={question.question_id}
-                            className="flex items-start gap-2 pl-2"
-                          >
-                            <span className="text-green-600 dark:text-green-400 font-mono text-xs mt-0.5">
-                              {question.question_number}.
-                            </span>
-                            <span className="flex-1">{question.question}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
+                      {topic.questions.length > 0 && (
+                        <ul className="mt-2 space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                          {topic.questions.map((question) => (
+                            <li
+                              key={question.question_id}
+                              className="flex items-start gap-2 pl-2"
+                            >
+                              <span className="text-green-600 dark:text-green-400 font-mono text-xs mt-0.5">
+                                {question.question_number}.
+                              </span>
+                              <span className="flex-1">
+                                {question.question}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       )}
     </div>

@@ -1,9 +1,9 @@
-import {useEffect, useState} from "react";
-import {Link, useParams} from "react-router-dom";
-import {useStore} from "@/store";
-import {ArrowLeft, Plus} from "lucide-react";
-import {Modal} from "@/components/molecules/Modal/Modal";
-import {QuestionForm} from "@/components/organisms/QuestionForm/QuestionForm";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useStore } from "@/store";
+import { ArrowLeft, Plus } from "lucide-react";
+import { Modal } from "@/components/molecules/Modal/Modal";
+import { QuestionForm } from "@/components/organisms/QuestionForm/QuestionForm";
 
 export const QuestionsPage = () => {
   const { topicId } = useParams<{ topicId: string }>();
@@ -16,7 +16,7 @@ export const QuestionsPage = () => {
     fetchQuestionsByTopic,
     searchQuestions,
     clearQuestionsSearch,
-    topics
+    topics,
   } = useStore();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -26,7 +26,7 @@ export const QuestionsPage = () => {
 
   const getAvailableTags = () => {
     const allTags = new Set<string>();
-    questions.forEach(q => q.tags.forEach(tag => allTags.add(tag)));
+    questions.forEach((q) => q.tags.forEach((tag) => allTags.add(tag)));
     return Array.from(allTags).sort();
   };
 
@@ -126,14 +126,18 @@ export const QuestionsPage = () => {
                 const value = e.target.value;
                 setSearchInput(value);
                 // Auto-clear search when input is emptied
-                if (value === "" && searchFilters && selectedTags.length === 0) {
+                if (
+                  value === "" &&
+                  searchFilters &&
+                  selectedTags.length === 0
+                ) {
                   clearQuestionsSearch();
                 }
               }}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && searchInput.trim()) {
+                if (e.key === "Enter" && searchInput.trim()) {
                   handleSearch();
-                } else if (e.key === 'Escape') {
+                } else if (e.key === "Escape") {
                   handleClearSearch();
                 }
               }}
@@ -154,18 +158,26 @@ export const QuestionsPage = () => {
               className="clay-input text-sm"
             >
               <option value="">Add tag filter...</option>
-              {getAvailableTags().map(tag => (
-                <option key={tag} value={tag}>{tag}</option>
+              {getAvailableTags().map((tag) => (
+                <option key={tag} value={tag}>
+                  {tag}
+                </option>
               ))}
             </select>
 
             {/* Search/Clear Buttons */}
-            <button onClick={handleSearch} className="clay-button text-sm px-4 py-2">
+            <button
+              onClick={handleSearch}
+              className="clay-button text-sm px-4 py-2"
+            >
               Search
             </button>
             {(searchInput || selectedTags.length > 0) && (
-              <button onClick={handleClearSearch} className="text-sm"
-                style={{ color: "var(--color-text-muted)" }}>
+              <button
+                onClick={handleClearSearch}
+                className="text-sm"
+                style={{ color: "var(--color-text-muted)" }}
+              >
                 Clear All
               </button>
             )}
@@ -174,11 +186,13 @@ export const QuestionsPage = () => {
           {/* Selected Tags Display */}
           {selectedTags.length > 0 && (
             <div className="flex gap-2 flex-wrap">
-              {selectedTags.map(tag => (
+              {selectedTags.map((tag) => (
                 <span key={tag} className="clay-badge flex items-center gap-1">
                   {tag}
                   <button
-                    onClick={() => setSelectedTags(selectedTags.filter(t => t !== tag))}
+                    onClick={() =>
+                      setSelectedTags(selectedTags.filter((t) => t !== tag))
+                    }
                     className="ml-1 font-bold"
                   >
                     ×
@@ -201,7 +215,9 @@ export const QuestionsPage = () => {
       )}
 
       {(() => {
-        const displayQuestions = searchFilters ? questionsSearchResults : questions;
+        const displayQuestions = searchFilters
+          ? questionsSearchResults
+          : questions;
 
         return displayQuestions.length === 0 ? (
           <div className="text-center py-12 clay-card p-8 max-w-md mx-auto">
@@ -222,56 +238,56 @@ export const QuestionsPage = () => {
         ) : (
           <div className="space-y-4">
             {displayQuestions.map((question) => (
-            <Link
-              key={question.id}
-              to={`/questions/${question.id}`}
-              className="clay-card block p-5 cursor-pointer"
-            >
-              <div className="flex items-start gap-4">
-                <div
-                  className="min-w-[3rem] h-12 flex items-center justify-center text-white font-bold text-lg"
-                  style={{
-                    backgroundColor: "var(--color-primary)",
-                    borderRadius: "var(--radius-md)",
-                    border: "3px solid var(--color-primary-light)",
-                    boxShadow: "var(--shadow-clay-sm)",
-                  }}
-                >
-                  {question.questionNumber}
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold mb-3 text-lg">
-                    {question.question}
-                  </h3>
-                  <div className="flex flex-wrap gap-2 items-center">
-                    {question.tags.map((tag, idx) => (
-                      <span key={idx} className="clay-badge text-xs">
-                        {tag}
+              <Link
+                key={question.id}
+                to={`/questions/${question.id}`}
+                className="clay-card block p-5 cursor-pointer"
+              >
+                <div className="flex items-start gap-4">
+                  <div
+                    className="min-w-[3rem] h-12 flex items-center justify-center text-white font-bold text-lg"
+                    style={{
+                      backgroundColor: "var(--color-primary)",
+                      borderRadius: "var(--radius-md)",
+                      border: "3px solid var(--color-primary-light)",
+                      boxShadow: "var(--shadow-clay-sm)",
+                    }}
+                  >
+                    {question.questionNumber}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-3 text-lg">
+                      {question.question}
+                    </h3>
+                    <div className="flex flex-wrap gap-2 items-center">
+                      {question.tags.map((tag, idx) => (
+                        <span key={idx} className="clay-badge text-xs">
+                          {tag}
+                        </span>
+                      ))}
+                      <span
+                        className="text-xs px-3 py-1 font-semibold"
+                        style={{
+                          backgroundColor:
+                            question.difficulty === "beginner"
+                              ? "var(--color-mint)"
+                              : question.difficulty === "intermediate"
+                                ? "var(--color-peach)"
+                                : "var(--color-lavender)",
+                          color: "var(--color-text-primary)",
+                          borderRadius: "var(--radius-xl)",
+                          border: "2px solid rgba(255, 255, 255, 0.5)",
+                          boxShadow: "var(--shadow-clay-sm)",
+                        }}
+                      >
+                        {question.difficulty}
                       </span>
-                    ))}
-                    <span
-                      className="text-xs px-3 py-1 font-semibold"
-                      style={{
-                        backgroundColor:
-                          question.difficulty === "beginner"
-                            ? "var(--color-mint)"
-                            : question.difficulty === "intermediate"
-                              ? "var(--color-peach)"
-                              : "var(--color-lavender)",
-                        color: "var(--color-text-primary)",
-                        borderRadius: "var(--radius-xl)",
-                        border: "2px solid rgba(255, 255, 255, 0.5)",
-                        boxShadow: "var(--shadow-clay-sm)",
-                      }}
-                    >
-                      {question.difficulty}
-                    </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
         );
       })()}
 

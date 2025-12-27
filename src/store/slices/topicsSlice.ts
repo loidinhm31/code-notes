@@ -111,7 +111,8 @@ export const createTopicsSlice: StateCreator<TopicsSlice> = (set, get) => ({
       set({ topicsSearchResults: results, isSearchingTopics: false });
     } catch (error) {
       set({
-        error: error instanceof Error ? error.message : "Failed to search topics",
+        error:
+          error instanceof Error ? error.message : "Failed to search topics",
         isSearchingTopics: false,
       });
       throw error;
@@ -119,6 +120,10 @@ export const createTopicsSlice: StateCreator<TopicsSlice> = (set, get) => ({
   },
 
   clearTopicsSearch: () => {
-    set({ topicsSearchResults: [], searchKeyword: null, isSearchingTopics: false });
+    set({
+      topicsSearchResults: [],
+      searchKeyword: null,
+      isSearchingTopics: false,
+    });
   },
 });

@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/core';
+import { invoke } from "@tauri-apps/api/core";
 
 export interface ExportResult {
   success: boolean;
@@ -21,14 +21,17 @@ export interface DatabaseStats {
 
 export class DataManagementService {
   static async exportDatabase(exportPath: string): Promise<ExportResult> {
-    return invoke<ExportResult>('export_database', { exportPath });
+    return invoke<ExportResult>("export_database", { exportPath });
   }
 
-  static async importDatabase(importContent: string, merge: boolean): Promise<ImportResult> {
-    return invoke<ImportResult>('import_database', { importContent, merge });
+  static async importDatabase(
+    importContent: string,
+    merge: boolean,
+  ): Promise<ImportResult> {
+    return invoke<ImportResult>("import_database", { importContent, merge });
   }
 
   static async getDatabaseStats(): Promise<DatabaseStats> {
-    return invoke<DatabaseStats>('get_database_stats');
+    return invoke<DatabaseStats>("get_database_stats");
   }
 }

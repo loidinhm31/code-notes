@@ -42,7 +42,8 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
         style={{
           backgroundColor: "var(--color-bg-card)",
           boxShadow: "var(--shadow-clay-lg)",
-          maxHeight: "calc(90vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))",
+          maxHeight:
+            "calc(90vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))",
         }}
       >
         {/* Header */}
@@ -82,7 +83,8 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
         <div
           className="p-6 overflow-y-auto"
           style={{
-            maxHeight: "calc(90vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 140px)",
+            maxHeight:
+              "calc(90vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 140px)",
           }}
         >
           {children}

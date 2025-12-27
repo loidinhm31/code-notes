@@ -34,7 +34,8 @@ export const TopicForm = ({ topic, onSuccess, onCancel }: TopicFormProps) => {
         const updateDto: UpdateTopicDto = {
           name: formData.name,
           description: formData.description,
-          slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, "-"),
+          slug:
+            formData.slug || formData.name.toLowerCase().replace(/\s+/g, "-"),
           icon: formData.icon,
           color: formData.color,
           subtopics: formData.subtopics
@@ -51,7 +52,8 @@ export const TopicForm = ({ topic, onSuccess, onCancel }: TopicFormProps) => {
         const createDto: CreateTopicDto = {
           name: formData.name,
           description: formData.description,
-          slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, "-"),
+          slug:
+            formData.slug || formData.name.toLowerCase().replace(/\s+/g, "-"),
           icon: formData.icon,
           color: formData.color,
           subtopics: formData.subtopics

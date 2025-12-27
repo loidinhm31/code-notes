@@ -23,7 +23,10 @@ export interface QuestionsSlice {
   addQuestion: (dto: CreateQuestionDto) => Promise<string>;
   updateQuestion: (id: string, dto: UpdateQuestionDto) => Promise<boolean>;
   deleteQuestion: (id: string) => Promise<boolean>;
-  searchQuestions: (keyword: string, filters?: Partial<QuestionFilters>) => Promise<void>;
+  searchQuestions: (
+    keyword: string,
+    filters?: Partial<QuestionFilters>,
+  ) => Promise<void>;
   clearQuestionsSearch: () => void;
 }
 
@@ -144,12 +147,15 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
     }
   },
 
-  searchQuestions: async (keyword: string, filters?: Partial<QuestionFilters>) => {
+  searchQuestions: async (
+    keyword: string,
+    filters?: Partial<QuestionFilters>,
+  ) => {
     set({ isSearchingQuestions: true, error: null });
 
     const searchFilters: QuestionFilters = {
       keyword,
-      ...filters
+      ...filters,
     };
 
     try {
@@ -158,23 +164,24 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
 
       // Client-side filtering by tags
       if (filters?.tags && filters.tags.length > 0) {
-        results = results.filter(q =>
-          filters.tags!.some(tag => q.tags.includes(tag))
+        results = results.filter((q) =>
+          filters.tags!.some((tag) => q.tags.includes(tag)),
         );
       }
 
       if (filters?.topicId) {
-        results = results.filter(q => q.topicId === filters.topicId);
+        results = results.filter((q) => q.topicId === filters.topicId);
       }
 
       set({
         questionsSearchResults: results,
         searchFilters,
-        isSearchingQuestions: false
+        isSearchingQuestions: false,
       });
     } catch (error) {
       set({
-        error: error instanceof Error ? error.message : "Failed to search questions",
+        error:
+          error instanceof Error ? error.message : "Failed to search questions",
         isSearchingQuestions: false,
       });
       throw error;
@@ -182,6 +189,10 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
   },
 
   clearQuestionsSearch: () => {
-    set({ questionsSearchResults: [], searchFilters: null, isSearchingQuestions: false });
+    set({
+      questionsSearchResults: [],
+      searchFilters: null,
+      isSearchingQuestions: false,
+    });
   },
 });

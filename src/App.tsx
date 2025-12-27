@@ -5,6 +5,10 @@ import { QuestionDetailPage } from "./components/pages/QuestionDetailPage";
 import { ImportPage } from "./components/pages/ImportPage";
 import { SettingsPage } from "./components/pages/SettingsPage";
 import { DataManagementPage } from "./components/pages/DataManagementPage";
+import { ProgressDashboardPage } from "./components/pages/ProgressDashboardPage";
+import { QuizModePage } from "./components/pages/QuizModePage";
+import { QuizSessionPage } from "./components/pages/QuizSessionPage";
+import { QuizResultsPage } from "./components/pages/QuizResultsPage";
 
 function App() {
   return (
@@ -19,6 +23,13 @@ function App() {
           <Route
             path="/questions/:questionId"
             element={<QuestionDetailPage />}
+          />
+          <Route path="/progress" element={<ProgressDashboardPage />} />
+          <Route path="/quiz" element={<QuizModePage />} />
+          <Route path="/quiz/:sessionId" element={<QuizSessionPage />} />
+          <Route
+            path="/quiz/results/:sessionId"
+            element={<QuizResultsPage />}
           />
         </Routes>
       </div>

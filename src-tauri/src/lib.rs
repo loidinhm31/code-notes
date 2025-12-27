@@ -46,6 +46,22 @@ pub fn run() {
             search_questions,
             search_topics,
             get_topic_stats,
+            // Progress commands
+            get_all_progress,
+            get_progress_by_question,
+            get_progress_by_topic,
+            update_question_progress,
+            reset_question_progress,
+            get_progress_statistics,
+            get_questions_due_for_review,
+            ensure_progress_for_all_questions,
+            // Quiz commands
+            create_quiz_session,
+            get_quiz_session,
+            get_active_quiz_session,
+            submit_quiz_answer,
+            complete_quiz_session,
+            get_quiz_history,
             // Debug commands
             debug_database,
             debug_topic_questions,

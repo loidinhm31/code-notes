@@ -14,6 +14,9 @@ import {
 import { MarkdownRenderer } from "@/components/molecules/MarkdownRenderer/MarkdownRenderer";
 import { Modal } from "@/components/molecules/Modal/Modal";
 import { QuestionForm } from "@/components/organisms/QuestionForm/QuestionForm";
+import { ProgressBadge } from "@/components/molecules/ProgressBadge/ProgressBadge";
+import { ConfidenceRating } from "@/components/molecules/ConfidenceRating/ConfidenceRating";
+import type { ProgressStatus } from "@/types";
 
 export const QuestionDetailPage = () => {
   const { questionId } = useParams<{ questionId: string }>();
@@ -29,6 +32,10 @@ export const QuestionDetailPage = () => {
     increaseFontSize,
     decreaseFontSize,
     resetFontSize,
+    // Progress tracking
+    fetchAllProgress,
+    getQuestionProgress,
+    updateProgress,
   } = useStore();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -42,6 +49,7 @@ export const QuestionDetailPage = () => {
         setLoading(true);
         try {
           await getQuestionById(questionId);
+          await fetchAllProgress();
         } catch (err) {
           console.error("Failed to load question:", err);
         } finally {
@@ -50,7 +58,7 @@ export const QuestionDetailPage = () => {
       }
     };
     fetchQuestion();
-  }, [questionId, getQuestionById]);
+  }, [questionId, getQuestionById, fetchAllProgress]);
 
   // Fetch questions for the topic and calculate prev/next
   useEffect(() => {
@@ -105,6 +113,18 @@ export const QuestionDetailPage = () => {
     }
   };
 
+  const handleUpdateStatus = async (status: ProgressStatus) => {
+    if (questionId) {
+      try {
+        await updateProgress(questionId, { status });
+      } catch (err) {
+        console.error("Failed to update progress:", err);
+      }
+    }
+  };
+
+  const progress = questionId ? getQuestionProgress(questionId) : undefined;
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -123,10 +143,7 @@ export const QuestionDetailPage = () => {
           <p className="text-destructive mb-4">
             {error || "Question not found"}
           </p>
-          <button
-            onClick={() => navigate("/")}
-            className="clay-button"
-          >
+          <button onClick={() => navigate("/")} className="clay-button">
             Back to Topics
           </button>
         </div>
@@ -257,7 +274,83 @@ export const QuestionDetailPage = () => {
                   {currentQuestion.subtopic}
                 </span>
               )}
+              {progress && (
+                <ProgressBadge
+                  status={progress.status}
+                  confidenceLevel={progress.confidenceLevel}
+                />
+              )}
             </div>
+            {progress && (
+              <div
+                className="mt-4 p-4 rounded-lg"
+                style={{ backgroundColor: "var(--color-bg-muted)" }}
+              >
+                <div className="flex items-center gap-4 mb-3">
+                  <span
+                    className="text-sm font-medium"
+                    style={{ color: "var(--color-text-secondary)" }}
+                  >
+                    Confidence:
+                  </span>
+                  <ConfidenceRating
+                    value={progress.confidenceLevel}
+                    readonly
+                    size="sm"
+                  />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => handleUpdateStatus("Studying")}
+                    className="px-3 py-1 text-sm rounded clay-card"
+                    style={{
+                      backgroundColor:
+                        progress.status === "Studying"
+                          ? "var(--color-primary)"
+                          : "var(--color-bg-card)",
+                      color:
+                        progress.status === "Studying"
+                          ? "white"
+                          : "var(--color-text)",
+                    }}
+                  >
+                    Mark as Studying
+                  </button>
+                  <button
+                    onClick={() => handleUpdateStatus("Mastered")}
+                    className="px-3 py-1 text-sm rounded clay-card"
+                    style={{
+                      backgroundColor:
+                        progress.status === "Mastered"
+                          ? "#10B981"
+                          : "var(--color-bg-card)",
+                      color:
+                        progress.status === "Mastered"
+                          ? "white"
+                          : "var(--color-text)",
+                    }}
+                  >
+                    Mark as Mastered
+                  </button>
+                  <button
+                    onClick={() => handleUpdateStatus("NeedsReview")}
+                    className="px-3 py-1 text-sm rounded clay-card"
+                    style={{
+                      backgroundColor:
+                        progress.status === "NeedsReview"
+                          ? "#F59E0B"
+                          : "var(--color-bg-card)",
+                      color:
+                        progress.status === "NeedsReview"
+                          ? "white"
+                          : "var(--color-text)",
+                    }}
+                  >
+                    Needs Review
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -309,7 +402,8 @@ export const QuestionDetailPage = () => {
                 boxShadow: "var(--shadow-clay-sm)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--color-secondary)";
+                e.currentTarget.style.backgroundColor =
+                  "var(--color-secondary)";
                 e.currentTarget.style.color = "var(--color-text-primary)";
               }}
               onMouseLeave={(e) => {
@@ -331,7 +425,8 @@ export const QuestionDetailPage = () => {
                 boxShadow: "var(--shadow-clay-sm)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--color-accent-light)";
+                e.currentTarget.style.backgroundColor =
+                  "var(--color-accent-light)";
                 e.currentTarget.style.boxShadow = "var(--shadow-clay-md)";
                 e.currentTarget.style.transform = "translateY(-1px)";
               }}

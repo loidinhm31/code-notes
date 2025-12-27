@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import { useStore } from "@/store";
 import { Link } from "react-router-dom";
-import { Plus, Upload, Settings, Edit, Trash2 } from "lucide-react";
+import {
+  Plus,
+  Upload,
+  Settings,
+  Edit,
+  Trash2,
+  TrendingUp,
+  Target,
+} from "lucide-react";
 import { Modal } from "@/components/molecules/Modal/Modal";
 import { TopicForm } from "@/components/organisms/TopicForm/TopicForm";
 import type { Topic } from "@/types";
@@ -16,7 +24,7 @@ export const TopicsPage = () => {
     fetchTopics,
     searchTopics,
     clearTopicsSearch,
-    deleteTopic
+    deleteTopic,
   } = useStore();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTopic, setEditingTopic] = useState<Topic | null>(null);
@@ -131,10 +139,15 @@ export const TopicsPage = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          <Link
-            to="/settings"
-            className="clay-button flex items-center gap-2"
-          >
+          <Link to="/progress" className="clay-button flex items-center gap-2">
+            <TrendingUp className="w-5 h-5" />
+            <span className="hidden sm:inline">Progress</span>
+          </Link>
+          <Link to="/quiz" className="clay-button flex items-center gap-2">
+            <Target className="w-5 h-5" />
+            <span className="hidden sm:inline">Quiz</span>
+          </Link>
+          <Link to="/settings" className="clay-button flex items-center gap-2">
             <Settings className="w-5 h-5" />
             <span className="hidden sm:inline">Settings</span>
           </Link>
@@ -171,9 +184,9 @@ export const TopicsPage = () => {
               }
             }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && searchInput.trim()) {
+              if (e.key === "Enter" && searchInput.trim()) {
                 searchTopics(searchInput.trim());
-              } else if (e.key === 'Escape') {
+              } else if (e.key === "Escape") {
                 setSearchInput("");
                 clearTopicsSearch();
               }
@@ -226,79 +239,81 @@ export const TopicsPage = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {displayTopics.map((topic) => (
-            <div key={topic.id} className="clay-card p-6 relative group">
-              {/* Action buttons */}
-              <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setEditingTopic(topic);
-                  }}
-                  className="p-2 rounded-md hover:bg-accent transition-colors"
-                  title="Edit topic"
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setDeletingTopic(topic);
-                  }}
-                  className="p-2 rounded-md hover:bg-destructive/10 text-destructive transition-colors"
-                  title="Delete topic"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Clickable card content */}
-              <Link
-                to={`/topics/${topic.id}`}
-                className="block cursor-pointer"
-              >
-                <div className="flex items-start gap-3">
-                  <div
-                    className="w-14 h-14 flex items-center justify-center text-white font-bold text-xl"
-                    style={{
-                      backgroundColor: topic.color,
-                      borderRadius: "var(--radius-lg)",
-                      border: "3px solid rgba(255, 255, 255, 0.5)",
-                      boxShadow: "var(--shadow-clay-sm)",
+              <div key={topic.id} className="clay-card p-6 relative group">
+                {/* Action buttons */}
+                <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditingTopic(topic);
                     }}
+                    className="p-2 rounded-md hover:bg-accent transition-colors"
+                    title="Edit topic"
                   >
-                    {topic.icon || topic.name.charAt(0)}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold mb-1 text-lg">{topic.name}</h3>
-                    <p
-                      className="text-sm line-clamp-2"
-                      style={{ color: "var(--color-text-muted)" }}
-                    >
-                      {topic.description}
-                    </p>
-                  </div>
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeletingTopic(topic);
+                    }}
+                    className="p-2 rounded-md hover:bg-destructive/10 text-destructive transition-colors"
+                    title="Delete topic"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
-                {topic.subtopics && topic.subtopics.length > 0 && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {topic.subtopics.slice(0, 3).map((subtopic, idx) => (
-                      <span key={idx} className="clay-badge text-xs">
-                        {subtopic}
-                      </span>
-                    ))}
-                    {topic.subtopics.length > 3 && (
-                      <span
-                        className="text-xs px-2 py-1"
+
+                {/* Clickable card content */}
+                <Link
+                  to={`/topics/${topic.id}`}
+                  className="block cursor-pointer"
+                >
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-14 h-14 flex items-center justify-center text-white font-bold text-xl"
+                      style={{
+                        backgroundColor: topic.color,
+                        borderRadius: "var(--radius-lg)",
+                        border: "3px solid rgba(255, 255, 255, 0.5)",
+                        boxShadow: "var(--shadow-clay-sm)",
+                      }}
+                    >
+                      {topic.icon || topic.name.charAt(0)}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold mb-1 text-lg">
+                        {topic.name}
+                      </h3>
+                      <p
+                        className="text-sm line-clamp-2"
                         style={{ color: "var(--color-text-muted)" }}
                       >
-                        +{topic.subtopics.length - 3} more
-                      </span>
-                    )}
+                        {topic.description}
+                      </p>
+                    </div>
                   </div>
-                )}
-              </Link>
-            </div>
-          ))}
-        </div>
+                  {topic.subtopics && topic.subtopics.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {topic.subtopics.slice(0, 3).map((subtopic, idx) => (
+                        <span key={idx} className="clay-badge text-xs">
+                          {subtopic}
+                        </span>
+                      ))}
+                      {topic.subtopics.length > 3 && (
+                        <span
+                          className="text-xs px-2 py-1"
+                          style={{ color: "var(--color-text-muted)" }}
+                        >
+                          +{topic.subtopics.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </Link>
+              </div>
+            ))}
+          </div>
         );
       })()}
 
@@ -341,8 +356,9 @@ export const TopicsPage = () => {
       >
         <div className="space-y-4">
           <p style={{ color: "var(--color-text-primary)" }}>
-            Are you sure you want to delete <strong>{deletingTopic?.name}</strong>?
-            This will also delete all questions in this topic. This action cannot be undone.
+            Are you sure you want to delete{" "}
+            <strong>{deletingTopic?.name}</strong>? This will also delete all
+            questions in this topic. This action cannot be undone.
           </p>
           <div className="flex justify-end gap-3">
             <button
@@ -357,7 +373,8 @@ export const TopicsPage = () => {
                 boxShadow: "var(--shadow-clay-sm)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--color-secondary)";
+                e.currentTarget.style.backgroundColor =
+                  "var(--color-secondary)";
                 e.currentTarget.style.color = "var(--color-text-primary)";
               }}
               onMouseLeave={(e) => {
@@ -379,7 +396,8 @@ export const TopicsPage = () => {
                 boxShadow: "var(--shadow-clay-sm)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--color-accent-light)";
+                e.currentTarget.style.backgroundColor =
+                  "var(--color-accent-light)";
                 e.currentTarget.style.boxShadow = "var(--shadow-clay-md)";
                 e.currentTarget.style.transform = "translateY(-1px)";
               }}

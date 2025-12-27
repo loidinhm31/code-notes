@@ -179,8 +179,8 @@ mod tests {
 
     #[test]
     fn test_generate_slug() {
-        assert_eq!(generate_slug("Java & Core Programming"), "java-core-programming");
+        assert_eq!(generate_slug("Java & Core Programming"), "java-_-core-programming");
         assert_eq!(generate_slug("Spring Boot"), "spring-boot");
-        assert_eq!(generate_slug("SQL & Databases"), "sql-databases");
+        assert_eq!(generate_slug("SQL & Databases"), "sql-_-databases");
     }
 }

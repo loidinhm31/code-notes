@@ -224,7 +224,7 @@ export const QuestionForm = ({
           }
           className="w-full px-3 py-2 bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring min-h-[300px] font-mono text-sm"
           required
-          placeholder="Use **bold**, lists, etc. Add code blocks using ```language syntax:
+          placeholder='Use **bold**, lists, etc. Add code blocks using ```language syntax:
 
 Example:
 **Answer:**
@@ -233,10 +233,10 @@ Some explanation here...
 ```java
 public class Example {
     public static void main(String[] args) {
-        System.out.println(&quot;Hello World&quot;);
+        System.out.println("Hello World");
     }
 }
-```"
+```'
         />
       </div>
 

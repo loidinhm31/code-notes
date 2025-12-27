@@ -254,7 +254,6 @@ mod tests {
                 question: "Test?".to_string(),
                 answer: Answer {
                     markdown: "Answer".to_string(),
-                    code_snippets: vec![],
                 },
                 tags: vec![],
                 difficulty: "beginner".to_string(),
@@ -280,7 +279,6 @@ mod tests {
                 question: "Test?".to_string(),
                 answer: Answer {
                     markdown: "Answer".to_string(),
-                    code_snippets: vec![],
                 },
                 tags: vec![],
                 difficulty: "beginner".to_string(),

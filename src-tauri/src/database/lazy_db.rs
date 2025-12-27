@@ -7,6 +7,7 @@ use tauri::{AppHandle, Manager};
 
 use super::models::{
     DatabaseIndex, Question, Topic, TopicQuestions, TopicsContainer,
+    QuestionProgress, ProgressContainer, QuizSession, QuizSessionsIndex,
 };
 
 /// Configuration for the lazy database
@@ -37,6 +38,15 @@ pub struct LazyDatabase {
 
     /// Questions cache: LRU cache for lazy-loaded questions
     questions_cache: Arc<RwLock<LruCache<String, TopicQuestions>>>,
+
+    /// Progress: always in memory (~5KB for 65 questions)
+    progress: Arc<RwLock<Vec<QuestionProgress>>>,
+
+    /// Quiz sessions index: always in memory
+    quiz_sessions_index: Arc<RwLock<QuizSessionsIndex>>,
+
+    /// Quiz sessions cache: LRU cache for lazy-loaded sessions
+    quiz_sessions_cache: Arc<RwLock<LruCache<String, QuizSession>>>,
 
     /// Base path for database directory
     base_path: PathBuf,
@@ -88,15 +98,38 @@ impl LazyDatabase {
             }
         };
 
-        // Initialize LRU cache
+        // Load progress data
+        let progress_path = base_path.join("progress.json");
+        let progress = if progress_path.exists() {
+            Self::load_progress_from_file(&progress_path)?
+        } else {
+            Vec::new()
+        };
+
+        // Load quiz sessions index
+        let quiz_index_path = base_path.join("quiz_sessions").join("index.json");
+        let quiz_sessions_index = if quiz_index_path.exists() {
+            Self::load_quiz_sessions_index_from_file(&quiz_index_path)?
+        } else {
+            // Create quiz_sessions directory if it doesn't exist
+            fs::create_dir_all(base_path.join("quiz_sessions"))
+                .map_err(|e| format!("Failed to create quiz_sessions directory: {}", e))?;
+            QuizSessionsIndex::default()
+        };
+
+        // Initialize LRU caches
         let cache_capacity = NonZeroUsize::new(config.cache_capacity)
             .ok_or_else(|| "Cache capacity must be greater than 0".to_string())?;
         let questions_cache = LruCache::new(cache_capacity);
+        let quiz_sessions_cache = LruCache::new(cache_capacity);
 
         let db = Self {
             index: Arc::new(RwLock::new(index)),
             topics: Arc::new(RwLock::new(topics)),
             questions_cache: Arc::new(RwLock::new(questions_cache)),
+            progress: Arc::new(RwLock::new(progress)),
+            quiz_sessions_index: Arc::new(RwLock::new(quiz_sessions_index)),
+            quiz_sessions_cache: Arc::new(RwLock::new(quiz_sessions_cache)),
             base_path,
             config,
         };
@@ -307,6 +340,153 @@ impl LazyDatabase {
     pub fn cache_stats(&self) -> (usize, usize) {
         let cache = self.questions_cache.read().expect("RwLock poisoned");
         (cache.len(), cache.cap().get())
+    }
+
+    // ==================== Progress Methods ====================
+
+    /// Load progress from file
+    fn load_progress_from_file(path: &PathBuf) -> Result<Vec<QuestionProgress>, String> {
+        let contents = fs::read_to_string(path)
+            .map_err(|e| format!("Failed to read progress file: {}", e))?;
+
+        let container: ProgressContainer = serde_json::from_str(&contents)
+            .map_err(|e| format!("Failed to parse progress JSON: {}", e))?;
+
+        Ok(container.progress)
+    }
+
+    /// Load quiz sessions index from file
+    fn load_quiz_sessions_index_from_file(path: &PathBuf) -> Result<QuizSessionsIndex, String> {
+        let contents = fs::read_to_string(path)
+            .map_err(|e| format!("Failed to read quiz sessions index: {}", e))?;
+
+        let index: QuizSessionsIndex = serde_json::from_str(&contents)
+            .map_err(|e| format!("Failed to parse quiz sessions index JSON: {}", e))?;
+
+        Ok(index)
+    }
+
+    /// Get read access to progress
+    pub fn read_progress(&self) -> RwLockReadGuard<'_, Vec<QuestionProgress>> {
+        self.progress.read().expect("RwLock poisoned")
+    }
+
+    /// Get write access to progress
+    pub fn write_progress(&self) -> RwLockWriteGuard<'_, Vec<QuestionProgress>> {
+        self.progress.write().expect("RwLock poisoned")
+    }
+
+    /// Save progress to file
+    pub fn save_progress(&self) -> Result<(), String> {
+        let progress = self.read_progress();
+        let container = ProgressContainer {
+            version: "2.1".to_string(),
+            progress: progress.clone(),
+        };
+
+        let json = serde_json::to_string_pretty(&container)
+            .map_err(|e| format!("Failed to serialize progress: {}", e))?;
+
+        let progress_path = self.base_path.join("progress.json");
+        fs::write(&progress_path, json)
+            .map_err(|e| format!("Failed to write progress file: {}", e))?;
+
+        Ok(())
+    }
+
+    // ==================== Quiz Session Methods ====================
+
+    /// Get read access to quiz sessions index
+    pub fn read_quiz_sessions_index(&self) -> RwLockReadGuard<'_, QuizSessionsIndex> {
+        self.quiz_sessions_index.read().expect("RwLock poisoned")
+    }
+
+    /// Get write access to quiz sessions index
+    fn write_quiz_sessions_index(&self) -> RwLockWriteGuard<'_, QuizSessionsIndex> {
+        self.quiz_sessions_index.write().expect("RwLock poisoned")
+    }
+
+    /// Load a quiz session from file (with caching)
+    pub fn get_quiz_session(&self, session_id: &str) -> Result<Option<QuizSession>, String> {
+        // Check cache first
+        {
+            let mut cache = self.quiz_sessions_cache.write().expect("RwLock poisoned");
+            if let Some(session) = cache.get(session_id) {
+                return Ok(Some(session.clone()));
+            }
+        }
+
+        // Load from file
+        let session_path = self.base_path
+            .join("quiz_sessions")
+            .join(format!("{}.json", session_id));
+
+        if !session_path.exists() {
+            return Ok(None);
+        }
+
+        let contents = fs::read_to_string(&session_path)
+            .map_err(|e| format!("Failed to read quiz session {}: {}", session_id, e))?;
+
+        let session: QuizSession = serde_json::from_str(&contents)
+            .map_err(|e| format!("Failed to parse quiz session JSON: {}", e))?;
+
+        // Add to cache
+        {
+            let mut cache = self.quiz_sessions_cache.write().expect("RwLock poisoned");
+            cache.put(session_id.to_string(), session.clone());
+        }
+
+        Ok(Some(session))
+    }
+
+    /// Save a quiz session to file
+    pub fn save_quiz_session(&self, session: &QuizSession) -> Result<(), String> {
+        let json = serde_json::to_string_pretty(session)
+            .map_err(|e| format!("Failed to serialize quiz session: {}", e))?;
+
+        let session_path = self.base_path
+            .join("quiz_sessions")
+            .join(format!("{}.json", session.id));
+
+        fs::write(&session_path, json)
+            .map_err(|e| format!("Failed to write quiz session file: {}", e))?;
+
+        // Update cache
+        {
+            let mut cache = self.quiz_sessions_cache.write().expect("RwLock poisoned");
+            cache.put(session.id.clone(), session.clone());
+        }
+
+        Ok(())
+    }
+
+    /// Add a quiz session to the index
+    pub fn add_quiz_session_to_index(&self, session_id: &str) -> Result<(), String> {
+        let mut index = self.write_quiz_sessions_index();
+
+        if !index.session_ids.contains(&session_id.to_string()) {
+            index.session_ids.push(session_id.to_string());
+            index.total_sessions = index.session_ids.len();
+        }
+
+        drop(index);
+
+        // Save index
+        self.save_quiz_sessions_index()
+    }
+
+    /// Save quiz sessions index to file
+    fn save_quiz_sessions_index(&self) -> Result<(), String> {
+        let index = self.read_quiz_sessions_index();
+        let json = serde_json::to_string_pretty(&*index)
+            .map_err(|e| format!("Failed to serialize quiz sessions index: {}", e))?;
+
+        let index_path = self.base_path.join("quiz_sessions").join("index.json");
+        fs::write(&index_path, json)
+            .map_err(|e| format!("Failed to write quiz sessions index: {}", e))?;
+
+        Ok(())
     }
 }
 
