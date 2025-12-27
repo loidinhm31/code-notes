@@ -8,7 +8,7 @@ export const ImportPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <Link to="/" className="inline-flex items-center gap-2 clay-button">
+          <Link to="/" className="inline-flex items-center gap-2">
             <ArrowLeft size={20} />
             Back to Topics
           </Link>

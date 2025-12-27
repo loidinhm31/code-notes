@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import type { ProgressStatus } from "@/types";
+import { Badge } from "@/components/ui/badge";
 
 interface ProgressBadgeProps {
   status: ProgressStatus;
@@ -41,24 +42,20 @@ export const ProgressBadge = ({
   const config = STATUS_CONFIG[status];
 
   return (
-    <div
-      className={`inline-flex items-center gap-2 ${compact ? "px-2 py-1" : "px-3 py-1.5"}`}
+    <Badge
+      variant="status"
+      size={compact ? "compact" : "default"}
       style={{
         backgroundColor: config.bgColor,
-        border: `2px solid ${config.color}`,
-        borderRadius: "var(--radius-md)",
+        borderColor: config.color,
+        color: config.color,
       }}
     >
       <div
         className="w-2 h-2 rounded-full"
         style={{ backgroundColor: config.color }}
       />
-      <span
-        className={`font-medium ${compact ? "text-xs" : "text-sm"}`}
-        style={{ color: config.color }}
-      >
-        {config.label}
-      </span>
+      <span className="font-medium">{config.label}</span>
       {confidenceLevel !== undefined && confidenceLevel > 0 && (
         <div className="flex items-center gap-0.5">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -73,6 +70,6 @@ export const ProgressBadge = ({
           ))}
         </div>
       )}
-    </div>
+    </Badge>
   );
 };

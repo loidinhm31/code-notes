@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ConfidenceRatingProps {
   value: number; // 0-5
@@ -34,26 +35,15 @@ export const ConfidenceRating = ({
         const isFilled = rating <= value;
 
         return (
-          <button
+          <Button
             key={i}
+            variant="ghost"
+            size="icon"
             onClick={() => handleClick(rating)}
             disabled={readonly}
-            className={`transition-all duration-200 ${
-              !readonly ? "cursor-pointer hover:scale-110" : "cursor-default"
+            className={`p-1 h-auto border-0 shadow-none ${
+              !readonly ? "hover:scale-110" : ""
             }`}
-            style={{
-              opacity: readonly ? 1 : 0.8,
-            }}
-            onMouseEnter={(e) => {
-              if (!readonly) {
-                e.currentTarget.style.opacity = "1";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!readonly) {
-                e.currentTarget.style.opacity = "0.8";
-              }
-            }}
             aria-label={`${rating} star${rating > 1 ? "s" : ""}`}
           >
             <Star
@@ -66,14 +56,11 @@ export const ConfidenceRating = ({
                 transition: "all 0.2s",
               }}
             />
-          </button>
+          </Button>
         );
       })}
       {value > 0 && (
-        <span
-          className="ml-2 text-sm font-medium"
-          style={{ color: "var(--color-text-secondary)" }}
-        >
+        <span className="ml-2 text-sm font-medium text-[var(--color-text-secondary)]">
           {value}/5
         </span>
       )}

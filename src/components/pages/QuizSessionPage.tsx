@@ -12,6 +12,7 @@ import {
   Flag,
   ArrowLeft,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const QuizSessionPage = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -113,7 +114,7 @@ export const QuizSessionPage = () => {
           >
             No active quiz session
           </p>
-          <button
+          <Button
             onClick={() => navigate("/quiz")}
             className="clay-card px-6 py-3"
             style={{
@@ -122,7 +123,7 @@ export const QuizSessionPage = () => {
             }}
           >
             Start a New Quiz
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -133,10 +134,7 @@ export const QuizSessionPage = () => {
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-      <Link
-        to="/quiz"
-        className="inline-flex items-center gap-2 text-sm mb-6 clay-button"
-      >
+      <Link to="/quiz" className="inline-flex items-center gap-2 text-sm mb-6 ">
         <ArrowLeft className="w-4 h-4" />
         Back to Quiz Setup
       </Link>
@@ -186,8 +184,9 @@ export const QuizSessionPage = () => {
         </div>
 
         {/* Show/Hide Answer Button */}
-        <button
+        <Button
           onClick={() => setShowAnswer(!showAnswer)}
+          variant="ghost"
           className="flex items-center gap-2 px-4 py-2 mb-4 clay-card transition-all duration-200"
           style={{
             backgroundColor: showAnswer
@@ -207,7 +206,7 @@ export const QuizSessionPage = () => {
               Show Answer
             </>
           )}
-        </button>
+        </Button>
 
         {/* Answer */}
         {showAnswer && (
@@ -235,8 +234,9 @@ export const QuizSessionPage = () => {
 
           {/* Correct/Incorrect */}
           <div className="flex gap-4 mb-6">
-            <button
+            <Button
               onClick={() => setWasCorrect(true)}
+              variant="ghost"
               className={`flex-1 flex items-center justify-center gap-2 p-4 clay-card transition-all duration-200 ${
                 wasCorrect === true ? "ring-4" : ""
               }`}
@@ -256,9 +256,10 @@ export const QuizSessionPage = () => {
             >
               <CheckCircle className="w-6 h-6" />
               <span className="font-bold">Correct</span>
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setWasCorrect(false)}
+              variant="ghost"
               className={`flex-1 flex items-center justify-center gap-2 p-4 clay-card transition-all duration-200 ${
                 wasCorrect === false ? "ring-4" : ""
               }`}
@@ -278,7 +279,7 @@ export const QuizSessionPage = () => {
             >
               <XCircle className="w-6 h-6" />
               <span className="font-bold">Incorrect</span>
-            </button>
+            </Button>
           </div>
 
           {/* Confidence Rating */}
@@ -301,9 +302,10 @@ export const QuizSessionPage = () => {
       {/* Navigation */}
       <div className="flex justify-between items-center">
         {isLastQuestion ? (
-          <button
+          <Button
             onClick={handleComplete}
             disabled={!canSubmit}
+            variant="ghost"
             className="flex items-center gap-2 px-6 py-3 clay-card transition-all duration-200"
             style={{
               backgroundColor: canSubmit
@@ -316,11 +318,12 @@ export const QuizSessionPage = () => {
           >
             <Flag className="w-5 h-5" />
             Finish Quiz
-          </button>
+          </Button>
         ) : (
-          <button
+          <Button
             onClick={handleSubmit}
             disabled={!canSubmit}
+            variant="ghost"
             className="flex items-center gap-2 px-6 py-3 clay-card transition-all duration-200"
             style={{
               backgroundColor: canSubmit
@@ -333,7 +336,7 @@ export const QuizSessionPage = () => {
           >
             Next Question
             <ChevronRight className="w-5 h-5" />
-          </button>
+          </Button>
         )}
       </div>
     </div>

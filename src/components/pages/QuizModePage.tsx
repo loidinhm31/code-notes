@@ -11,6 +11,7 @@ import {
   BookOpen,
   ArrowLeft,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const QuizModePage = () => {
   const navigate = useNavigate();
@@ -100,10 +101,7 @@ export const QuizModePage = () => {
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-sm mb-4 clay-button"
-        >
+        <Link to="/" className="inline-flex items-center gap-2 text-sm mb-4 ">
           <ArrowLeft className="w-4 h-4" />
           Back to Topics
         </Link>
@@ -133,10 +131,11 @@ export const QuizModePage = () => {
             const Icon = type.icon;
             const isSelected = sessionType === type.type;
             return (
-              <button
+              <Button
                 key={type.type}
                 onClick={() => setSessionType(type.type)}
-                className="clay-card p-4 text-left transition-all duration-200"
+                variant="ghost"
+                className="clay-card p-4 text-left transition-all duration-200 h-auto justify-start"
                 style={{
                   backgroundColor: isSelected
                     ? "var(--color-primary)"
@@ -175,7 +174,7 @@ export const QuizModePage = () => {
                     </p>
                   </div>
                 </div>
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -249,9 +248,10 @@ export const QuizModePage = () => {
               (level) => {
                 const isSelected = difficulty === level;
                 return (
-                  <button
+                  <Button
                     key={level}
                     onClick={() => setDifficulty(level)}
+                    variant="ghost"
                     className="clay-card p-4 transition-all duration-200"
                     style={{
                       backgroundColor: isSelected
@@ -271,7 +271,7 @@ export const QuizModePage = () => {
                     >
                       {level}
                     </span>
-                  </button>
+                  </Button>
                 );
               },
             )}
@@ -308,10 +308,11 @@ export const QuizModePage = () => {
       </div>
 
       {/* Start Button */}
-      <button
+      <Button
         onClick={handleStartQuiz}
         disabled={isStartDisabled}
-        className="w-full clay-card p-6 flex items-center justify-center gap-3 transition-all duration-200"
+        variant="ghost"
+        className="w-full clay-card p-6 flex items-center justify-center gap-3 transition-all duration-200 h-auto"
         style={{
           backgroundColor: isStartDisabled
             ? "var(--color-bg-muted)"
@@ -324,7 +325,7 @@ export const QuizModePage = () => {
         <span className="text-xl font-bold text-white">
           {quizLoading ? "Starting Quiz..." : "Start Quiz"}
         </span>
-      </button>
+      </Button>
     </div>
   );
 };

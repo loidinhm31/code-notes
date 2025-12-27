@@ -1,6 +1,10 @@
 import { useState, FormEvent } from "react";
 import { useStore } from "@/store";
 import type { CreateTopicDto, UpdateTopicDto, Topic } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface TopicFormProps {
   topic?: Topic;
@@ -96,37 +100,24 @@ export const TopicForm = ({ topic, onSuccess, onCancel }: TopicFormProps) => {
       )}
 
       <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-semibold mb-2"
-          style={{ color: "var(--color-text-primary)" }}
-        >
-          Name *
-        </label>
-        <input
+        <Label htmlFor="name">Name *</Label>
+        <Input
           type="text"
           id="name"
           value={formData.name}
           onChange={(e) => handleChange("name", e.target.value)}
-          className="clay-input w-full"
           required
           placeholder="e.g., Java & Core Programming"
         />
       </div>
 
       <div>
-        <label
-          htmlFor="description"
-          className="block text-sm font-semibold mb-2"
-          style={{ color: "var(--color-text-primary)" }}
-        >
-          Description *
-        </label>
-        <textarea
+        <Label htmlFor="description">Description *</Label>
+        <Textarea
           id="description"
           value={formData.description}
           onChange={(e) => handleChange("description", e.target.value)}
-          className="clay-input w-full min-h-[100px]"
+          className="min-h-[100px]"
           required
           placeholder="Brief description of this topic"
         />
@@ -134,50 +125,32 @@ export const TopicForm = ({ topic, onSuccess, onCancel }: TopicFormProps) => {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label
-            htmlFor="icon"
-            className="block text-sm font-semibold mb-2"
-            style={{ color: "var(--color-text-primary)" }}
-          >
-            Icon / Emoji
-          </label>
-          <input
+          <Label htmlFor="icon">Icon / Emoji</Label>
+          <Input
             type="text"
             id="icon"
             value={formData.icon}
             onChange={(e) => handleChange("icon", e.target.value)}
-            className="clay-input w-full"
             placeholder="☕ or text"
             maxLength={2}
           />
         </div>
 
         <div>
-          <label
-            htmlFor="color"
-            className="block text-sm font-semibold mb-2"
-            style={{ color: "var(--color-text-primary)" }}
-          >
-            Color
-          </label>
+          <Label htmlFor="color">Color</Label>
           <div className="flex gap-2">
             <input
               type="color"
               id="color"
               value={formData.color}
               onChange={(e) => handleChange("color", e.target.value)}
-              className="w-14 h-12 cursor-pointer"
-              style={{
-                borderRadius: "var(--radius-md)",
-                border: "3px solid var(--color-border)",
-                boxShadow: "var(--shadow-clay-sm)",
-              }}
+              className="w-14 h-12 cursor-pointer rounded-[var(--radius-md)] border-[3px] border-[var(--color-border)] shadow-[var(--shadow-clay-sm)]"
             />
-            <input
+            <Input
               type="text"
               value={formData.color}
               onChange={(e) => handleChange("color", e.target.value)}
-              className="clay-input flex-1"
+              className="flex-1"
               placeholder="#3b82f6"
             />
           </div>
@@ -185,91 +158,47 @@ export const TopicForm = ({ topic, onSuccess, onCancel }: TopicFormProps) => {
       </div>
 
       <div>
-        <label
-          htmlFor="slug"
-          className="block text-sm font-semibold mb-2"
-          style={{ color: "var(--color-text-primary)" }}
-        >
-          Slug (URL-friendly name)
-        </label>
-        <input
+        <Label htmlFor="slug">Slug (URL-friendly name)</Label>
+        <Input
           type="text"
           id="slug"
           value={formData.slug}
           onChange={(e) => handleChange("slug", e.target.value)}
-          className="clay-input w-full"
           placeholder="Auto-generated from name"
         />
       </div>
 
       <div>
-        <label
-          htmlFor="subtopics"
-          className="block text-sm font-semibold mb-2"
-          style={{ color: "var(--color-text-primary)" }}
-        >
-          Subtopics (comma-separated)
-        </label>
-        <input
+        <Label htmlFor="subtopics">Subtopics (comma-separated)</Label>
+        <Input
           type="text"
           id="subtopics"
           value={formData.subtopics}
           onChange={(e) => handleChange("subtopics", e.target.value)}
-          className="clay-input w-full"
           placeholder="e.g., Fundamentals, Advanced, Design Patterns"
         />
       </div>
 
       <div>
-        <label
-          htmlFor="order"
-          className="block text-sm font-semibold mb-2"
-          style={{ color: "var(--color-text-primary)" }}
-        >
-          Sort Order
-        </label>
-        <input
+        <Label htmlFor="order">Sort Order</Label>
+        <Input
           type="number"
           id="order"
           value={formData.order}
           onChange={(e) => handleChange("order", parseInt(e.target.value))}
-          className="clay-input w-full"
           min="0"
         />
       </div>
 
       <div className="flex justify-end gap-3 pt-6">
         {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-6 py-3 font-semibold transition-all duration-200"
-            style={{
-              backgroundColor: "var(--color-bg-muted)",
-              color: "var(--color-text-muted)",
-              borderRadius: "var(--radius-md)",
-              border: "2px solid var(--color-border-light)",
-              boxShadow: "var(--shadow-clay-sm)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--color-secondary)";
-              e.currentTarget.style.color = "var(--color-text-primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--color-bg-muted)";
-              e.currentTarget.style.color = "var(--color-text-muted)";
-            }}
-          >
+          <Button type="button" variant="ghost" onClick={onCancel}>
             Cancel
-          </button>
+          </Button>
         )}
-        <button
-          type="submit"
-          disabled={loading}
-          className="clay-button disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <Button type="submit" disabled={loading}>
           {loading ? "Saving..." : topic ? "Update Topic" : "Create Topic"}
-        </button>
+        </Button>
       </div>
     </form>
   );

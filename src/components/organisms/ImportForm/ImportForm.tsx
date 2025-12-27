@@ -6,6 +6,7 @@ import {
 } from "@/services/tauri/import.service.ts";
 import { useStore } from "@/store";
 import { readTextFile } from "@tauri-apps/plugin-fs";
+import { Button } from "@/components/ui/button";
 
 export const ImportForm: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<string>("");
@@ -192,40 +193,34 @@ export const ImportForm: React.FC = () => {
                   onChange={handleFileInputChange}
                   className="hidden"
                 />
-                <button
+                <Button
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors"
+                  variant="secondary"
                 >
                   Browse
-                </button>
+                </Button>
               </>
             ) : (
-              <button
-                onClick={handleSelectFile}
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors"
-              >
+              <Button onClick={handleSelectFile} variant="secondary">
                 Browse
-              </button>
+              </Button>
             )}
           </div>
         </div>
 
         <div className="flex gap-2">
-          <button
+          <Button
             onClick={handleImport}
             disabled={!selectedFile || importing}
-            className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md transition-colors"
+            variant="accent"
+            className="flex-1"
           >
             {importing ? "Importing..." : "Import"}
-          </button>
+          </Button>
           {selectedFile && (
-            <button
-              onClick={handleReset}
-              disabled={importing}
-              className="px-4 py-2 bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md transition-colors"
-            >
+            <Button onClick={handleReset} disabled={importing} variant="ghost">
               Reset
-            </button>
+            </Button>
           )}
         </div>
       </div>

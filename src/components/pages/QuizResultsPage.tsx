@@ -12,6 +12,7 @@ import {
   Star,
   ArrowLeft,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const QuizResultsPage = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -43,7 +44,7 @@ export const QuizResultsPage = () => {
           >
             Quiz not found
           </p>
-          <button
+          <Button
             onClick={() => navigate("/quiz")}
             className="clay-card px-6 py-3"
             style={{
@@ -52,7 +53,7 @@ export const QuizResultsPage = () => {
             }}
           >
             Start a New Quiz
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -75,10 +76,7 @@ export const QuizResultsPage = () => {
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-      <Link
-        to="/"
-        className="inline-flex items-center gap-2 text-sm mb-6 clay-button"
-      >
+      <Link to="/" className="inline-flex items-center gap-2 text-sm mb-6 ">
         <ArrowLeft className="w-4 h-4" />
         Back to Topics
       </Link>
@@ -281,9 +279,9 @@ export const QuizResultsPage = () => {
 
       {/* Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <button
+        <Button
           onClick={() => navigate("/quiz")}
-          className="clay-card p-4 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105"
+          className="clay-card p-4 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 h-auto"
           style={{
             backgroundColor: "var(--color-primary)",
             color: "white",
@@ -291,10 +289,10 @@ export const QuizResultsPage = () => {
         >
           <Target className="w-5 h-5" />
           Start New Quiz
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => navigate("/progress")}
-          className="clay-card p-4 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105"
+          className="clay-card p-4 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 h-auto"
           style={{
             backgroundColor: "var(--color-accent)",
             color: "white",
@@ -302,7 +300,7 @@ export const QuizResultsPage = () => {
         >
           <TrendingUp className="w-5 h-5" />
           View Progress
-        </button>
+        </Button>
       </div>
     </div>
   );

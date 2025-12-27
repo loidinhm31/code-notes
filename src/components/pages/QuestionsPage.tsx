@@ -4,6 +4,15 @@ import { useStore } from "@/store";
 import { ArrowLeft, Plus } from "lucide-react";
 import { Modal } from "@/components/molecules/Modal/Modal";
 import { QuestionForm } from "@/components/organisms/QuestionForm/QuestionForm";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const QuestionsPage = () => {
   const { topicId } = useParams<{ topicId: string }>();
@@ -80,10 +89,7 @@ export const QuestionsPage = () => {
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-sm mb-4 clay-button"
-        >
+        <Link to="/" className="inline-flex items-center gap-2 text-sm mb-4 ">
           <ArrowLeft className="w-4 h-4" />
           Back to Topics
         </Link>
@@ -102,13 +108,13 @@ export const QuestionsPage = () => {
             )}
           </div>
           {topicId && (
-            <button
+            <Button
               onClick={() => setShowCreateModal(true)}
-              className="clay-button flex items-center gap-2"
+              className="flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
               <span className="hidden sm:inline">Add Question</span>
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -118,7 +124,7 @@ export const QuestionsPage = () => {
         <div className="space-y-3">
           {/* Search Input */}
           <div className="relative">
-            <input
+            <Input
               type="text"
               placeholder="Search questions..."
               value={searchInput}
@@ -141,45 +147,41 @@ export const QuestionsPage = () => {
                   handleClearSearch();
                 }
               }}
-              className="clay-input w-full"
+              className="w-full"
             />
           </div>
 
           {/* Filters Row */}
           <div className="flex gap-2 flex-wrap items-center">
             {/* Tag Filter */}
-            <select
+            <Select
               value=""
-              onChange={(e) => {
-                if (e.target.value && !selectedTags.includes(e.target.value)) {
-                  setSelectedTags([...selectedTags, e.target.value]);
+              onValueChange={(value) => {
+                if (value && !selectedTags.includes(value)) {
+                  setSelectedTags([...selectedTags, value]);
                 }
               }}
-              className="clay-input text-sm"
             >
-              <option value="">Add tag filter...</option>
-              {getAvailableTags().map((tag) => (
-                <option key={tag} value={tag}>
-                  {tag}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="w-[180px] text-sm">
+                <SelectValue placeholder="Add tag filter..." />
+              </SelectTrigger>
+              <SelectContent>
+                {getAvailableTags().map((tag) => (
+                  <SelectItem key={tag} value={tag}>
+                    {tag}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             {/* Search/Clear Buttons */}
-            <button
-              onClick={handleSearch}
-              className="clay-button text-sm px-4 py-2"
-            >
+            <Button onClick={handleSearch} size="sm">
               Search
-            </button>
+            </Button>
             {(searchInput || selectedTags.length > 0) && (
-              <button
-                onClick={handleClearSearch}
-                className="text-sm"
-                style={{ color: "var(--color-text-muted)" }}
-              >
+              <Button onClick={handleClearSearch} variant="ghost" size="sm">
                 Clear All
-              </button>
+              </Button>
             )}
           </div>
 
@@ -189,14 +191,16 @@ export const QuestionsPage = () => {
               {selectedTags.map((tag) => (
                 <span key={tag} className="clay-badge flex items-center gap-1">
                   {tag}
-                  <button
+                  <Button
                     onClick={() =>
                       setSelectedTags(selectedTags.filter((t) => t !== tag))
                     }
-                    className="ml-1 font-bold"
+                    variant="ghost"
+                    size="icon"
+                    className="ml-1 h-auto w-auto p-0 hover:bg-transparent border-0 shadow-none"
                   >
                     ×
-                  </button>
+                  </Button>
                 </span>
               ))}
             </div>
@@ -227,12 +231,9 @@ export const QuestionsPage = () => {
                 : "No questions yet. Create your first question!"}
             </p>
             {!searchFilters && (
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="clay-button"
-              >
+              <Button onClick={() => setShowCreateModal(true)}>
                 Create Question
-              </button>
+              </Button>
             )}
           </div>
         ) : (

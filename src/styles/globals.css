@@ -2,41 +2,44 @@
 @import "tailwindcss";
 
 :root {
-  /* Playful Educational Color Palette - Claymorphism Style */
-  --color-primary: #0d9488;
-  --color-primary-light: #14b8a6;
-  --color-primary-dark: #0f766e;
+  /* Tech Learning Aesthetic - Icon-Aligned Color Palette */
+  /* Primary - Navy Blue (from icon) */
+  --color-primary: #1e40af;
+  --color-primary-light: #3b82f6;
+  --color-primary-dark: #1e3a8a;
 
-  --color-secondary: #2dd4bf;
-  --color-secondary-light: #5eead4;
-  --color-secondary-dark: #14b8a6;
+  /* Secondary - Light Blue/Cyan (from icon) */
+  --color-secondary: #60a5fa;
+  --color-secondary-light: #93c5fd;
+  --color-secondary-dark: #3b82f6;
 
-  --color-accent: #ea580c;
-  --color-accent-light: #f97316;
-  --color-accent-dark: #c2410c;
+  /* Accent - Orange (from icon) */
+  --color-accent: #f97316;
+  --color-accent-light: #fb923c;
+  --color-accent-dark: #ea580c;
 
-  /* Pastel Claymorphism Colors */
-  --color-peach: #fdbcb4;
-  --color-lavender: #e6e6fa;
-  --color-mint: #98ff98;
-  --color-sky: #add8e6;
-  --color-lilac: #dda0dd;
+  /* Pastel Colors - Updated to complement navy/blue/orange */
+  --color-peach: #fed7aa;
+  --color-lavender: #c7d2fe;
+  --color-mint: #a7f3d0;
+  --color-sky: #bae6fd;
+  --color-lilac: #ddd6fe;
 
   /* Background Colors */
-  --color-bg-base: #f0fdfa;
+  --color-bg-base: #f8fafc;
   --color-bg-card: #ffffff;
-  --color-bg-muted: #f5f5f5;
+  --color-bg-muted: #f1f5f9;
 
-  /* Text Colors */
-  --color-text-primary: #134e4a;
-  --color-text-secondary: #0f766e;
+  /* Text Colors - Navy based */
+  --color-text-primary: #1e3a8a;
+  --color-text-secondary: #1e40af;
   --color-text-muted: #64748b;
 
-  /* Border & Shadow */
-  --color-border: #5eead4;
-  --color-border-light: #99f6e4;
+  /* Border & Shadow - Light blue from icon */
+  --color-border: #93c5fd;
+  --color-border-light: #bfdbfe;
 
-  /* Dark Mode */
+  /* Dark Mode (legacy - will be replaced with :root.dark) */
   --color-dark-bg: #0f172a;
   --color-dark-card: #1e293b;
   --color-dark-text: #f1f5f9;
@@ -51,18 +54,116 @@
   --font-heading: "Fredoka", sans-serif;
   --font-body: "Nunito", sans-serif;
 
-  /* Shadows - Claymorphism Double Shadows */
+  /* Shadows - Claymorphism with Navy Blue Tints */
   --shadow-clay-sm:
-    4px 4px 8px rgba(0, 0, 0, 0.1), -2px -2px 6px rgba(255, 255, 255, 0.8);
+    4px 4px 8px rgba(30, 58, 138, 0.08), -2px -2px 6px rgba(255, 255, 255, 0.8);
 
   --shadow-clay-md:
-    6px 6px 12px rgba(0, 0, 0, 0.12), -3px -3px 8px rgba(255, 255, 255, 0.9);
+    6px 6px 12px rgba(30, 58, 138, 0.1), -3px -3px 8px rgba(255, 255, 255, 0.9);
 
   --shadow-clay-lg:
-    8px 8px 16px rgba(0, 0, 0, 0.15), -4px -4px 10px rgba(255, 255, 255, 0.95);
+    8px 8px 16px rgba(30, 58, 138, 0.12),
+    -4px -4px 10px rgba(255, 255, 255, 0.95);
 
   --shadow-clay-hover:
-    10px 10px 20px rgba(0, 0, 0, 0.18), -5px -5px 12px rgba(255, 255, 255, 1);
+    10px 10px 20px rgba(30, 58, 138, 0.15),
+    -5px -5px 12px rgba(255, 255, 255, 1);
+
+  /* shadcn/ui theme tokens - mapped to existing claymorphism variables */
+  --background: var(--color-bg-base);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-bg-card);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-bg-card);
+  --popover-foreground: var(--color-text-primary);
+  --primary: var(--color-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-primary-dark);
+  --accent: var(--color-accent);
+  --accent-foreground: #ffffff;
+  --destructive: var(--color-accent);
+  --destructive-foreground: #ffffff;
+  --muted: var(--color-bg-muted);
+  --muted-foreground: var(--color-text-muted);
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-primary);
+  --radius: var(--radius-md);
+}
+
+/* Dark Mode Theme */
+:root.dark {
+  /* Primary - Brighter navy for dark mode */
+  --color-primary: #3b82f6;
+  --color-primary-light: #60a5fa;
+  --color-primary-dark: #2563eb;
+
+  /* Secondary - Bright cyan */
+  --color-secondary: #7dd3fc;
+  --color-secondary-light: #a5f3fc;
+  --color-secondary-dark: #38bdf8;
+
+  /* Accent - Bright orange */
+  --color-accent: #fb923c;
+  --color-accent-light: #fdba74;
+  --color-accent-dark: #f97316;
+
+  /* Pastel Colors - Brighter for dark mode */
+  --color-peach: #fdba74;
+  --color-lavender: #a5b4fc;
+  --color-mint: #6ee7b7;
+  --color-sky: #7dd3fc;
+  --color-lilac: #c4b5fd;
+
+  /* Dark backgrounds */
+  --color-bg-base: #0f172a;
+  --color-bg-card: #1e293b;
+  --color-bg-muted: #334155;
+
+  /* Text - Light colors */
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+
+  /* Borders - Bright blue */
+  --color-border: #3b82f6;
+  --color-border-light: #60a5fa;
+
+  /* Dark mode shadows with glow effect */
+  --shadow-clay-sm:
+    0 4px 8px rgba(0, 0, 0, 0.3), 0 0 4px rgba(59, 130, 246, 0.1);
+
+  --shadow-clay-md:
+    0 6px 12px rgba(0, 0, 0, 0.4), 0 0 6px rgba(59, 130, 246, 0.15);
+
+  --shadow-clay-lg:
+    0 8px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(59, 130, 246, 0.2);
+
+  --shadow-clay-hover:
+    0 10px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(59, 130, 246, 0.3);
+
+  /* shadcn/ui theme tokens - dark mode */
+  --background: var(--color-bg-base);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-bg-card);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-bg-card);
+  --popover-foreground: var(--color-text-primary);
+  --primary: var(--color-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-primary-dark);
+  --accent: var(--color-accent);
+  --accent-foreground: #ffffff;
+  --destructive: var(--color-accent);
+  --destructive-foreground: #ffffff;
+  --muted: var(--color-bg-muted);
+  --muted-foreground: var(--color-text-muted);
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-primary);
+  --radius: var(--radius-md);
 }
 
 @layer base {
@@ -143,6 +244,89 @@
   .safe-bottom-margin {
     margin-bottom: env(safe-area-inset-bottom);
   }
+
+  /* Circuit Board Pattern Backgrounds - Tech Aesthetic */
+  .circuit-pattern-light {
+    background-color: var(--color-bg-base);
+    background-image:
+      /* Horizontal lines */
+      linear-gradient(90deg, rgba(96, 165, 250, 0.08) 1px, transparent 1px),
+      /* Vertical lines */
+        linear-gradient(rgba(96, 165, 250, 0.08) 1px, transparent 1px),
+      /* Diagonal accent lines */
+        linear-gradient(45deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
+    background-size:
+      60px 60px,
+      60px 60px,
+      40px 40px;
+    background-position:
+      0 0,
+      0 0,
+      0 0;
+  }
+
+  .circuit-pattern-dark {
+    background-color: var(--color-bg-base);
+    background-image:
+      linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+      linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+      linear-gradient(45deg, rgba(251, 146, 60, 0.05) 1px, transparent 1px);
+    background-size:
+      60px 60px,
+      60px 60px,
+      40px 40px;
+    background-position:
+      0 0,
+      0 0,
+      0 0;
+  }
+
+  /* Circuit nodes (decorative dots at intersections) */
+  .circuit-nodes {
+    position: relative;
+  }
+
+  .circuit-nodes::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+      circle at 0 0,
+      var(--color-secondary) 2px,
+      transparent 2px
+    );
+    background-size: 60px 60px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Subtle circuit accent for cards */
+  .circuit-accent {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .circuit-accent::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 100px;
+    height: 100px;
+    background-image:
+      radial-gradient(circle, var(--color-secondary) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-accent) 1px, transparent 1px),
+      linear-gradient(var(--color-primary-light) 1px, transparent 1px);
+    background-size:
+      20px 20px,
+      60px 60px,
+      60px 60px;
+    opacity: 0.12;
+    pointer-events: none;
+    border-radius: var(--radius-lg);
+    z-index: 0;
+  }
 }
 
 /* Claymorphism Card Components */
@@ -156,57 +340,9 @@
   }
 
   .clay-card:hover {
+    border-color: var(--color-secondary);
     box-shadow: var(--shadow-clay-hover);
     transform: translateY(-2px);
-  }
-
-  .clay-button {
-    background: var(--color-primary);
-    color: white;
-    border-radius: var(--radius-md);
-    border: 3px solid var(--color-primary-dark);
-    box-shadow: var(--shadow-clay-sm);
-    padding: 0.75rem 1.5rem;
-    font-family: var(--font-heading);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 200ms ease-out;
-  }
-
-  .clay-button:hover {
-    background: var(--color-primary-light);
-    box-shadow: var(--shadow-clay-md);
-    transform: translateY(-1px);
-  }
-
-  .clay-button:active {
-    transform: translateY(1px);
-    box-shadow: var(--shadow-clay-sm);
-  }
-
-  .clay-button-accent {
-    background: var(--color-accent);
-    border-color: var(--color-accent-dark);
-  }
-
-  .clay-button-accent:hover {
-    background: var(--color-accent-light);
-  }
-
-  .clay-input {
-    background: white;
-    border: 3px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: 0.75rem 1rem;
-    color: var(--color-text-primary);
-    box-shadow: var(--shadow-clay-sm);
-    transition: all 200ms ease-out;
-  }
-
-  .clay-input:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: var(--shadow-clay-md);
   }
 
   .clay-badge {

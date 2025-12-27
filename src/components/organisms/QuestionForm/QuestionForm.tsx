@@ -1,6 +1,17 @@
 import { useState, FormEvent } from "react";
 import { useStore } from "@/store";
 import type { CreateQuestionDto, UpdateQuestionDto, Question } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface QuestionFormProps {
   question?: Question;
@@ -100,39 +111,36 @@ export const QuestionForm = ({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="topicId" className="block text-sm font-medium mb-1">
-            Topic *
-          </label>
-          <select
-            id="topicId"
+          <Label htmlFor="topicId">Topic *</Label>
+          <Select
             value={formData.topicId}
-            onChange={(e) =>
-              setFormData({ ...formData, topicId: e.target.value })
+            onValueChange={(value) =>
+              setFormData({ ...formData, topicId: value })
             }
-            className="w-full px-3 py-2 bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
             required
           >
-            <option value="">Select a topic</option>
-            {topics.map((topic) => (
-              <option key={topic.id} value={topic.id}>
-                {topic.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger id="topicId">
+              <SelectValue placeholder="Select a topic" />
+            </SelectTrigger>
+            <SelectContent>
+              {topics.map((topic) => (
+                <SelectItem key={topic.id} value={topic.id}>
+                  {topic.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div>
-          <label htmlFor="subtopic" className="block text-sm font-medium mb-1">
-            Subtopic (optional)
-          </label>
-          <input
+          <Label htmlFor="subtopic">Subtopic (optional)</Label>
+          <Input
             type="text"
             id="subtopic"
             value={formData.subtopic}
             onChange={(e) =>
               setFormData({ ...formData, subtopic: e.target.value })
             }
-            className="w-full px-3 py-2 bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="e.g., Advanced Java"
           />
         </div>
@@ -140,13 +148,8 @@ export const QuestionForm = ({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label
-            htmlFor="questionNumber"
-            className="block text-sm font-medium mb-1"
-          >
-            Question Number *
-          </label>
-          <input
+          <Label htmlFor="questionNumber">Question Number *</Label>
+          <Input
             type="number"
             id="questionNumber"
             value={formData.questionNumber}
@@ -156,73 +159,62 @@ export const QuestionForm = ({
                 questionNumber: parseInt(e.target.value),
               })
             }
-            className="w-full px-3 py-2 bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
             min="1"
             required
           />
         </div>
 
         <div>
-          <label
-            htmlFor="difficulty"
-            className="block text-sm font-medium mb-1"
-          >
-            Difficulty *
-          </label>
-          <select
-            id="difficulty"
+          <Label htmlFor="difficulty">Difficulty *</Label>
+          <Select
             value={formData.difficulty}
-            onChange={(e) =>
+            onValueChange={(value) =>
               setFormData({
                 ...formData,
-                difficulty: e.target.value as
-                  | "beginner"
-                  | "intermediate"
-                  | "advanced",
+                difficulty: value as "beginner" | "intermediate" | "advanced",
               })
             }
-            className="w-full px-3 py-2 bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
             required
           >
-            {DIFFICULTIES.map((diff) => (
-              <option key={diff} value={diff}>
-                {diff}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger id="difficulty">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {DIFFICULTIES.map((diff) => (
+                <SelectItem key={diff} value={diff}>
+                  {diff}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       <div>
-        <label htmlFor="question" className="block text-sm font-medium mb-1">
-          Question *
-        </label>
-        <textarea
+        <Label htmlFor="question">Question *</Label>
+        <Textarea
           id="question"
           value={formData.question}
           onChange={(e) =>
             setFormData({ ...formData, question: e.target.value })
           }
-          className="w-full px-3 py-2 bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring min-h-[80px]"
+          className="min-h-[80px]"
           required
           placeholder="Enter the question..."
         />
       </div>
 
       <div>
-        <label
-          htmlFor="answerMarkdown"
-          className="block text-sm font-medium mb-1"
-        >
+        <Label htmlFor="answerMarkdown">
           Answer (Markdown with code blocks) *
-        </label>
-        <textarea
+        </Label>
+        <Textarea
           id="answerMarkdown"
           value={formData.answerMarkdown}
           onChange={(e) =>
             setFormData({ ...formData, answerMarkdown: e.target.value })
           }
-          className="w-full px-3 py-2 bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring min-h-[300px] font-mono text-sm"
+          className="min-h-[300px] font-mono text-sm"
           required
           placeholder='Use **bold**, lists, etc. Add code blocks using ```language syntax:
 
@@ -241,40 +233,29 @@ public class Example {
       </div>
 
       <div>
-        <label htmlFor="tags" className="block text-sm font-medium mb-1">
-          Tags (comma-separated)
-        </label>
-        <input
+        <Label htmlFor="tags">Tags (comma-separated)</Label>
+        <Input
           type="text"
           id="tags"
           value={formData.tags}
           onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-          className="w-full px-3 py-2 bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
           placeholder="e.g., async, concurrency, multithreading"
         />
       </div>
 
       <div className="flex justify-end gap-2 pt-4 border-t">
         {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 border border-input rounded-md hover:bg-accent transition-colors"
-          >
+          <Button type="button" variant="ghost" onClick={onCancel}>
             Cancel
-          </button>
+          </Button>
         )}
-        <button
-          type="submit"
-          disabled={loading}
-          className="clay-button disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <Button type="submit" disabled={loading}>
           {loading
             ? "Saving..."
             : question
               ? "Update Question"
               : "Create Question"}
-        </button>
+        </Button>
       </div>
     </form>
   );

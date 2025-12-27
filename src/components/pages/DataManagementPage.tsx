@@ -17,6 +17,7 @@ import {
   type DatabaseStats,
 } from "@/services/tauri/dataManagement.service";
 import { useStore } from "@/store";
+import { Button } from "@/components/ui/button";
 
 export const DataManagementPage = () => {
   const [stats, setStats] = useState<DatabaseStats | null>(null);
@@ -155,10 +156,7 @@ export const DataManagementPage = () => {
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
-        <Link
-          to="/settings"
-          className="inline-flex items-center gap-2 clay-button mb-4"
-        >
+        <Link to="/settings" className="inline-flex items-center gap-2  mb-4">
           <ArrowLeft className="w-4 h-4" />
           Back to Settings
         </Link>
@@ -179,9 +177,10 @@ export const DataManagementPage = () => {
         {stats && (
           <div className="clay-card p-6 mb-6">
             <div className="flex items-start gap-4">
-              <div className="clay-icon-wrapper">
-                <Database className="w-6 h-6" />
-              </div>
+              <Database
+                className="w-6 h-6"
+                style={{ color: "var(--color-primary)" }}
+              />
               <div className="flex-1">
                 <h2 className="text-2xl font-semibold mb-4">
                   Database Statistics
@@ -238,23 +237,24 @@ export const DataManagementPage = () => {
         {/* Export */}
         <div className="clay-card p-6 mb-6">
           <div className="flex items-start gap-4">
-            <div className="clay-icon-wrapper">
-              <Download className="w-6 h-6" />
-            </div>
+            <Download
+              className="w-6 h-6"
+              style={{ color: "var(--color-primary)" }}
+            />
             <div className="flex-1">
               <h2 className="text-2xl font-semibold mb-2">Export Database</h2>
               <p className="mb-4" style={{ color: "var(--color-text-muted)" }}>
                 Create a backup of your entire database. This exports all topics
                 and questions to a JSON file.
               </p>
-              <button
+              <Button
                 onClick={handleExport}
                 disabled={loading}
-                className="clay-button clay-button-accent inline-flex items-center"
+                className="inline-flex items-center"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Export to JSON
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -262,9 +262,10 @@ export const DataManagementPage = () => {
         {/* Import */}
         <div className="clay-card p-6 mb-6">
           <div className="flex items-start gap-4">
-            <div className="clay-icon-wrapper">
-              <Upload className="w-6 h-6" />
-            </div>
+            <Upload
+              className="w-6 h-6"
+              style={{ color: "var(--color-primary)" }}
+            />
             <div className="flex-1">
               <h2 className="text-2xl font-semibold mb-2">Import Database</h2>
               <p className="mb-4" style={{ color: "var(--color-text-muted)" }}>
@@ -306,14 +307,14 @@ export const DataManagementPage = () => {
                 </div>
               </div>
 
-              <button
+              <Button
                 onClick={handleImport}
                 disabled={loading}
-                className="clay-button clay-button-accent inline-flex items-center"
+                className="inline-flex items-center"
               >
                 <Upload className="w-4 h-4 mr-2" />
                 Import from JSON
-              </button>
+              </Button>
             </div>
           </div>
         </div>
