@@ -1,5 +1,6 @@
 use crate::database::LazyDatabase;
-use crate::database::repository::LazyQuestionsRepository;
+use crate::database::repository::{LazyQuestionsRepository, QuizSessionRepository};
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::fs;
@@ -19,6 +20,8 @@ pub struct ImportResult {
     pub message: String,
     pub topics_count: usize,
     pub questions_count: usize,
+    pub progress_count: usize,
+    pub quiz_sessions_count: usize,
 }
 
 #[derive(Serialize)]
@@ -36,7 +39,35 @@ struct DatabaseV1Export {
     questions: Vec<crate::database::models::Question>,
 }
 
-/// Export database to user-selected location (v1-compatible format)
+/// Enhanced v2 export structure with progress and quiz sessions
+#[derive(Serialize, Deserialize)]
+struct DatabaseV2Export {
+    version: String,
+    exported_at: String,
+    database: DatabaseContent,
+    progress: ProgressData,
+    quiz_sessions: QuizSessionsData,
+}
+
+#[derive(Serialize, Deserialize)]
+struct DatabaseContent {
+    topics: Vec<crate::database::models::Topic>,
+    questions: Vec<crate::database::models::Question>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct ProgressData {
+    version: String,
+    data: Vec<crate::database::models::QuestionProgress>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct QuizSessionsData {
+    version: String,
+    sessions: Vec<crate::database::models::QuizSession>,
+}
+
+/// Export database to user-selected location (v2 format with progress and quiz sessions)
 #[tauri::command]
 pub async fn export_database(
     app: AppHandle,
@@ -46,14 +77,32 @@ pub async fn export_database(
 
     // Read topics and all questions
     let topics = db.read_topics();
-    let repo = LazyQuestionsRepository::new(Arc::clone(db.inner()));
-    let all_questions = repo.get_all()?;
+    let questions_repo = LazyQuestionsRepository::new(Arc::clone(db.inner()));
+    let all_questions = questions_repo.get_all()?;
 
-    // Create v1-compatible export structure
-    let export_data = DatabaseV1Export {
-        version: "1.0".to_string(),
-        topics: topics.clone(),
-        questions: all_questions,
+    // Read progress data
+    let progress = db.read_progress();
+
+    // Read all quiz sessions
+    let quiz_session_repo = QuizSessionRepository::new(Arc::clone(db.inner()));
+    let all_sessions = quiz_session_repo.get_all_sessions()?;
+
+    // Create v2 export structure with progress and quiz sessions
+    let export_data = DatabaseV2Export {
+        version: "2.1".to_string(),
+        exported_at: Utc::now().to_rfc3339(),
+        database: DatabaseContent {
+            topics: topics.clone(),
+            questions: all_questions,
+        },
+        progress: ProgressData {
+            version: "2.1".to_string(),
+            data: progress.clone(),
+        },
+        quiz_sessions: QuizSessionsData {
+            version: "2.1".to_string(),
+            sessions: all_sessions,
+        },
     };
 
     let json = serde_json::to_string_pretty(&export_data)
@@ -64,40 +113,64 @@ pub async fn export_database(
 
     Ok(ExportResult {
         success: true,
-        message: "Database exported successfully".to_string(),
+        message: "Database exported successfully (with progress and quiz sessions)".to_string(),
         exported_path: Some(export_path),
     })
 }
 
-/// Import database from user-selected file
+/// Import database from user-selected file (supports v1 and v2 formats)
 #[tauri::command]
 pub async fn import_database(
     app: AppHandle,
     import_content: String,
     merge: bool,
 ) -> Result<ImportResult, String> {
-    // Parse JSON from the provided content
-    let imported_data: DatabaseV1Export =
-        serde_json::from_str(&import_content).map_err(|e| format!("Invalid JSON format: {}", e))?;
-
-    // Validate the imported data
-    validate_database(&imported_data)?;
-
     let db = app.state::<Arc<LazyDatabase>>();
 
+    // Try to parse as v2 first, fall back to v1
+    let v2_result: Result<DatabaseV2Export, _> = serde_json::from_str(&import_content);
+
+    let (topics, questions, progress_data, quiz_sessions) = if let Ok(v2_data) = v2_result {
+        // V2 format with progress and quiz sessions
+        (
+            v2_data.database.topics,
+            v2_data.database.questions,
+            Some(v2_data.progress.data),
+            Some(v2_data.quiz_sessions.sessions),
+        )
+    } else {
+        // Try v1 format
+        let v1_data: DatabaseV1Export = serde_json::from_str(&import_content)
+            .map_err(|e| format!("Invalid JSON format (neither v1 nor v2): {}", e))?;
+
+        // Validate v1 data
+        validate_database_v1(&v1_data)?;
+
+        (v1_data.topics, v1_data.questions, None, None)
+    };
+
+    // Create v1-compatible structure for validation
+    let validation_data = DatabaseV1Export {
+        version: "1.0".to_string(),
+        topics: topics.clone(),
+        questions: questions.clone(),
+    };
+    validate_database_v1(&validation_data)?;
+
+    // Import topics and questions
     if merge {
         // Merge: Add new items, skip duplicates by ID
-        let mut topics = db.write_topics();
-        for topic in &imported_data.topics {
-            if !topics.iter().any(|t| t.id == topic.id) {
-                topics.push(topic.clone());
+        let mut db_topics = db.write_topics();
+        for topic in &topics {
+            if !db_topics.iter().any(|t| t.id == topic.id) {
+                db_topics.push(topic.clone());
             }
         }
-        drop(topics);
+        drop(db_topics);
 
         // Group imported questions by topic and merge
         let mut questions_by_topic: std::collections::HashMap<String, Vec<crate::database::models::Question>> = std::collections::HashMap::new();
-        for question in imported_data.questions {
+        for question in questions {
             questions_by_topic
                 .entry(question.topic_id.clone())
                 .or_insert_with(Vec::new)
@@ -116,18 +189,42 @@ pub async fn import_database(
         }
 
         db.save_topics()?;
+
+        // Merge progress data if available
+        if let Some(imported_progress) = progress_data {
+            let mut db_progress = db.write_progress();
+            for progress in imported_progress {
+                // Update or add progress entry
+                if let Some(existing) = db_progress.iter_mut().find(|p| p.question_id == progress.question_id) {
+                    *existing = progress;
+                } else {
+                    db_progress.push(progress);
+                }
+            }
+            drop(db_progress);
+            db.save_progress()?;
+        }
+
+        // Merge quiz sessions if available
+        if let Some(imported_sessions) = quiz_sessions {
+            for session in imported_sessions {
+                // Save each session (will update if exists)
+                db.save_quiz_session(&session)?;
+                db.add_quiz_session_to_index(&session.id)?;
+            }
+        }
     } else {
         // Replace: Overwrite entire database
         // Clear existing topics
         {
-            let mut topics = db.write_topics();
-            topics.clear();
-            topics.extend(imported_data.topics.clone());
+            let mut db_topics = db.write_topics();
+            db_topics.clear();
+            db_topics.extend(topics.clone());
         }
 
         // Group questions by topic
         let mut questions_by_topic: std::collections::HashMap<String, Vec<crate::database::models::Question>> = std::collections::HashMap::new();
-        for question in imported_data.questions {
+        for question in questions {
             questions_by_topic
                 .entry(question.topic_id.clone())
                 .or_insert_with(Vec::new)
@@ -140,24 +237,49 @@ pub async fn import_database(
         }
 
         // Create empty question files for topics with no questions
-        for topic in &imported_data.topics {
+        for topic in &topics {
             if !db.base_path().join("topics").join(&topic.id).exists() {
                 db.save_topic_questions(&topic.id, vec![])?;
             }
         }
 
         db.save_topics()?;
+
+        // Replace progress data if available
+        if let Some(imported_progress) = progress_data {
+            let mut db_progress = db.write_progress();
+            db_progress.clear();
+            db_progress.extend(imported_progress);
+            drop(db_progress);
+            db.save_progress()?;
+        }
+
+        // Replace quiz sessions if available
+        if let Some(imported_sessions) = quiz_sessions {
+            // Clear existing quiz sessions
+            db.clear_quiz_sessions()?;
+
+            // Save new sessions
+            for session in imported_sessions {
+                db.save_quiz_session(&session)?;
+                db.add_quiz_session_to_index(&session.id)?;
+            }
+        }
     }
 
     let topics_count = db.read_topics().len();
     let index = db.read_index();
     let questions_count = index.stats.total_questions;
+    let progress_count = db.read_progress().len();
+    let quiz_sessions_count = db.read_quiz_sessions_index().total_sessions;
 
     Ok(ImportResult {
         success: true,
         message: "Database imported successfully".to_string(),
         topics_count,
         questions_count,
+        progress_count,
+        quiz_sessions_count,
     })
 }
 
@@ -196,8 +318,8 @@ fn calculate_directory_size(path: &std::path::Path) -> u64 {
     total_size
 }
 
-/// Validate database data
-fn validate_database(data: &DatabaseV1Export) -> Result<(), String> {
+/// Validate database data (v1 format)
+fn validate_database_v1(data: &DatabaseV1Export) -> Result<(), String> {
     // Check all topic IDs are valid UUIDs
     for topic in &data.topics {
         uuid::Uuid::parse_str(&topic.id)
@@ -263,7 +385,7 @@ mod tests {
             }],
         };
 
-        assert!(validate_database(&data).is_ok());
+        assert!(validate_database_v1(&data).is_ok());
     }
 
     #[test]
@@ -288,6 +410,6 @@ mod tests {
             }],
         };
 
-        assert!(validate_database(&data).is_err());
+        assert!(validate_database_v1(&data).is_err());
     }
 }

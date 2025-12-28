@@ -130,6 +130,21 @@ impl QuizSessionRepository {
         Ok(sessions)
     }
 
+    /// Get all quiz sessions (for export)
+    pub fn get_all_sessions(&self) -> Result<Vec<QuizSession>, String> {
+        let index = self.db.read_quiz_sessions_index();
+        let mut sessions = Vec::new();
+
+        // Get all sessions
+        for session_id in index.session_ids.iter() {
+            if let Some(session) = self.db.get_quiz_session(session_id)? {
+                sessions.push(session);
+            }
+        }
+
+        Ok(sessions)
+    }
+
     /// Select questions based on the quiz session configuration
     fn select_questions(&self, dto: &CreateQuizSessionDto) -> Result<Vec<String>, String> {
         let mut questions = self.collect_questions(dto)?;

@@ -84,7 +84,7 @@ export const TopicForm = ({ topic, onSuccess, onCancel }: TopicFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 mx-4">
       {error && (
         <div
           className="p-4 text-sm font-medium"

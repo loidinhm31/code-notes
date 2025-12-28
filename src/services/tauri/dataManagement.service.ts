@@ -11,6 +11,8 @@ export interface ImportResult {
   message: string;
   topics_count: number;
   questions_count: number;
+  progress_count: number;
+  quiz_sessions_count: number;
 }
 
 export interface DatabaseStats {

@@ -476,6 +476,17 @@ impl LazyDatabase {
         self.save_quiz_sessions_index()
     }
 
+    /// Clear all quiz sessions (for import replace mode)
+    pub fn clear_quiz_sessions(&self) -> Result<(), String> {
+        let mut index = self.write_quiz_sessions_index();
+        index.session_ids.clear();
+        index.total_sessions = 0;
+        drop(index);
+
+        // Save index
+        self.save_quiz_sessions_index()
+    }
+
     /// Save quiz sessions index to file
     fn save_quiz_sessions_index(&self) -> Result<(), String> {
         let index = self.read_quiz_sessions_index();

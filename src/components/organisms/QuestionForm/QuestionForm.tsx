@@ -102,7 +102,7 @@ export const QuestionForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 mx-2">
       {error && (
         <div className="p-3 bg-destructive/10 border border-destructive text-destructive rounded-md text-sm">
           {error}
