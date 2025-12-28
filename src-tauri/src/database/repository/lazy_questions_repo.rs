@@ -65,20 +65,29 @@ impl LazyQuestionsRepository {
         // Load existing questions for this topic
         let mut questions = self.db.get_topic_questions(&dto.topic_id)?;
 
-        // Determine next question number
-        let next_number = questions
+        // Check if the requested question number is duplicate
+        let is_duplicate = questions
             .iter()
-            .map(|q| q.question_number)
-            .max()
-            .unwrap_or(0)
-            + 1;
+            .any(|q| q.question_number == dto.question_number);
+
+        // Use the requested number if not duplicate, otherwise use max + 1
+        let question_number = if is_duplicate {
+            questions
+                .iter()
+                .map(|q| q.question_number)
+                .max()
+                .unwrap_or(0)
+                + 1
+        } else {
+            dto.question_number
+        };
 
         // Create new question
         let question = Question {
             id: uuid::Uuid::new_v4().to_string(),
             topic_id: dto.topic_id.clone(),
             subtopic: dto.subtopic,
-            question_number: next_number,
+            question_number,
             question: dto.question,
             answer: dto.answer,
             tags: dto.tags,
@@ -131,15 +140,47 @@ impl LazyQuestionsRepository {
         // Load questions from the old topic
         let mut old_questions = self.db.get_topic_questions(&old_topic_id)?;
 
+        // Pre-calculate the final question number if being updated
+        let final_question_number = if let Some(requested_number) = dto.question_number {
+            // Load questions from target topic to check for duplicates
+            let target_questions = if topic_changed {
+                self.db.get_topic_questions(&new_topic_id)?
+            } else {
+                old_questions.clone()
+            };
+
+            // Check if the requested number is duplicate (excluding the current question)
+            let is_duplicate = target_questions
+                .iter()
+                .any(|q| q.id != id && q.question_number == requested_number);
+
+            // Use requested number if not duplicate, otherwise use max + 1
+            Some(if is_duplicate {
+                target_questions
+                    .iter()
+                    .map(|q| q.question_number)
+                    .max()
+                    .unwrap_or(0)
+                    + 1
+            } else {
+                requested_number
+            })
+        } else {
+            None
+        };
+
         // Find and update the question
         if let Some(question) = old_questions.iter_mut().find(|q| q.id == id) {
             // Update fields if provided
             if let Some(subtopic) = dto.subtopic {
                 question.subtopic = Some(subtopic);
             }
-            if let Some(question_number) = dto.question_number {
-                question.question_number = question_number;
+
+            // Apply the pre-calculated question number
+            if let Some(number) = final_question_number {
+                question.question_number = number;
             }
+
             if let Some(question_text) = dto.question {
                 question.question = question_text;
             }

@@ -1,4 +1,4 @@
-# Ya-Boom - Code Notes
+# Code Notes
 
 A modern desktop application for managing code notes, questions, and quiz sessions built with Tauri, React, and TypeScript.
 

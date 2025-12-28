@@ -378,7 +378,7 @@ export const TopicsPage = () => {
               <strong>{deletingTopic?.name}</strong>? This will also delete all
               questions in this topic. This action cannot be undone.
             </p>
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end gap-3 m-2">
               <Button
                 type="button"
                 onClick={() => setDeletingTopic(null)}

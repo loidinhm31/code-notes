@@ -406,7 +406,7 @@ export const QuestionDetailPage = () => {
               Are you sure you want to delete this question? This action cannot
               be undone.
             </p>
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end gap-3 m-2">
               <Button
                 type="button"
                 onClick={() => setShowDeleteConfirm(false)}
