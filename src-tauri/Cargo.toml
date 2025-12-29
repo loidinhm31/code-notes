@@ -1,6 +1,6 @@
 [package]
 name = "code-notes"
-version = "0.3.1"
+version = "0.3.2"
 description = "Code Notes - A simple note-taking app"
 authors = ["you"]
 edition = "2021"
