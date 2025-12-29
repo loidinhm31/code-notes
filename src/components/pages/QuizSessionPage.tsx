@@ -134,7 +134,10 @@ export const QuizSessionPage = () => {
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-      <Link to="/quiz" className="inline-flex items-center gap-2 text-sm mb-6 ">
+      <Link
+        to="/quiz"
+        className="inline-flex items-center gap-2 text-sm mb-6 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[var(--color-bg-muted)] border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
+      >
         <ArrowLeft className="w-4 h-4" />
         Back to Quiz Setup
       </Link>
@@ -233,7 +236,7 @@ export const QuizSessionPage = () => {
           </h3>
 
           {/* Correct/Incorrect */}
-          <div className="flex gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <Button
               onClick={() => setWasCorrect(true)}
               variant="ghost"
@@ -242,17 +245,21 @@ export const QuizSessionPage = () => {
               }`}
               style={{
                 backgroundColor:
-                  wasCorrect === true ? "#10B981" : "var(--color-bg-card)",
+                  wasCorrect === true
+                    ? "var(--color-success)"
+                    : "var(--color-bg-card)",
                 color: wasCorrect === true ? "white" : "var(--color-text)",
                 border:
                   wasCorrect === true
-                    ? "2px solid #10B981"
+                    ? "2px solid var(--color-success)"
                     : "2px solid var(--color-border-light)",
                 outline:
                   wasCorrect === true
-                    ? "4px solid rgba(16, 185, 129, 0.5)"
+                    ? "4px solid var(--color-success-light)"
                     : "none",
+                outlineOffset: "2px",
               }}
+              aria-label="Mark answer as correct"
             >
               <CheckCircle className="w-6 h-6" />
               <span className="font-bold">Correct</span>
@@ -265,17 +272,21 @@ export const QuizSessionPage = () => {
               }`}
               style={{
                 backgroundColor:
-                  wasCorrect === false ? "#EF4444" : "var(--color-bg-card)",
+                  wasCorrect === false
+                    ? "var(--color-error)"
+                    : "var(--color-bg-card)",
                 color: wasCorrect === false ? "white" : "var(--color-text)",
                 border:
                   wasCorrect === false
-                    ? "2px solid #EF4444"
+                    ? "2px solid var(--color-error)"
                     : "2px solid var(--color-border-light)",
                 outline:
                   wasCorrect === false
-                    ? "4px solid rgba(239, 68, 68, 0.5)"
+                    ? "4px solid var(--color-error-light)"
                     : "none",
+                outlineOffset: "2px",
               }}
+              aria-label="Mark answer as incorrect"
             >
               <XCircle className="w-6 h-6" />
               <span className="font-bold">Incorrect</span>

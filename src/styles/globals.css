@@ -18,6 +18,12 @@
   --color-accent-light: #fb923c;
   --color-accent-dark: #ea580c;
 
+  /* Status Colors */
+  --color-success: #10b981;
+  --color-success-light: #34d399;
+  --color-error: #ef4444;
+  --color-error-light: #f87171;
+
   /* Pastel Colors - Updated to complement navy/blue/orange */
   --color-peach: #fed7aa;
   --color-lavender: #c7d2fe;
@@ -108,6 +114,12 @@
   --color-accent: #fb923c;
   --color-accent-light: #fdba74;
   --color-accent-dark: #f97316;
+
+  /* Status Colors - Bright for dark mode */
+  --color-success: #10b981;
+  --color-success-light: #34d399;
+  --color-error: #ef4444;
+  --color-error-light: #f87171;
 
   /* Pastel Colors - Brighter for dark mode */
   --color-peach: #fdba74;
@@ -355,6 +367,27 @@
     font-weight: 600;
     box-shadow: var(--shadow-clay-sm);
   }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-lg);
+    border: 2px solid transparent;
+    transition: all 200ms ease-out;
+    cursor: pointer;
+  }
+
+  .nav-link:hover {
+    background: var(--color-bg-muted);
+    border-color: var(--color-border-light);
+  }
+
+  .nav-link:active {
+    transform: scale(0.98);
+  }
 }
 
 /* Typography for prose (markdown content) */
@@ -406,6 +439,15 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     box-shadow: var(--shadow-clay-sm);
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @media (max-width: 768px) {
+    .prose table {
+      font-size: 0.875rem;
+    }
   }
 
   .prose thead {

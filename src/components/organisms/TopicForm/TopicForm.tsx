@@ -190,7 +190,7 @@ export const TopicForm = ({ topic, onSuccess, onCancel }: TopicFormProps) => {
         />
       </div>
 
-      <div className="flex justify-end gap-3 pt-6">
+      <div className="flex flex-wrap justify-end gap-3 pt-6 mb-2">
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel}>
             Cancel

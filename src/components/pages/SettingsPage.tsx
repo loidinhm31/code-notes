@@ -5,7 +5,10 @@ export const SettingsPage = () => {
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
-        <Link to="/" className="inline-flex items-center gap-2  mb-4">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-sm mb-4 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[var(--color-bg-muted)] border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
+        >
           <ArrowLeft className="w-4 h-4" />
           Back to Topics
         </Link>
@@ -36,7 +39,7 @@ export const SettingsPage = () => {
               </p>
               <Link
                 to="/data-management"
-                className="  inline-flex items-center gap-2"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-light)] hover:shadow-[var(--shadow-clay-md)] cursor-pointer border-2 border-[var(--color-primary-dark)]"
               >
                 <Database className="w-4 h-4" />
                 Manage Data (Import/Export)

@@ -158,7 +158,7 @@ export const QuestionDetailPage = () => {
             <div className="flex items-center gap-2">
               <Link
                 to={`/topics/${currentQuestion.topicId}`}
-                className="inline-flex items-center gap-2 text-sm "
+                className="inline-flex items-center gap-2 text-sm px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[var(--color-bg-muted)] border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
                 title="Back to Questions"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -406,7 +406,7 @@ export const QuestionDetailPage = () => {
               Are you sure you want to delete this question? This action cannot
               be undone.
             </p>
-            <div className="flex justify-end gap-3 m-2">
+            <div className="flex flex-wrap justify-end gap-3 m-2">
               <Button
                 type="button"
                 onClick={() => setShowDeleteConfirm(false)}

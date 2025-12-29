@@ -144,21 +144,21 @@ export const TopicsPage = () => {
               Browse questions by topic
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <Button asChild className="flex items-center gap-2">
-              <Link to="/progress">
+              <Link to="/progress" aria-label="View Progress Dashboard">
                 <TrendingUp className="w-5 h-5" />
                 <span className="hidden sm:inline">Progress</span>
               </Link>
             </Button>
             <Button asChild className="flex items-center gap-2">
-              <Link to="/quiz">
+              <Link to="/quiz" aria-label="Start Quiz">
                 <Target className="w-5 h-5" />
                 <span className="hidden sm:inline">Quiz</span>
               </Link>
             </Button>
             <Button asChild className="flex items-center gap-2">
-              <Link to="/settings">
+              <Link to="/settings" aria-label="Open Settings">
                 <Settings className="w-5 h-5" />
                 <span className="hidden sm:inline">Settings</span>
               </Link>
@@ -168,7 +168,7 @@ export const TopicsPage = () => {
               asChild
               className="flex items-center gap-2"
             >
-              <Link to="/import">
+              <Link to="/import" aria-label="Import Questions">
                 <Upload className="w-5 h-5" />
                 <span className="hidden sm:inline">Import</span>
               </Link>
@@ -176,6 +176,7 @@ export const TopicsPage = () => {
             <Button
               onClick={() => setShowCreateModal(true)}
               className="flex items-center gap-2"
+              aria-label="Create New Topic"
             >
               <Plus className="w-5 h-5" />
               <span className="hidden sm:inline">Create Topic</span>
@@ -263,10 +264,11 @@ export const TopicsPage = () => {
                       }}
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 hover:bg-accent"
+                      className="hover:bg-accent"
                       title="Edit topic"
+                      aria-label="Edit topic"
                     >
-                      <Edit className="w-4 h-4" />
+                      <Edit className="w-5 h-5" />
                     </Button>
                     <Button
                       onClick={(e) => {
@@ -275,10 +277,11 @@ export const TopicsPage = () => {
                       }}
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 hover:bg-destructive/10 text-destructive"
+                      className="hover:bg-destructive/10 text-destructive"
                       title="Delete topic"
+                      aria-label="Delete topic"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-5 h-5" />
                     </Button>
                   </div>
 
@@ -378,7 +381,7 @@ export const TopicsPage = () => {
               <strong>{deletingTopic?.name}</strong>? This will also delete all
               questions in this topic. This action cannot be undone.
             </p>
-            <div className="flex justify-end gap-3 m-2">
+            <div className="flex flex-wrap justify-end gap-3 m-2">
               <Button
                 type="button"
                 onClick={() => setDeletingTopic(null)}

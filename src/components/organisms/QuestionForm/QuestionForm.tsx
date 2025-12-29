@@ -243,7 +243,7 @@ public class Example {
         />
       </div>
 
-      <div className="flex justify-end gap-2 pt-4 border-t">
+      <div className="flex flex-wrap justify-end gap-2 pt-4 border-t mb-2">
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel}>
             Cancel
