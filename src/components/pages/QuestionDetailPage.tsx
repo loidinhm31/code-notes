@@ -154,7 +154,7 @@ export const QuestionDetailPage = () => {
     <div className="min-h-screen-safe circuit-pattern-light dark:circuit-pattern-dark">
       <div className="container mx-auto p-4 px-6 md:px-8 lg:px-12">
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4 mr-7">
             <div className="flex items-center gap-2">
               <Link
                 to={`/topics/${currentQuestion.topicId}`}
@@ -172,7 +172,7 @@ export const QuestionDetailPage = () => {
                     prevQuestionId && navigate(`/questions/${prevQuestionId}`)
                   }
                   disabled={!prevQuestionId}
-                  variant="ghost"
+                  variant="secondary"
                   size="icon"
                   className="px-2 py-1.5 hover:bg-accent transition-colors rounded-none border-0 shadow-none h-auto"
                   title="Previous question"
@@ -185,7 +185,7 @@ export const QuestionDetailPage = () => {
                     nextQuestionId && navigate(`/questions/${nextQuestionId}`)
                   }
                   disabled={!nextQuestionId}
-                  variant="ghost"
+                  variant="secondary"
                   size="icon"
                   className="px-2 py-1.5 hover:bg-accent transition-colors rounded-none border-0 border-l border-input shadow-none h-auto"
                   title="Next question"
@@ -201,7 +201,7 @@ export const QuestionDetailPage = () => {
                 <Button
                   onClick={decreaseFontSize}
                   disabled={fontSize <= 80}
-                  variant="ghost"
+                  variant="secondary"
                   size="icon"
                   className="px-2 py-1.5 hover:bg-accent transition-colors rounded-none border-0 shadow-none h-auto"
                   title="Decrease font size"
@@ -211,7 +211,7 @@ export const QuestionDetailPage = () => {
                 </Button>
                 <Button
                   onClick={resetFontSize}
-                  variant="ghost"
+                  variant="secondary"
                   className="px-3 py-1.5 text-sm hover:bg-accent transition-colors flex items-center gap-1 border-x border-input rounded-none border-y-0 shadow-none h-auto"
                   title="Reset font size"
                 >
@@ -221,7 +221,7 @@ export const QuestionDetailPage = () => {
                 <Button
                   onClick={increaseFontSize}
                   disabled={fontSize >= 150}
-                  variant="ghost"
+                  variant="secondary"
                   size="icon"
                   className="px-2 py-1.5 hover:bg-accent transition-colors rounded-none border-0 shadow-none h-auto"
                   title="Increase font size"
@@ -232,7 +232,7 @@ export const QuestionDetailPage = () => {
               </div>
               <Button
                 onClick={() => setShowEditModal(true)}
-                variant="ghost"
+                variant="default"
                 className="flex items-center gap-1"
               >
                 <Edit className="w-4 h-4" />

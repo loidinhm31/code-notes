@@ -411,7 +411,7 @@
   }
   .prose code {
     color: var(--color-text-primary);
-    background: var(--color-bg-muted);
+    background-color: #adc9ff; /* Specific light mode background for inline code */
     padding: 0.125rem 0.25rem;
     border-radius: var(--radius-sm);
   }
@@ -419,6 +419,11 @@
     background: var(--color-bg-muted);
     border-radius: var(--radius-md);
   }
+
+/* Dark mode overrides for prose code blocks */
+.dark .prose code {
+  background-color: #68a2ed; /* Specific dark mode background for code */
+}
   .prose blockquote {
     border-left-color: var(--color-primary);
   }

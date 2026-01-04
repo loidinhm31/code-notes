@@ -22,6 +22,27 @@ export const MarkdownRenderer = ({
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypePrismPlus]}
+        components={{
+          hr: ({ ...props }) => (
+            <hr
+              {...props}
+              className="my-6 border-dashed border-border"
+            />
+          ),
+          li: ({ ...props }) => (
+              <li
+                  {...props}
+                  className="list-disc"
+              />
+          ),
+          strong: ({ ...props }) => (
+              <strong
+                  {...props}
+                  className="font-black"
+              />
+          ),
+
+        }}
       >
         {content}
       </ReactMarkdown>
