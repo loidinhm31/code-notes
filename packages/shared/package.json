@@ -1,28 +1,28 @@
 {
-    "name": "@code-notes/shared",
-    "version": "0.1.0",
-    "private": true,
-    "type": "module",
-    "main": "./src/index.ts",
-    "types": "./src/index.ts",
-    "exports": {
-        ".": "./src/index.ts",
-        "./types": "./src/types/index.ts",
-        "./utils": "./src/utils/index.ts"
-    },
-    "scripts": {
-        "build": "tsc",
-        "lint": "eslint .",
-        "type-check": "tsc --noEmit",
-        "clean": "rimraf dist .turbo"
-    },
-    "devDependencies": {
-        "typescript": "^5.8.3",
-        "@code-notes/tsconfig": "workspace:*",
-        "@code-notes/eslint-config": "workspace:*"
-    },
-    "dependencies": {
-        "clsx": "^2.1.1",
-        "tailwind-merge": "^3.4.0"
-    }
+  "name": "@code-notes/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types/index.ts",
+    "./utils": "./src/utils/index.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf dist .turbo"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "@code-notes/tsconfig": "workspace:*",
+    "@code-notes/eslint-config": "workspace:*"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.4.0"
+  }
 }

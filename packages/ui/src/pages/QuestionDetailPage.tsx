@@ -424,5 +424,3 @@ export const QuestionDetailPage = () => {
     </div>
   );
 };
-
-

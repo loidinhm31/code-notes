@@ -24,4 +24,3 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
     </Dialog>
   );
 };
-

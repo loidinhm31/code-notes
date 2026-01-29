@@ -22,5 +22,3 @@ export const topicsService = {
     return await invoke<boolean>("delete_topic", { id });
   },
 };
-
-

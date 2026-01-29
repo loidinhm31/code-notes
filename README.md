@@ -5,6 +5,7 @@ A modern desktop application for managing code notes, questions, and quiz sessio
 ## Tech Stack
 
 ### Frontend
+
 - **Framework**: React 19.1.0 + TypeScript 5.8.3
 - **Build Tool**: Vite 7.0.4
 - **Desktop Framework**: Tauri v2
@@ -21,9 +22,11 @@ A modern desktop application for managing code notes, questions, and quiz sessio
 - **Markdown**: @uiw/react-md-editor with syntax highlighting (rehype-prism-plus)
 
 ### Backend
+
 - **Rust**: Tauri backend with filesystem and dialog plugins
 
 ## Features
+
 - Question and topic management
 - Quiz mode with confidence rating
 - Progress tracking dashboard

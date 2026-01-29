@@ -8,12 +8,12 @@ import { openUrl } from "@tauri-apps/plugin-opener";
 
 // Minimal implementation for now
 export const tauriPlatform: IPlatformServices = {
-    storage: {
-        getItem: async (key) => localStorage.getItem(key),
-        setItem: async (key, value) => localStorage.setItem(key, value),
-        removeItem: async (key) => localStorage.removeItem(key),
-    },
-    openUrl: async (url) => {
-        await openUrl(url);
-    },
+  storage: {
+    getItem: async (key) => localStorage.getItem(key),
+    setItem: async (key, value) => localStorage.setItem(key, value),
+    removeItem: async (key) => localStorage.removeItem(key),
+  },
+  openUrl: async (url) => {
+    await openUrl(url);
+  },
 };

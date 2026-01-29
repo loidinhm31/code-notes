@@ -399,5 +399,3 @@ export const TopicsPage = () => {
     </div>
   );
 };
-
-

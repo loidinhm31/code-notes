@@ -135,4 +135,3 @@ export const createProgressSlice: StateCreator<ProgressSlice> = (set, get) => ({
     };
   },
 });
-

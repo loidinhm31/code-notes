@@ -1,6 +1,10 @@
 ﻿import { useState, FormEvent } from "react";
 import { useStore } from "@code-notes/ui/store";
-import type { CreateQuestionDto, UpdateQuestionDto, Question } from "@code-notes/shared";
+import type {
+  CreateQuestionDto,
+  UpdateQuestionDto,
+  Question,
+} from "@code-notes/shared";
 import { Button } from "@code-notes/ui/components/ui/button";
 import { Input } from "@code-notes/ui/components/ui/input";
 import { Textarea } from "@code-notes/ui/components/ui/textarea";
@@ -260,5 +264,3 @@ public class Example {
     </form>
   );
 };
-
-

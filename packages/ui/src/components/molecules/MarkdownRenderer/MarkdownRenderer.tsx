@@ -24,24 +24,12 @@ export const MarkdownRenderer = ({
         rehypePlugins={[rehypePrismPlus]}
         components={{
           hr: ({ ...props }) => (
-            <hr
-              {...props}
-              className="my-6 border-dashed border-border"
-            />
+            <hr {...props} className="my-6 border-dashed border-border" />
           ),
-          li: ({ ...props }) => (
-              <li
-                  {...props}
-                  className="list-disc"
-              />
-          ),
+          li: ({ ...props }) => <li {...props} className="list-disc" />,
           strong: ({ ...props }) => (
-              <strong
-                  {...props}
-                  className="font-black"
-              />
+            <strong {...props} className="font-black" />
           ),
-
         }}
       >
         {content}

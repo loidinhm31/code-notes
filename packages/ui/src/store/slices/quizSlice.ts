@@ -79,7 +79,10 @@ export const createQuizSlice: StateCreator<QuizSlice> = (set, get) => ({
 
     set({ quizError: null });
     try {
-      const updatedSession = await getQuizService().submitAnswer(session.id, result);
+      const updatedSession = await getQuizService().submitAnswer(
+        session.id,
+        result,
+      );
 
       // Try to update progress for the question
       try {
@@ -112,7 +115,9 @@ export const createQuizSlice: StateCreator<QuizSlice> = (set, get) => ({
 
     set({ quizError: null });
     try {
-      const completedSession = await getQuizService().completeSession(session.id);
+      const completedSession = await getQuizService().completeSession(
+        session.id,
+      );
       set({ activeSession: null });
 
       // Refresh quiz history
@@ -179,4 +184,3 @@ export const createQuizSlice: StateCreator<QuizSlice> = (set, get) => ({
     return session ? !!session.completedAt : false;
   },
 });
-

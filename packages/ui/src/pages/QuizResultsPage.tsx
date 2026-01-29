@@ -308,5 +308,3 @@ export const QuizResultsPage = () => {
     </div>
   );
 };
-
-

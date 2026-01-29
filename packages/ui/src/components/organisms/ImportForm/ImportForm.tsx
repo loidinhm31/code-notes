@@ -227,24 +227,27 @@ export const ImportForm: React.FC = () => {
 
       {result && (
         <div
-          className={`mt-6 p-4 rounded-md ${result.success
-            ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
-            : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
-            }`}
+          className={`mt-6 p-4 rounded-md ${
+            result.success
+              ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
+              : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
+          }`}
         >
           <h3
-            className={`font-semibold mb-2 ${result.success
-              ? "text-green-800 dark:text-green-200"
-              : "text-red-800 dark:text-red-200"
-              }`}
+            className={`font-semibold mb-2 ${
+              result.success
+                ? "text-green-800 dark:text-green-200"
+                : "text-red-800 dark:text-red-200"
+            }`}
           >
             {result.success ? "Import Successful" : "Import Failed"}
           </h3>
           <p
-            className={`text-sm mb-2 ${result.success
-              ? "text-green-700 dark:text-green-300"
-              : "text-red-700 dark:text-red-300"
-              }`}
+            className={`text-sm mb-2 ${
+              result.success
+                ? "text-green-700 dark:text-green-300"
+                : "text-red-700 dark:text-red-300"
+            }`}
           >
             {result.message}
           </p>
@@ -318,4 +321,3 @@ export const ImportForm: React.FC = () => {
     </div>
   );
 };
-

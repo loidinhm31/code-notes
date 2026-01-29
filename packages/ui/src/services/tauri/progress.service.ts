@@ -50,5 +50,3 @@ export const progressService = {
     return await invoke<number>("ensure_progress_for_all_questions");
   },
 };
-
-

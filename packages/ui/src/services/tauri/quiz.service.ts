@@ -1,5 +1,9 @@
 ﻿import { invoke } from "@tauri-apps/api/core";
-import type { QuizSession, CreateQuizSessionDto, QuizResult } from "@code-notes/shared";
+import type {
+  QuizSession,
+  CreateQuizSessionDto,
+  QuizResult,
+} from "@code-notes/shared";
 
 export const quizService = {
   createSession: async (dto: CreateQuizSessionDto): Promise<QuizSession> => {
@@ -32,5 +36,3 @@ export const quizService = {
     return await invoke<QuizSession[]>("get_quiz_history", { limit });
   },
 };
-
-

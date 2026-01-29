@@ -38,5 +38,3 @@ export const queryService = {
     return await invoke<TopicStats[]>("get_topic_stats");
   },
 };
-
-

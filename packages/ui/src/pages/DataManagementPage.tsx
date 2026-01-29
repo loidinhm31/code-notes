@@ -69,9 +69,9 @@ export const DataManagementPage = () => {
       // Tauri service throws if path missing. Web ignores it (or uses as filename).
 
       // We need to know if we should show a dialog.
-      // Better approach: Service handles "get path" if needed? 
-      // Or UI handles logic. 
-      // UI Logic: 
+      // Better approach: Service handles "get path" if needed?
+      // Or UI handles logic.
+      // UI Logic:
       if (window.__TAURI_INTERNALS__) {
         const filePath = await save({
           filters: [{ name: "JSON", extensions: ["json"] }],
@@ -144,9 +144,9 @@ export const DataManagementPage = () => {
         // For compatibility, let's create an input element dynamically
         // Or reuse logic from ImportForm?
         // Let's use a quick Promise-based file input
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".json";
 
         content = await new Promise<string>((resolve, reject) => {
           input.onchange = async (e) => {
@@ -367,12 +367,13 @@ export const DataManagementPage = () => {
         {/* Status Message */}
         {status && (
           <div
-            className={`clay-card p-4 flex items-start gap-3 ${statusType === "error"
-              ? "border-red-500"
-              : statusType === "success"
-                ? "border-green-500"
-                : "border-blue-500"
-              } border-l-4`}
+            className={`clay-card p-4 flex items-start gap-3 ${
+              statusType === "error"
+                ? "border-red-500"
+                : statusType === "success"
+                  ? "border-green-500"
+                  : "border-blue-500"
+            } border-l-4`}
           >
             {statusType === "error" && (
               <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
@@ -407,4 +408,3 @@ export const DataManagementPage = () => {
     </div>
   );
 };
-

@@ -1,6 +1,10 @@
 ﻿import { StateCreator } from "zustand";
 import { getQuestionsService, getQueryService } from "@code-notes/ui/services";
-import type { Question, CreateQuestionDto, UpdateQuestionDto } from "@code-notes/shared";
+import type {
+  Question,
+  CreateQuestionDto,
+  UpdateQuestionDto,
+} from "@code-notes/shared";
 
 export interface QuestionFilters {
   keyword: string;
@@ -196,4 +200,3 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
     });
   },
 });
-

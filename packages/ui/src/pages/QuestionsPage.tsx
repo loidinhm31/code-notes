@@ -314,4 +314,3 @@ export const QuestionsPage = () => {
     </div>
   );
 };
-

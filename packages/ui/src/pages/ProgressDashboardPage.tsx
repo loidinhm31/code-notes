@@ -265,4 +265,3 @@ export const ProgressDashboardPage = () => {
     </div>
   );
 };
-

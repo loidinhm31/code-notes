@@ -1,5 +1,9 @@
 ﻿import { invoke } from "@tauri-apps/api/core";
-import type { Question, CreateQuestionDto, UpdateQuestionDto } from "@code-notes/shared";
+import type {
+  Question,
+  CreateQuestionDto,
+  UpdateQuestionDto,
+} from "@code-notes/shared";
 
 export const questionsService = {
   getAll: async (): Promise<Question[]> => {
@@ -26,5 +30,3 @@ export const questionsService = {
     return await invoke<boolean>("delete_question", { id });
   },
 };
-
-

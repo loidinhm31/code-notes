@@ -1,2 +1,2 @@
 // Export utils here
-export const noop = () => { };
+export const noop = () => {};

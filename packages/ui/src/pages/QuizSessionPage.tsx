@@ -353,4 +353,3 @@ export const QuizSessionPage = () => {
     </div>
   );
 };
-

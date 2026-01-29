@@ -6,28 +6,26 @@ import path from "path";
 const host = process.env.TAURI_DEV_HOST;
 
 export default defineConfig(async () => ({
-    plugins: [react(), tailwindcss()],
-    resolve: {
-        alias: {
-            "@": path.resolve(__dirname, "./src"),
-            "@code-notes/ui/styles": path.resolve(__dirname, "../../packages/ui/src/styles/globals.css"),
-            "@code-notes/ui": path.resolve(__dirname, "../../packages/ui/src"),
-        },
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
-    clearScreen: false,
-    server: {
-        port: 1420,
-        strictPort: true,
-        host: host || false,
-        hmr: host
-            ? {
-                protocol: "ws",
-                host,
-                port: 1421,
-            }
-            : undefined,
-        watch: {
-            ignored: ["**/src-tauri/**"],
-        },
+  },
+  clearScreen: false,
+  server: {
+    port: 1420,
+    strictPort: true,
+    host: host || false,
+    hmr: host
+      ? {
+          protocol: "ws",
+          host,
+          port: 1421,
+        }
+      : undefined,
+    watch: {
+      ignored: ["**/src-tauri/**"],
     },
+  },
 }));
