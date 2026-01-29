@@ -1,0 +1,21 @@
+﻿src/components/atoms/index.ts(2,15): error TS2307: Cannot find module './LoadingSpinner' or its corresponding type declarations.
+src/components/index.ts(2,15): error TS2307: Cannot find module './molecules' or its corresponding type declarations.
+src/components/index.ts(3,15): error TS2307: Cannot find module './organisms' or its corresponding type declarations.
+src/components/index.ts(4,15): error TS2307: Cannot find module './templates' or its corresponding type declarations.
+src/components/index.ts(5,15): error TS2307: Cannot find module './ui' or its corresponding type declarations.
+src/components/organisms/ImportForm/ImportForm.tsx(2,22): error TS2307: Cannot find module '@tauri-apps/plugin-dialog' or its corresponding type declarations.
+src/components/organisms/ImportForm/ImportForm.tsx(6,8): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+src/components/organisms/ImportForm/ImportForm.tsx(8,30): error TS2307: Cannot find module '@tauri-apps/plugin-fs' or its corresponding type declarations.
+src/index.ts(5,15): error TS2307: Cannot find module './styles/globals.css' or its corresponding type declarations.
+src/pages/DataManagementPage.tsx(12,28): error TS2307: Cannot find module '@tauri-apps/plugin-dialog' or its corresponding type declarations.
+src/pages/DataManagementPage.tsx(13,25): error TS2307: Cannot find module '@tauri-apps/plugin-dialog' or its corresponding type declarations.
+src/pages/DataManagementPage.tsx(14,30): error TS2307: Cannot find module '@tauri-apps/plugin-fs' or its corresponding type declarations.
+src/services/interfaces.ts(11,5): error TS2305: Module '"@code-notes/shared"' has no exported member 'TopicStats'.
+src/services/tauri/dataManagement.service.ts(1,24): error TS2307: Cannot find module '@tauri-apps/api/core' or its corresponding type declarations.
+src/services/tauri/debug.service.ts(1,24): error TS2307: Cannot find module '@tauri-apps/api/core' or its corresponding type declarations.
+src/services/tauri/import.service.ts(1,24): error TS2307: Cannot find module '@tauri-apps/api/core' or its corresponding type declarations.
+src/services/tauri/progress.service.ts(1,24): error TS2307: Cannot find module '@tauri-apps/api/core' or its corresponding type declarations.
+src/services/tauri/query.service.ts(1,24): error TS2307: Cannot find module '@tauri-apps/api/core' or its corresponding type declarations.
+src/services/tauri/questions.service.ts(1,24): error TS2307: Cannot find module '@tauri-apps/api/core' or its corresponding type declarations.
+src/services/tauri/quiz.service.ts(1,24): error TS2307: Cannot find module '@tauri-apps/api/core' or its corresponding type declarations.
+src/services/tauri/topics.service.ts(1,24): error TS2307: Cannot find module '@tauri-apps/api/core' or its corresponding type declarations.

@@ -1,0 +1,232 @@
+    Checking code-notes v0.3.3 (G:\ws\sharing\ya-boom\apps\tauri\src-tauri)
+error[E0432]: unresolved import `crate::database::models::generate_id`
+ --> src\database\repository\lazy_topics_repo.rs:1:31
+  |
+1 | use crate::database::models::{generate_id, CreateTopicDto, Topic, UpdateTopicDto};
+  |                               ^^^^^^^^^^^ no `generate_id` in `database::models`
+
+error[E0432]: unresolved import `rusqlite`
+ --> src\database\repository\lazy_topics_repo.rs:3:5
+  |
+3 | use rusqlite::params;
+  |     ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+  |
+  = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `rusqlite`
+ --> src\database\repository\lazy_topics_repo.rs:4:5
+  |
+4 | use rusqlite::Connection;
+  |     ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+  |
+  = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `crate::database::models::generate_id`
+ --> src\database\repository\lazy_questions_repo.rs:2:5
+  |
+2 |     generate_id, Answer, CreateQuestionDto, Question, UpdateQuestionDto,
+  |     ^^^^^^^^^^^ no `generate_id` in `database::models`
+
+error[E0432]: unresolved import `rusqlite`
+ --> src\database\repository\lazy_questions_repo.rs:5:5
+  |
+5 | use rusqlite::Connection;
+  |     ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+  |
+  = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `rusqlite`
+ --> src\database\repository\lazy_questions_repo.rs:6:5
+  |
+6 | use rusqlite::{params, OptionalExtension};
+  |     ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+  |
+  = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `rusqlite`
+ --> src\database\repository\progress_repo.rs:2:5
+  |
+2 | use rusqlite::{params, Connection};
+  |     ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+  |
+  = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `rusqlite`
+ --> src\database\repository\quiz_session_repo.rs:3:5
+  |
+3 | use rusqlite::{params, Connection};
+  |     ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+  |
+  = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `rusqlite`
+ --> src\database\sqlite_db.rs:1:5
+  |
+1 | use rusqlite::{Connection, Result};
+  |     ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+  |
+  = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+warning: unused imports: `DatabaseIndex`, `TopicQuestions`, and `TopicsContainer`
+ --> src\database\models\mod.rs:9:5
+  |
+9 |     DatabaseIndex, TopicQuestions, TopicsContainer,
+  |     ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused imports: `ProgressContainer` and `QuizSessionsIndex`
+  --> src\database\models\mod.rs:14:25
+   |
+14 |     ProgressStatistics, ProgressContainer, QuizSessionsIndex,
+   |                         ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\lazy_topics_repo.rs:5:22
+  |
+5 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\lazy_questions_repo.rs:7:22
+  |
+7 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\progress_repo.rs:3:22
+  |
+3 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\quiz_session_repo.rs:4:22
+  |
+4 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused imports: `ProgressStatus`, `QuestionProgress`, and `Question`
+ --> src\database\repository\quiz_session_repo.rs:8:31
+  |
+8 |         CreateQuizSessionDto, ProgressStatus, Question, QuestionProgress, QuizResult, QuizSession,
+  |                               ^^^^^^^^^^^^^^  ^^^^^^^^  ^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `search` found for struct `LazyTopicsRepository` in the current scope
+  --> src\commands\query.rs:75:10
+   |
+75 |     repo.search(&keyword)
+   |          ^^^^^^ method not found in `LazyTopicsRepository`
+   |
+  ::: src\database\repository\lazy_topics_repo.rs:7:1
+   |
+7  | pub struct LazyTopicsRepository {
+   | ------------------------------- method `search` not found for this struct
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+   --> src\database\repository\lazy_topics_repo.rs:154:41
+    |
+154 |         let mut params_vec: Vec<Box<dyn rusqlite::ToSql>> = Vec::new(); // Tried to be dynamic but rusqlite params are tricky.
+    |                                         ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+    |
+    = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+   --> src\database\repository\lazy_topics_repo.rs:180:43
+    |
+180 |         let mut param_values: Vec<Box<dyn rusqlite::ToSql>> = vec![Box::new(now.clone())];
+    |                                           ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+    |
+    = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+   --> src\database\repository\lazy_topics_repo.rs:235:35
+    |
+235 |         let params_refs: Vec<&dyn rusqlite::ToSql> =
+    |                                   ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+    |
+    = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+   --> src\database\repository\lazy_topics_repo.rs:237:22
+    |
+237 |         stmt.execute(rusqlite::params_from_iter(params_refs))
+    |                      ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+    |
+    = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+  --> src\database\repository\lazy_questions_repo.rs:41:22
+   |
+41 |         params: impl rusqlite::Params,
+   |                      ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+   |
+   = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+   --> src\database\repository\lazy_questions_repo.rs:259:41
+    |
+259 |         let mut params_vec: Vec<Box<dyn rusqlite::ToSql>> = vec![Box::new(now.clone())];
+    |                                         ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+    |
+    = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+   --> src\database\repository\lazy_questions_repo.rs:304:35
+    |
+304 |         let params_refs: Vec<&dyn rusqlite::ToSql> =
+    |                                   ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+    |
+    = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+   --> src\database\repository\lazy_questions_repo.rs:306:28
+    |
+306 |         conn.execute(&sql, rusqlite::params_from_iter(params_refs))
+    |                            ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+    |
+    = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+  --> src\database\repository\progress_repo.rs:22:22
+   |
+22 |         params: impl rusqlite::Params,
+   |                      ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+   |
+   = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+  --> src\database\repository\quiz_session_repo.rs:26:22
+   |
+26 |         params: impl rusqlite::Params,
+   |                      ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+   |
+   = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+   --> src\database\repository\quiz_session_repo.rs:195:41
+    |
+195 |         let mut params_vec: Vec<Box<dyn rusqlite::ToSql>> = Vec::new(); // Dyn params again...
+    |                                         ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+    |
+    = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+   --> src\database\repository\quiz_session_repo.rs:218:35
+    |
+218 |         let params_refs: Vec<&dyn rusqlite::ToSql> =
+    |                                   ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+    |
+    = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `rusqlite`
+   --> src\database\repository\quiz_session_repo.rs:228:24
+    |
+228 |             .query_map(rusqlite::params_from_iter(params_refs), |row| {
+    |                        ^^^^^^^^ use of unresolved module or unlinked crate `rusqlite`
+    |
+    = help: if you wanted to use a crate named `rusqlite`, use `cargo add rusqlite` to add it to your `Cargo.toml`
+
+Some errors have detailed explanations: E0432, E0433, E0599.
+For more information about an error, try `rustc --explain E0432`.
+warning: `code-notes` (lib) generated 7 warnings
+error: could not compile `code-notes` (lib) due to 23 previous errors; 7 warnings emitted

@@ -1,0 +1,116 @@
+    Checking code-notes v0.3.3 (G:\ws\sharing\ya-boom\apps\tauri\src-tauri)
+warning: unused import: `std::path::PathBuf`
+ --> src\commands\data_management.rs:7:5
+  |
+7 | use std::path::PathBuf;
+  |     ^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused imports: `DatabaseIndex`, `TopicQuestions`, and `TopicsContainer`
+ --> src\database\models\mod.rs:6:17
+  |
+6 | pub use index::{DatabaseIndex, TopicQuestions, TopicsContainer};
+  |                 ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^
+
+warning: unused imports: `ProgressContainer` and `QuizSessionsIndex`
+ --> src\database\models\mod.rs:8:27
+  |
+8 |     CreateQuizSessionDto, ProgressContainer, ProgressStatistics, ProgressStatus, QuestionProgress,
+  |                           ^^^^^^^^^^^^^^^^^
+9 |     QuizResult, QuizSession, QuizSessionType, QuizSessionsIndex, UpdateProgressDto,
+  |                                               ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `rusqlite::Connection`
+ --> src\database\repository\lazy_topics_repo.rs:4:5
+  |
+4 | use rusqlite::Connection;
+  |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\lazy_topics_repo.rs:5:22
+  |
+5 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused import: `rusqlite::Connection`
+ --> src\database\repository\lazy_questions_repo.rs:5:5
+  |
+5 | use rusqlite::Connection;
+  |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `OptionalExtension`
+ --> src\database\repository\lazy_questions_repo.rs:6:24
+  |
+6 | use rusqlite::{params, OptionalExtension};
+  |                        ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\lazy_questions_repo.rs:7:22
+  |
+7 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused import: `Connection`
+ --> src\database\repository\progress_repo.rs:2:24
+  |
+2 | use rusqlite::{params, Connection};
+  |                        ^^^^^^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\progress_repo.rs:3:22
+  |
+3 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused import: `Connection`
+ --> src\database\repository\quiz_session_repo.rs:3:24
+  |
+3 | use rusqlite::{params, Connection};
+  |                        ^^^^^^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\quiz_session_repo.rs:4:22
+  |
+4 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused variable: `progress_repo`
+   --> src\commands\data_management.rs:118:9
+    |
+118 |     let progress_repo = ProgressRepository::new(Arc::clone(db.inner()));
+    |         ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_progress_repo`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+error[E0277]: the trait bound `usize: FromSql` is not satisfied
+   --> src\commands\data_management.rs:249:87
+    |
+249 |     let topics_count: usize = conn.query_row("SELECT count(*) FROM topics", [], |r| r.get(0)).unwrap_or(0);
+    |                                                                                       ^^^ the trait `FromSql` is not implemented for `usize`
+    |
+    = help: the following other types implement trait `FromSql`:
+              f32
+              f64
+              i16
+              i32
+              i64
+              i8
+              isize
+              u16
+            and 2 others
+note: required by a bound in `Row::<'_>::get`
+   --> C:\Users\loidi\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rusqlite-0.38.0\src\row.rs:285:32
+    |
+285 |     pub fn get<I: RowIndex, T: FromSql>(&self, idx: I) -> Result<T> {
+    |                                ^^^^^^^ required by this bound in `Row::<'_>::get`
+
+warning: unused import: `rand::seq::SliceRandom`
+ --> src\database\repository\quiz_session_repo.rs:2:5
+  |
+2 | use rand::seq::SliceRandom;
+  |     ^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0277`.
+warning: `code-notes` (lib) generated 14 warnings
+error: could not compile `code-notes` (lib) due to 1 previous error; 14 warnings emitted

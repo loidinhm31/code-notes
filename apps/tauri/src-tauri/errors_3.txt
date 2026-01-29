@@ -1,0 +1,127 @@
+    Checking code-notes v0.3.3 (G:\ws\sharing\ya-boom\apps\tauri\src-tauri)
+warning: unused imports: `DatabaseIndex`, `TopicQuestions`, and `TopicsContainer`
+ --> src\database\models\mod.rs:6:17
+  |
+6 | pub use index::{DatabaseIndex, TopicQuestions, TopicsContainer};
+  |                 ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused imports: `ProgressContainer` and `QuizSessionsIndex`
+ --> src\database\models\mod.rs:8:27
+  |
+8 |     CreateQuizSessionDto, ProgressContainer, ProgressStatistics, ProgressStatus, QuestionProgress,
+  |                           ^^^^^^^^^^^^^^^^^
+9 |     QuizResult, QuizSession, QuizSessionType, QuizSessionsIndex, UpdateProgressDto,
+  |                                               ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `rusqlite::Connection`
+ --> src\database\repository\lazy_topics_repo.rs:4:5
+  |
+4 | use rusqlite::Connection;
+  |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\lazy_topics_repo.rs:5:22
+  |
+5 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused import: `rusqlite::Connection`
+ --> src\database\repository\lazy_questions_repo.rs:5:5
+  |
+5 | use rusqlite::Connection;
+  |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `OptionalExtension`
+ --> src\database\repository\lazy_questions_repo.rs:6:24
+  |
+6 | use rusqlite::{params, OptionalExtension};
+  |                        ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\lazy_questions_repo.rs:7:22
+  |
+7 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused import: `Connection`
+ --> src\database\repository\progress_repo.rs:2:24
+  |
+2 | use rusqlite::{params, Connection};
+  |                        ^^^^^^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\progress_repo.rs:3:22
+  |
+3 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused import: `Connection`
+ --> src\database\repository\quiz_session_repo.rs:3:24
+  |
+3 | use rusqlite::{params, Connection};
+  |                        ^^^^^^^^^^
+
+warning: unused import: `Mutex`
+ --> src\database\repository\quiz_session_repo.rs:4:22
+  |
+4 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused import: `rand::seq::SliceRandom`
+ --> src\database\repository\quiz_session_repo.rs:2:5
+  |
+2 | use rand::seq::SliceRandom;
+  |     ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused variable: `params_vec`
+   --> src\database\repository\lazy_topics_repo.rs:154:17
+    |
+154 |         let mut params_vec: Vec<Box<dyn rusqlite::ToSql>> = Vec::new(); // Tried to be dynamic but rusqlite params are tricky.
+    |                 ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_params_vec`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `query`
+   --> src\database\repository\lazy_topics_repo.rs:161:17
+    |
+161 |         let mut query = "UPDATE topics SET updated_at = ?".to_string();
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_query`
+
+warning: variable does not need to be mutable
+   --> src\database\repository\lazy_topics_repo.rs:154:13
+    |
+154 |         let mut params_vec: Vec<Box<dyn rusqlite::ToSql>> = Vec::new(); // Tried to be dynamic but rusqlite params are tricky.
+    |             ----^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` on by default
+
+warning: variable does not need to be mutable
+   --> src\database\repository\lazy_topics_repo.rs:161:13
+    |
+161 |         let mut query = "UPDATE topics SET updated_at = ?".to_string();
+    |             ----^^^^^
+    |             |
+    |             help: remove this `mut`
+
+error[E0505]: cannot move out of `conn` because it is borrowed
+   --> src\database\repository\lazy_topics_repo.rs:250:14
+    |
+137 |         let conn = conn.lock().unwrap();
+    |             ---- binding `conn` declared here
+...
+231 |         let mut stmt = conn.prepare(&query).map_err(|e| e.to_string())?;
+    |                        ---- borrow of `conn` occurs here
+...
+250 |         drop(conn);
+    |              ^^^^ move out of `conn` occurs here
+251 |         self.get_by_id(id)
+252 |     }
+    |     - borrow might be used here, when `stmt` is dropped and runs the `Drop` code for type `Statement`
+
+For more information about this error, try `rustc --explain E0505`.
+warning: `code-notes` (lib) generated 16 warnings
+error: could not compile `code-notes` (lib) due to 1 previous error; 16 warnings emitted

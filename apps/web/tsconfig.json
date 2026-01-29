@@ -1,0 +1,17 @@
+{
+    "extends": "@code-notes/tsconfig/vite.json",
+    "include": [
+        "src"
+    ],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ],
+            "@code-notes/ui/*": [
+                "../../packages/ui/src/*"
+            ]
+        }
+    }
+}

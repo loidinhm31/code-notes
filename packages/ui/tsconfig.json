@@ -1,0 +1,16 @@
+{
+    "extends": "@code-notes/tsconfig/react-library.json",
+    "include": [
+        "src/**/*"
+    ],
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "dist",
+        "baseUrl": ".",
+        "paths": {
+            "@code-notes/ui/*": [
+                "./src/*"
+            ]
+        }
+    }
+}

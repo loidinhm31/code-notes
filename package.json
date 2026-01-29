@@ -1,59 +1,24 @@
 {
-  "name": "code-notes",
+  "name": "code-notes-monorepo",
   "private": true,
-  "version": "0.3.3",
-  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "fix:format": "prettier --write ./src",
-    "tauri": "tauri",
-    "version": "node scripts/bump-version.js"
-  },
-  "dependencies": {
-    "@radix-ui/react-dialog": "^1.1.15",
-    "@radix-ui/react-label": "^2.1.8",
-    "@radix-ui/react-select": "^2.2.6",
-    "@radix-ui/react-slot": "^1.2.4",
-    "@tauri-apps/api": "^2",
-    "@tauri-apps/plugin-dialog": "^2",
-    "@tauri-apps/plugin-fs": "^2.4.4",
-    "@tauri-apps/plugin-opener": "^2",
-    "@uiw/react-md-editor": "^4.0.11",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.562.0",
-    "prismjs": "^1.30.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.11.0",
-    "rehype-prism-plus": "^2.0.1",
-    "remark-gfm": "^4.0.1",
-    "tailwind-merge": "^3.4.0",
-    "uuid": "^13.0.0",
-    "zustand": "^5.0.9"
+    "dev:tauri": "turbo run dev --filter=@code-notes/tauri",
+    "dev:web": "turbo run dev --filter=@code-notes/web",
+    "build": "turbo run build",
+    "build:tauri": "turbo run build --filter=@code-notes/tauri",
+    "build:web": "turbo run build --filter=@code-notes/web",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.18",
-    "@tailwindcss/vite": "^4.1.18",
-    "@tauri-apps/cli": "^2",
-    "@types/node": "^25.0.3",
-    "@types/prismjs": "^1.26.5",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "@types/uuid": "^11.0.0",
-    "@vitejs/plugin-react": "^4.6.0",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react": "^7.37.2",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.14",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-unused-imports": "^4.1.4",
-    "tailwindcss": "^4.1.18",
-    "typescript": "~5.8.3",
-    "vite": "^7.0.4"
-  }
+    "turbo": "^2.3.3",
+    "prettier": "^3.2.5",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@9.1.0"
 }
