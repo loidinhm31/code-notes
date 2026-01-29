@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState } from "react";
 import { useStore } from "@code-notes/ui/store";
 import { Link } from "react-router-dom";
+import { useNav } from "@code-notes/ui/hooks/useNav";
 import {
   Plus,
   Upload,
@@ -10,13 +11,12 @@ import {
   TrendingUp,
   Target,
 } from "lucide-react";
-import { Modal } from "@code-notes/ui/components/molecules/Modal/Modal";
-import { TopicForm } from "@code-notes/ui/components/organisms/TopicForm/TopicForm";
 import type { Topic } from "@code-notes/shared";
-import { Button } from "@code-notes/ui/components/ui/button";
-import { Input } from "@code-notes/ui/components/ui/input";
+
+import { Modal, TopicForm, Button, Input } from "@code-notes/ui/components";
 
 export const TopicsPage = () => {
+  const { to } = useNav();
   const {
     topics,
     topicsSearchResults,
@@ -107,7 +107,7 @@ export const TopicsPage = () => {
               asChild
               className="inline-flex items-center gap-2"
             >
-              <Link to="/settings">
+              <Link to={to("settings")}>
                 <Settings className="w-5 h-5" />
                 Go to Settings
               </Link>
@@ -146,19 +146,19 @@ export const TopicsPage = () => {
           </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild className="flex items-center gap-2">
-              <Link to="/progress" aria-label="View Progress Dashboard">
+              <Link to={to("progress")} aria-label="View Progress Dashboard">
                 <TrendingUp className="w-5 h-5" />
                 <span className="hidden sm:inline">Progress</span>
               </Link>
             </Button>
             <Button asChild className="flex items-center gap-2">
-              <Link to="/quiz" aria-label="Start Quiz">
+              <Link to={to("quiz")} aria-label="Start Quiz">
                 <Target className="w-5 h-5" />
                 <span className="hidden sm:inline">Quiz</span>
               </Link>
             </Button>
             <Button asChild className="flex items-center gap-2">
-              <Link to="/settings" aria-label="Open Settings">
+              <Link to={to("settings")} aria-label="Open Settings">
                 <Settings className="w-5 h-5" />
                 <span className="hidden sm:inline">Settings</span>
               </Link>
@@ -168,7 +168,7 @@ export const TopicsPage = () => {
               asChild
               className="flex items-center gap-2"
             >
-              <Link to="/import" aria-label="Import Questions">
+              <Link to={to("import")} aria-label="Import Questions">
                 <Upload className="w-5 h-5" />
                 <span className="hidden sm:inline">Import</span>
               </Link>
@@ -287,7 +287,7 @@ export const TopicsPage = () => {
 
                   {/* Clickable card content */}
                   <Link
-                    to={`/topics/${topic.id}`}
+                    to={to(`topics/${topic.id}`)}
                     className="block cursor-pointer"
                   >
                     <div className="flex items-start gap-3">

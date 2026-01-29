@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import { useNav } from "@code-notes/ui/hooks/useNav";
 import { useStore } from "@code-notes/ui/store";
 import {
   ArrowLeft,
@@ -11,17 +12,20 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { MarkdownRenderer } from "@code-notes/ui/components/molecules/MarkdownRenderer/MarkdownRenderer";
-import { Modal } from "@code-notes/ui/components/molecules/Modal/Modal";
-import { QuestionForm } from "@code-notes/ui/components/organisms/QuestionForm/QuestionForm";
-import { ProgressBadge } from "@code-notes/ui/components/molecules/ProgressBadge/ProgressBadge";
-import { ConfidenceRating } from "@code-notes/ui/components/molecules/ConfidenceRating/ConfidenceRating";
+import {
+  Modal,
+  MarkdownRenderer,
+  Button,
+  QuestionForm,
+  ProgressBadge,
+  ConfidenceRating,
+} from "@code-notes/ui/components";
+
 import type { ProgressStatus } from "@code-notes/shared";
-import { Button } from "@code-notes/ui/components/ui/button";
 
 export const QuestionDetailPage = () => {
   const { questionId } = useParams<{ questionId: string }>();
-  const navigate = useNavigate();
+  const { to, nav } = useNav();
   const {
     currentQuestion,
     questions,
@@ -107,7 +111,7 @@ export const QuestionDetailPage = () => {
     if (questionId && currentQuestion) {
       try {
         await deleteQuestion(questionId);
-        navigate(`/topics/${currentQuestion.topicId}`);
+        nav(`topics/${currentQuestion.topicId}`);
       } catch (err) {
         console.error("Failed to delete question:", err);
       }
@@ -144,7 +148,7 @@ export const QuestionDetailPage = () => {
           <p className="text-destructive mb-4">
             {error || "Question not found"}
           </p>
-          <Button onClick={() => navigate("/")}>Back to Topics</Button>
+          <Button onClick={() => nav("")}>Back to Topics</Button>
         </div>
       </div>
     );
@@ -157,7 +161,7 @@ export const QuestionDetailPage = () => {
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4 mr-7">
             <div className="flex items-center gap-2">
               <Link
-                to={`/topics/${currentQuestion.topicId}`}
+                to={to(`topics/${currentQuestion.topicId}`)}
                 className="inline-flex items-center gap-2 text-sm px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[var(--color-bg-muted)] border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
                 title="Back to Questions"
               >
@@ -169,7 +173,7 @@ export const QuestionDetailPage = () => {
               <div className="flex items-center gap-1 border border-input rounded-md overflow-hidden">
                 <Button
                   onClick={() =>
-                    prevQuestionId && navigate(`/questions/${prevQuestionId}`)
+                    prevQuestionId && nav(`questions/${prevQuestionId}`)
                   }
                   disabled={!prevQuestionId}
                   variant="secondary"
@@ -182,7 +186,7 @@ export const QuestionDetailPage = () => {
                 </Button>
                 <Button
                   onClick={() =>
-                    nextQuestionId && navigate(`/questions/${nextQuestionId}`)
+                    nextQuestionId && nav(`questions/${nextQuestionId}`)
                   }
                   disabled={!nextQuestionId}
                   variant="secondary"

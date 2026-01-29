@@ -1,8 +1,12 @@
 ﻿import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import { useNav } from "@code-notes/ui/hooks/useNav";
 import { useStore } from "@code-notes/ui/store";
-import { MarkdownRenderer } from "@code-notes/ui/components/molecules/MarkdownRenderer/MarkdownRenderer";
-import { ConfidenceRating } from "@code-notes/ui/components/molecules/ConfidenceRating/ConfidenceRating";
+import {
+  MarkdownRenderer,
+  ConfidenceRating,
+  Button,
+} from "@code-notes/ui/components";
 import {
   ChevronRight,
   Eye,
@@ -12,11 +16,10 @@ import {
   Flag,
   ArrowLeft,
 } from "lucide-react";
-import { Button } from "@code-notes/ui/components/ui/button";
 
 export const QuizSessionPage = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
-  const navigate = useNavigate();
+  const { to, nav } = useNav();
 
   const {
     activeSession,
@@ -82,7 +85,7 @@ export const QuizSessionPage = () => {
   const handleComplete = async () => {
     try {
       const completed = await completeQuiz();
-      navigate(`/quiz/results/${completed.id}`);
+      nav(`quiz/results/${completed.id}`);
     } catch (error) {
       console.error("Failed to complete quiz:", error);
     }
@@ -115,7 +118,7 @@ export const QuizSessionPage = () => {
             No active quiz session
           </p>
           <Button
-            onClick={() => navigate("/quiz")}
+            onClick={() => nav("quiz")}
             className="clay-card px-6 py-3"
             style={{
               backgroundColor: "var(--color-primary)",
@@ -135,7 +138,7 @@ export const QuizSessionPage = () => {
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <Link
-        to="/quiz"
+        to={to("quiz")}
         className="inline-flex items-center gap-2 text-sm mb-6 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[var(--color-bg-muted)] border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" />

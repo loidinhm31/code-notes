@@ -1,12 +1,12 @@
 ﻿import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNav } from "@code-notes/ui/hooks/useNav";
 import { useStore } from "@code-notes/ui/store";
-import { ProgressBadge } from "@code-notes/ui/components/molecules/ProgressBadge/ProgressBadge";
 import { TrendingUp, Target, Clock, Award, ArrowLeft } from "lucide-react";
-import { Button } from "@code-notes/ui/components/ui/button";
+import { Button, ProgressBadge } from "@code-notes/ui/components";
 
 export const ProgressDashboardPage = () => {
-  const navigate = useNavigate();
+  const { to, nav } = useNav();
   const {
     fetchAllProgress,
     fetchStatistics,
@@ -79,7 +79,10 @@ export const ProgressDashboardPage = () => {
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
         <div className="mb-8">
           <Button asChild className="mb-4">
-            <Link to="/" className="inline-flex items-center gap-2 text-sm">
+            <Link
+              to={to("")}
+              className="inline-flex items-center gap-2 text-sm"
+            >
               <ArrowLeft className="w-4 h-4" />
               Back to Topics
             </Link>
@@ -246,7 +249,7 @@ export const ProgressDashboardPage = () => {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Button
-            onClick={() => navigate("/quiz")}
+            onClick={() => nav("quiz")}
             className="clay-card p-6 text-left transition-all duration-200 hover:scale-105 h-auto"
             style={{
               backgroundColor: "var(--color-primary)",

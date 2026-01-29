@@ -3,7 +3,8 @@
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@code-notes/ui/components/ui/dialog";
+  DialogDescription,
+} from "@code-notes/ui/components";
 
 interface ModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
       <DialogContent className="safe-area-inset max-h-[90vh] overflow-y-auto flex flex-col max-w-2xl">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>{title}</DialogTitle>
+          <DialogDescription className="sr-only">{title}</DialogDescription>
         </DialogHeader>
         <div className="flex-1 overflow-y-auto">{children}</div>
       </DialogContent>

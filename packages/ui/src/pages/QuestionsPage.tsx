@@ -1,20 +1,22 @@
 ﻿import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useNav } from "@code-notes/ui/hooks/useNav";
 import { useStore } from "@code-notes/ui/store";
 import { ArrowLeft, Plus } from "lucide-react";
-import { Modal } from "@code-notes/ui/components/molecules/Modal/Modal";
-import { QuestionForm } from "@code-notes/ui/components/organisms/QuestionForm/QuestionForm";
-import { Button } from "@code-notes/ui/components/ui/button";
-import { Input } from "@code-notes/ui/components/ui/input";
 import {
+  Input,
+  Button,
   Select,
+  Modal,
+  QuestionForm,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@code-notes/ui/components/ui/select";
+} from "@code-notes/ui/components";
 
 export const QuestionsPage = () => {
+  const { to } = useNav();
   const { topicId } = useParams<{ topicId: string }>();
   const {
     questions,
@@ -90,7 +92,7 @@ export const QuestionsPage = () => {
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
         <Link
-          to="/"
+          to={to("")}
           className="inline-flex items-center gap-2 text-sm mb-4 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[var(--color-bg-muted)] border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -244,7 +246,7 @@ export const QuestionsPage = () => {
             {displayQuestions.map((question) => (
               <Link
                 key={question.id}
-                to={`/questions/${question.id}`}
+                to={to(`questions/${question.id}`)}
                 className="clay-card block p-5 cursor-pointer"
               >
                 <div className="flex items-start gap-4">

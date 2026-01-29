@@ -5,12 +5,13 @@
  * It sets up all necessary services and providers.
  */
 
-import { useMemo } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { PlatformProvider } from "../platform/PlatformContext";
 import type { IPlatformServices } from "../platform/PlatformContext";
 import App from "../App";
 import type { CodeNotesEmbedProps } from "./types";
+import { BasePathContext, PortalContainerContext } from "../hooks/useNav";
 
 // Adapters
 import {
@@ -79,16 +80,29 @@ export function CodeNotesApp({
     return webPlatform;
   }, []);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(
+    null,
+  );
+
+  useEffect(() => {
+    setPortalContainer(containerRef.current);
+  }, []);
+
   const content = <App />;
 
   return (
-    <div className={className}>
+    <div ref={containerRef} className={className}>
       <PlatformProvider services={platform}>
-        {useRouter ? (
-          <BrowserRouter basename={basePath}>{content}</BrowserRouter>
-        ) : (
-          content
-        )}
+        <BasePathContext.Provider value={basePath || ""}>
+          <PortalContainerContext.Provider value={portalContainer}>
+            {useRouter ? (
+              <BrowserRouter basename={basePath}>{content}</BrowserRouter>
+            ) : (
+              content
+            )}
+          </PortalContainerContext.Provider>
+        </BasePathContext.Provider>
       </PlatformProvider>
     </div>
   );
