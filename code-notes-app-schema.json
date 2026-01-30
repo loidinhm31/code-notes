@@ -1,0 +1,62 @@
+{
+  "appId": "code-notes",
+  "schema": {
+    "topics": {
+      "columns": [
+        { "name": "name", "type": "string", "nullable": false },
+        { "name": "description", "type": "string", "nullable": true },
+        { "name": "slug", "type": "string", "nullable": false },
+        { "name": "icon", "type": "string", "nullable": true },
+        { "name": "color", "type": "string", "nullable": true },
+        { "name": "subtopics", "type": "string", "nullable": true },
+        { "name": "orderIndex", "type": "integer", "nullable": false },
+        { "name": "createdAt", "type": "string", "nullable": false },
+        { "name": "updatedAt", "type": "string", "nullable": false }
+      ],
+      "primaryKey": "rowId"
+    },
+    "questions": {
+      "columns": [
+        { "name": "topicSyncUuid", "type": "string", "nullable": false },
+        { "name": "subtopic", "type": "string", "nullable": true },
+        { "name": "questionNumber", "type": "integer", "nullable": false },
+        { "name": "question", "type": "string", "nullable": false },
+        { "name": "answer", "type": "string", "nullable": false },
+        { "name": "tags", "type": "string", "nullable": true },
+        { "name": "difficulty", "type": "string", "nullable": true },
+        { "name": "orderIndex", "type": "integer", "nullable": false },
+        { "name": "createdAt", "type": "string", "nullable": false },
+        { "name": "updatedAt", "type": "string", "nullable": false }
+      ],
+      "primaryKey": "rowId"
+    },
+    "progress": {
+      "columns": [
+        { "name": "questionSyncUuid", "type": "string", "nullable": false },
+        { "name": "topicSyncUuid", "type": "string", "nullable": false },
+        { "name": "status", "type": "string", "nullable": false },
+        { "name": "confidenceLevel", "type": "integer", "nullable": false },
+        { "name": "timesReviewed", "type": "integer", "nullable": false },
+        { "name": "timesCorrect", "type": "integer", "nullable": false },
+        { "name": "timesIncorrect", "type": "integer", "nullable": false },
+        { "name": "lastReviewedAt", "type": "string", "nullable": true },
+        { "name": "nextReviewAt", "type": "string", "nullable": true },
+        { "name": "createdAt", "type": "string", "nullable": false },
+        { "name": "updatedAt", "type": "string", "nullable": false }
+      ],
+      "primaryKey": "rowId"
+    },
+    "quiz_sessions": {
+      "columns": [
+        { "name": "sessionType", "type": "string", "nullable": false },
+        { "name": "topicIds", "type": "string", "nullable": true },
+        { "name": "questionIds", "type": "string", "nullable": true },
+        { "name": "currentIndex", "type": "integer", "nullable": false },
+        { "name": "startedAt", "type": "string", "nullable": false },
+        { "name": "completedAt", "type": "string", "nullable": true },
+        { "name": "results", "type": "string", "nullable": true }
+      ],
+      "primaryKey": "rowId"
+    }
+  }
+}
