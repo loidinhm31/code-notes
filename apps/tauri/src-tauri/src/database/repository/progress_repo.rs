@@ -62,7 +62,7 @@ impl ProgressRepository {
     }
 
     pub fn get_all(&self) -> Result<Vec<QuestionProgress>, String> {
-        self.query_progress("SELECT * FROM progress", params![])
+        self.query_progress("SELECT * FROM progress WHERE deleted = 0 OR deleted IS NULL", params![])
     }
 
     pub fn get_by_question_id(
@@ -144,8 +144,8 @@ impl ProgressRepository {
         // Using INSERT OR REPLACE to handle both creation and update
         conn.execute(
             "INSERT OR REPLACE INTO progress (
-               question_id, topic_id, status, confidence_level, times_reviewed, times_correct, times_incorrect, last_reviewed_at, next_review_at, created_at, updated_at
-            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+               question_id, topic_id, status, confidence_level, times_reviewed, times_correct, times_incorrect, last_reviewed_at, next_review_at, created_at, updated_at, sync_version, synced_at
+            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, COALESCE((SELECT sync_version FROM progress WHERE question_id = ?1), 0) + 1, NULL)",
             params![
                 current.question_id,
                 current.topic_id,
@@ -188,7 +188,7 @@ impl ProgressRepository {
         let status_str = format!("{:?}", current.status);
 
         conn.execute(
-            "UPDATE progress SET status=?, confidence_level=?, times_reviewed=?, times_correct=?, times_incorrect=?, last_reviewed_at=?, next_review_at=?, updated_at=? WHERE question_id=?",
+            "UPDATE progress SET status=?, confidence_level=?, times_reviewed=?, times_correct=?, times_incorrect=?, last_reviewed_at=?, next_review_at=?, updated_at=?, synced_at=NULL, sync_version=COALESCE(sync_version, 0)+1 WHERE question_id=?",
             params![status_str, 0, 0, 0, 0, Option::<String>::None, Option::<String>::None, current.updated_at, question_id]
         ).map_err(|e| e.to_string())?;
 
@@ -332,9 +332,10 @@ impl ProgressRepository {
             let now = Utc::now().to_rfc3339();
             // Prepare batch insert?
             for (qid, tid) in missing {
+                let progress_id = uuid::Uuid::new_v4().to_string();
                 conn.execute(
-                     "INSERT INTO progress (question_id, topic_id, status, confidence_level, times_reviewed, times_correct, times_incorrect, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                     params![qid, tid, "NotStudied", 0, 0, 0, 0, now, now]
+                     "INSERT INTO progress (question_id, topic_id, status, confidence_level, times_reviewed, times_correct, times_incorrect, created_at, updated_at, id, sync_version, synced_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NULL)",
+                     params![qid, tid, "NotStudied", 0, 0, 0, 0, now, now, progress_id]
                  ).map_err(|e| e.to_string())?;
             }
         }

@@ -1,10 +1,10 @@
 ﻿import { StateCreator } from "zustand";
-import { getQuestionsService, getQueryService } from "@code-notes/ui/services";
 import type {
   Question,
   CreateQuestionDto,
   UpdateQuestionDto,
 } from "@code-notes/shared";
+import { getQueryService, getQuestionsService } from "@code-notes/ui/adapters";
 
 export interface QuestionFilters {
   keyword: string;

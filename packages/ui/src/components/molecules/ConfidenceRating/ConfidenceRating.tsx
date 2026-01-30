@@ -1,5 +1,5 @@
 ﻿import { Star } from "lucide-react";
-import { Button } from "@code-notes/ui/components/ui/button";
+import { Button } from "@code-notes/ui/components";
 
 interface ConfidenceRatingProps {
   value: number; // 0-5

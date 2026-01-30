@@ -1,16 +1,5 @@
-import type {
-  ITopicsService,
-  IQuestionsService,
-  ImportResult,
-} from "../interfaces";
-import { getTopicsService, getQuestionsService } from "../ServiceFactory";
-
-// Regex for parsing the markdown format
-// Matches: ## Topic Name
-// Matches: ### Question?
-// Matches: **Answer:** Answer text
-// Matches: ```code```
-const TOPIC_REGEX = /^##\s+(.+)$/gm;
+import { getQuestionsService, getTopicsService } from "@code-notes/ui/adapters";
+import { ImportResult } from "@code-notes/ui/adapters";
 
 interface ParsedQuestion {
   question: string;

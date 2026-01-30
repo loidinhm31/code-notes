@@ -1,6 +1,6 @@
 ﻿import { StateCreator } from "zustand";
-import { getTopicsService, getQueryService } from "@code-notes/ui/services";
-import type { Topic, CreateTopicDto, UpdateTopicDto } from "@code-notes/shared";
+import { getQueryService, getTopicsService } from "@code-notes/ui/adapters";
+import type { CreateTopicDto, Topic, UpdateTopicDto } from "@code-notes/shared";
 
 export interface TopicsSlice {
   topics: Topic[];

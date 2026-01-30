@@ -8,7 +8,9 @@
   "exports": {
     ".": "./src/index.ts",
     "./types": "./src/types/index.ts",
-    "./utils": "./src/utils/index.ts"
+    "./utils": "./src/utils/index.ts",
+    "./services": "./src/services/index.ts",
+    "./constants": "./src/constants/index.ts"
   },
   "scripts": {
     "build": "tsc",
@@ -22,6 +24,7 @@
     "@code-notes/eslint-config": "workspace:*"
   },
   "dependencies": {
+    "@qm-center/sync-client-types": "^0.2.0",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.4.0"
   }

@@ -26,11 +26,13 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tokio = { version = "1", features = ["full"] }
 regex = "1"
-url = "2.5"
 uuid = { version = "1.6", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 jql-runner = "8"
-lru = "0.12"
 rand = "0.8"
 rusqlite = { version = "0.38.0", features = ["bundled"] }
+qm-sync-client = { version = "0.1.0", features = ["reqwest-client"] }
+tauri-plugin-store = "2"
+jsonwebtoken = "9"
 
+[workspace]

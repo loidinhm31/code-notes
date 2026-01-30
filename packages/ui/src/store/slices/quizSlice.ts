@@ -1,5 +1,5 @@
 ﻿import { StateCreator } from "zustand";
-import { getQuizService, getProgressService } from "@code-notes/ui/services";
+import { getQuizService, getProgressService } from "@code-notes/ui/adapters";
 import type {
   QuizSession,
   CreateQuizSessionDto,

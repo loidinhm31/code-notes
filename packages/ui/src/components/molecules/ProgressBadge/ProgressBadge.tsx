@@ -1,6 +1,6 @@
 ﻿import { Star } from "lucide-react";
 import type { ProgressStatus } from "@code-notes/shared";
-import { Badge } from "@code-notes/ui/components/ui/badge";
+import { Badge } from "@code-notes/ui/components";
 
 interface ProgressBadgeProps {
   status: ProgressStatus;

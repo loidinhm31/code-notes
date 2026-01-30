@@ -1,4 +1,4 @@
-import {
+import type {
   ITopicsService,
   IQuestionsService,
   IQueryService,
@@ -6,7 +6,10 @@ import {
   IQuizService,
   IFileSystemService,
   IDataManagementService,
-} from "../services/interfaces";
+  ISyncService,
+} from "./interfaces";
+import type { IAuthService } from "@code-notes/shared";
+import { QmServerAuthAdapter } from "./shared";
 
 let topicsService: ITopicsService | null = null;
 let questionsService: IQuestionsService | null = null;
@@ -15,6 +18,8 @@ let progressService: IProgressService | null = null;
 let quizService: IQuizService | null = null;
 let fileSystemService: IFileSystemService | null = null;
 let dataManagementService: IDataManagementService | null = null;
+let syncService: ISyncService | null = null;
+let authService: IAuthService | null = null;
 
 export const setTopicsService = (service: ITopicsService) => {
   topicsService = service;
@@ -78,4 +83,32 @@ export const getDataManagementService = (): IDataManagementService => {
   if (!dataManagementService)
     throw new Error("DataManagementService not initialized");
   return dataManagementService;
+};
+
+export const setSyncService = (service: ISyncService) => {
+  syncService = service;
+};
+
+export const getSyncService = (): ISyncService => {
+  if (!syncService) throw new Error("SyncService not initialized");
+  return syncService;
+};
+
+export const getSyncServiceOptional = (): ISyncService | null => {
+  return syncService;
+};
+
+export const setAuthService = (service: IAuthService) => {
+  authService = service;
+};
+
+export const getAuthService = (): IAuthService => {
+  if (!authService) {
+    authService = new QmServerAuthAdapter();
+  }
+  return authService;
+};
+
+export const getAuthServiceOptional = (): IAuthService | null => {
+  return authService;
 };

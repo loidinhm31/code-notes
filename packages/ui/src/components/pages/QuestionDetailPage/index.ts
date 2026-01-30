@@ -1,0 +1,1 @@
+export { QuestionDetailPage } from "./QuestionDetailPage";

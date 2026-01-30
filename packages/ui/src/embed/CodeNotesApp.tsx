@@ -5,41 +5,51 @@
  * It sets up all necessary services and providers.
  */
 
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
-import { PlatformProvider } from "../platform/PlatformContext";
-import type { IPlatformServices } from "../platform/PlatformContext";
+import type { IPlatformServices } from "@code-notes/ui/platform";
+import { PlatformProvider } from "@code-notes/ui/platform";
 import App from "../App";
 import type { CodeNotesEmbedProps } from "./types";
-import { BasePathContext, PortalContainerContext } from "../hooks/useNav";
+import {
+  BasePathContext,
+  PortalContainerContext,
+} from "@code-notes/ui/hooks/useNav";
 
 // Adapters
 import {
-  setTopicsService,
-  setQuestionsService,
-  setQueryService,
-  setProgressService,
-  setQuizService,
+  getAuthService,
   setDataManagementService,
-} from "../adapters/ServiceFactory";
+  setProgressService,
+  setQueryService,
+  setQuestionsService,
+  setQuizService,
+  setSyncService,
+  setTopicsService,
+} from "@code-notes/ui/adapters";
+import { QmServerAuthAdapter } from "@code-notes/ui/adapters/shared";
 
-// Web services
-import { WebTopicsService } from "../services/web/WebTopicsService";
-import { WebQuestionsService } from "../services/web/WebQuestionsService";
-import { WebDataManagementService } from "../services/web/WebDataManagementService";
-import { WebQueryService } from "../adapters/web/WebQueryService";
-import { WebProgressService } from "../adapters/web/WebProgressService";
-import { WebQuizService } from "../adapters/web/WebQuizService";
-import { webPlatform } from "../adapters/web/StorageAdapter";
+// Web adapters
+import { WebTopicsAdapter } from "@code-notes/ui/adapters/web";
+import { WebQuestionsAdapter } from "@code-notes/ui/adapters/web";
+import { WebDataManagementAdapter } from "@code-notes/ui/adapters/web";
+import { WebQueryAdapter } from "@code-notes/ui/adapters/web";
+import { WebProgressAdapter } from "@code-notes/ui/adapters/web";
+import { WebQuizAdapter } from "@code-notes/ui/adapters/web";
+import { webPlatform } from "@code-notes/ui/adapters/web";
+import { IndexedDBSyncAdapter } from "@code-notes/ui/adapters/web";
+import { env } from "@code-notes/shared";
 
-// Tauri services
-import { topicsService as tauriTopicsService } from "../services/tauri/topics.service";
-import { questionsService as tauriQuestionsService } from "../services/tauri/questions.service";
-import { queryService as tauriQueryService } from "../services/tauri/query.service";
-import { progressService as tauriProgressService } from "../services/tauri/progress.service";
-import { quizService as tauriQuizService } from "../services/tauri/quiz.service";
-import { TauriDataManagementService } from "../services/tauri/TauriDataManagementService";
-import { tauriPlatform } from "../adapters/tauri/PlatformAdapter";
+// Tauri adapters
+import {
+  topicsService as tauriTopicsService,
+  questionsService as tauriQuestionsService,
+  queryService as tauriQueryService,
+  progressService as tauriProgressService,
+  quizService as tauriQuizService,
+  TauriDataManagementService,
+} from "@code-notes/ui/adapters/tauri";
+import { tauriPlatform } from "@code-notes/ui/adapters/tauri";
 
 /**
  * Check if running in Tauri
@@ -71,12 +81,28 @@ export function CodeNotesApp({
       return tauriPlatform;
     }
 
-    setTopicsService(new WebTopicsService());
-    setQuestionsService(new WebQuestionsService());
-    setQueryService(new WebQueryService());
-    setProgressService(new WebProgressService());
-    setQuizService(new WebQuizService());
-    setDataManagementService(new WebDataManagementService());
+    setTopicsService(new WebTopicsAdapter());
+    setQuestionsService(new WebQuestionsAdapter());
+    setQueryService(new WebQueryAdapter());
+    setProgressService(new WebProgressAdapter());
+    setQuizService(new WebQuizAdapter());
+    setDataManagementService(new WebDataManagementAdapter());
+
+    // Initialize auth service and sync service
+    // Auth service is the single source of truth for tokens
+    const auth = getAuthService() as QmServerAuthAdapter;
+
+    const syncAdapter = new IndexedDBSyncAdapter({
+      serverUrl: env.serverUrl,
+      appId: env.appId,
+      apiKey: env.apiKey,
+      getTokens: () => auth.getTokens(),
+      saveTokens: (accessToken, refreshToken, userId) =>
+        auth.saveTokensExternal(accessToken, refreshToken, userId),
+    });
+
+    setSyncService(syncAdapter);
+
     return webPlatform;
   }, []);
 

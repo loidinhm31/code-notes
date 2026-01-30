@@ -8,15 +8,18 @@
   "exports": {
     ".": "./src/index.ts",
     "./components": "./src/components/index.ts",
-    "./pages": "./src/pages/index.ts",
-    "./hooks/*": "./src/hooks/*",
+    "./hooks/useNav": "./src/hooks/useNav.ts",
     "./styles": "./src/styles/globals.css",
     "./platform": "./src/platform/index.ts",
     "./services": "./src/services/index.ts",
     "./adapters": "./src/adapters/index.ts",
+    "./adapters/web": "./src/adapters/web/index.ts",
+    "./adapters/tauri": "./src/adapters/tauri/index.ts",
+    "./adapters/interfaces": "./src/adapters/interfaces/index.ts",
+    "./adapters/shared": "./src/adapters/shared/index.ts",
     "./embed": "./src/embed/index.ts",
     "./store": "./src/store/index.ts",
-    "./lib/*": "./src/lib/*"
+    "./lib/utils": "./src/lib/utils.ts"
   },
   "scripts": {
     "build": "tsc",

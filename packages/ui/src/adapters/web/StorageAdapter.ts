@@ -1,4 +1,4 @@
-import { IPlatformServices } from "../../platform/PlatformContext";
+import { IPlatformServices } from "@code-notes/ui/platform";
 
 export class LocalStorageAdapter {
   async getItem(key: string): Promise<string | null> {

@@ -20,13 +20,12 @@ export const config = [
             },
         },
     },
+    pluginReactHooks.configs["recommended-latest"],
     {
         plugins: {
-            "react-hooks": pluginReactHooks,
             "react-refresh": pluginReactRefresh,
         },
         rules: {
-            ...pluginReactHooks.configs.recommended.rules,
             "react-refresh/only-export-components": [
                 "warn",
                 { allowConstantExport: true },

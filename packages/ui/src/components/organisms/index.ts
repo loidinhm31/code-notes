@@ -1,3 +1,4 @@
-export * from "./ImportForm/ImportForm";
-export * from "./QuestionForm/QuestionForm";
-export * from "./TopicForm/TopicForm";
+export * from "./ImportForm";
+export * from "./QuestionForm";
+export * from "./TopicForm";
+export * from "./SyncSettings";

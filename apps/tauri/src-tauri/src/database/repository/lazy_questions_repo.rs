@@ -17,20 +17,20 @@ impl LazyQuestionsRepository {
 
     pub fn get_all(&self) -> Result<Vec<Question>, String> {
         self.query_questions(
-            "SELECT * FROM questions ORDER BY topic_id, order_index",
+            "SELECT * FROM questions WHERE deleted = 0 OR deleted IS NULL ORDER BY topic_id, order_index",
             params![],
         )
     }
 
     pub fn get_by_id(&self, id: &str) -> Result<Option<Question>, String> {
         let questions =
-            self.query_questions("SELECT * FROM questions WHERE id = ?", params![id])?;
+            self.query_questions("SELECT * FROM questions WHERE id = ? AND (deleted = 0 OR deleted IS NULL)", params![id])?;
         Ok(questions.into_iter().next())
     }
 
     pub fn get_by_topic_id(&self, topic_id: &str) -> Result<Vec<Question>, String> {
         self.query_questions(
-            "SELECT * FROM questions WHERE topic_id = ? ORDER BY order_index",
+            "SELECT * FROM questions WHERE topic_id = ? AND (deleted = 0 OR deleted IS NULL) ORDER BY order_index",
             params![topic_id],
         )
     }
@@ -130,8 +130,8 @@ impl LazyQuestionsRepository {
 
         conn.execute(
             "INSERT INTO questions (
-                id, topic_id, subtopic, question_number, question, answer, tags, difficulty, order_index, created_at, updated_at
-            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+                id, topic_id, subtopic, question_number, question, answer, tags, difficulty, order_index, created_at, updated_at, sync_version, synced_at
+            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, 1, NULL)",
             params![
                 id,
                 dto.topic_id,
@@ -255,7 +255,7 @@ impl LazyQuestionsRepository {
             None
         };
 
-        let mut set_clauses = vec!["updated_at = ?".to_string()];
+        let mut set_clauses = vec!["updated_at = ?".to_string(), "synced_at = NULL".to_string(), "sync_version = COALESCE(sync_version, 0) + 1".to_string()];
         let mut params_vec: Vec<Box<dyn rusqlite::ToSql>> = vec![Box::new(now.clone())];
 
         if let Some(tid) = &dto.topic_id {
@@ -314,9 +314,23 @@ impl LazyQuestionsRepository {
     pub fn delete(&self, id: &str) -> Result<bool, String> {
         let conn = self.db.get_connection();
         let conn = conn.lock().unwrap();
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_secs() as i64)
+            .unwrap_or(0);
 
+        // Soft-delete child progress
+        conn.execute(
+            "UPDATE progress SET deleted = 1, deleted_at = ?, synced_at = NULL, sync_version = COALESCE(sync_version, 0) + 1 WHERE question_id = ? AND (deleted = 0 OR deleted IS NULL)",
+            params![now, id],
+        ).map_err(|e| e.to_string())?;
+
+        // Soft-delete the question
         let count = conn
-            .execute("DELETE FROM questions WHERE id = ?", params![id])
+            .execute(
+                "UPDATE questions SET deleted = 1, deleted_at = ?, synced_at = NULL, sync_version = COALESCE(sync_version, 0) + 1 WHERE id = ?",
+                params![now, id],
+            )
             .map_err(|e| e.to_string())?;
         Ok(count > 0)
     }
@@ -348,7 +362,7 @@ impl LazyQuestionsRepository {
         // SQLite doesn't have easy JSON search, so we check question text and maybe answer text (which is JSON string)
         // Or if answer is markdown inside JSON, simple LIKE works on the JSON string too.
         self.query_questions(
-            "SELECT * FROM questions WHERE question LIKE ? OR answer LIKE ?",
+            "SELECT * FROM questions WHERE (deleted = 0 OR deleted IS NULL) AND (question LIKE ? OR answer LIKE ?)",
             params![keyword_param, keyword_param],
         )
     }

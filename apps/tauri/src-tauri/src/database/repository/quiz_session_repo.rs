@@ -90,7 +90,7 @@ impl QuizSessionRepository {
         let type_str = format!("{:?}", session.session_type); // assuming Debug
 
         conn.execute(
-            "INSERT INTO quiz_sessions (id, session_type, topic_ids, question_ids, current_index, started_at, completed_at, results) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO quiz_sessions (id, session_type, topic_ids, question_ids, current_index, started_at, completed_at, results, sync_version, synced_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, NULL)",
             params![session.id, type_str, topic_ids_json, question_ids_json, session.current_index, session.started_at, session.completed_at, results_json]
         ).map_err(|e| e.to_string())?;
 
@@ -104,7 +104,7 @@ impl QuizSessionRepository {
     }
 
     pub fn get_active(&self) -> Result<Option<QuizSession>, String> {
-        let sessions = self.query_sessions("SELECT * FROM quiz_sessions WHERE completed_at IS NULL ORDER BY started_at DESC LIMIT 1", params![])?;
+        let sessions = self.query_sessions("SELECT * FROM quiz_sessions WHERE completed_at IS NULL AND (deleted = 0 OR deleted IS NULL) ORDER BY started_at DESC LIMIT 1", params![])?;
         Ok(sessions.into_iter().next())
     }
 
@@ -132,7 +132,7 @@ impl QuizSessionRepository {
         let results_json = serde_json::to_string(&session.results).unwrap();
 
         conn.execute(
-            "UPDATE quiz_sessions SET results = ?, current_index = ? WHERE id = ?",
+            "UPDATE quiz_sessions SET results = ?, current_index = ?, synced_at = NULL, sync_version = COALESCE(sync_version, 0) + 1 WHERE id = ?",
             params![results_json, session.current_index, session_id],
         )
         .map_err(|e| e.to_string())?;
@@ -152,7 +152,7 @@ impl QuizSessionRepository {
         let conn = self.db.get_connection();
         let conn = conn.lock().unwrap();
         conn.execute(
-            "UPDATE quiz_sessions SET completed_at = ? WHERE id = ?",
+            "UPDATE quiz_sessions SET completed_at = ?, synced_at = NULL, sync_version = COALESCE(sync_version, 0) + 1 WHERE id = ?",
             params![now, session_id],
         )
         .map_err(|e| e.to_string())?;

@@ -18,8 +18,8 @@ impl LazyTopicsRepository {
         let conn = conn.lock().unwrap();
 
         let mut stmt = conn.prepare(
-            "SELECT id, name, description, slug, icon, color, subtopics, order_index, created_at, updated_at 
-             FROM topics ORDER BY order_index ASC"
+            "SELECT id, name, description, slug, icon, color, subtopics, order_index, created_at, updated_at
+             FROM topics WHERE deleted = 0 OR deleted IS NULL ORDER BY order_index ASC"
         ).map_err(|e| e.to_string())?;
 
         let topic_iter = stmt
@@ -102,8 +102,8 @@ impl LazyTopicsRepository {
 
         conn.execute(
             "INSERT INTO topics (
-                id, name, description, slug, icon, color, subtopics, order_index, created_at, updated_at
-            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+                id, name, description, slug, icon, color, subtopics, order_index, created_at, updated_at, sync_version, synced_at
+            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, 1, NULL)",
             params![
                 id,
                 dto.name,
@@ -173,7 +173,7 @@ impl LazyTopicsRepository {
         // But `UpdateTopicDto` has `Option`s.
 
         // Let's construct SQL.
-        let mut set_clauses = vec!["updated_at = ?1".to_string()];
+        let mut set_clauses = vec!["updated_at = ?1".to_string(), "synced_at = NULL".to_string(), "sync_version = COALESCE(sync_version, 0) + 1".to_string()];
         let mut param_values: Vec<Box<dyn rusqlite::ToSql>> = vec![Box::new(now.clone())];
         let mut param_idx = 2;
 
@@ -251,9 +251,29 @@ impl LazyTopicsRepository {
     pub fn delete(&self, id: &str) -> Result<bool, String> {
         let conn = self.db.get_connection();
         let conn = conn.lock().unwrap();
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_secs() as i64)
+            .unwrap_or(0);
 
+        // Soft-delete child questions first
+        conn.execute(
+            "UPDATE questions SET deleted = 1, deleted_at = ?, synced_at = NULL, sync_version = COALESCE(sync_version, 0) + 1 WHERE topic_id = ? AND (deleted = 0 OR deleted IS NULL)",
+            params![now, id],
+        ).map_err(|e| e.to_string())?;
+
+        // Soft-delete child progress
+        conn.execute(
+            "UPDATE progress SET deleted = 1, deleted_at = ?, synced_at = NULL, sync_version = COALESCE(sync_version, 0) + 1 WHERE topic_id = ? AND (deleted = 0 OR deleted IS NULL)",
+            params![now, id],
+        ).map_err(|e| e.to_string())?;
+
+        // Soft-delete the topic
         let count = conn
-            .execute("DELETE FROM topics WHERE id = ?1", params![id])
+            .execute(
+                "UPDATE topics SET deleted = 1, deleted_at = ?, synced_at = NULL, sync_version = COALESCE(sync_version, 0) + 1 WHERE id = ?",
+                params![now, id],
+            )
             .map_err(|e| e.to_string())?;
 
         Ok(count > 0)
@@ -264,9 +284,9 @@ impl LazyTopicsRepository {
         let keyword_param = format!("%{}%", keyword);
 
         let mut stmt = conn.prepare(
-            "SELECT id, name, description, slug, icon, color, subtopics, order_index, created_at, updated_at 
-             FROM topics 
-             WHERE name LIKE ?1 OR description LIKE ?2
+            "SELECT id, name, description, slug, icon, color, subtopics, order_index, created_at, updated_at
+             FROM topics
+             WHERE (deleted = 0 OR deleted IS NULL) AND (name LIKE ?1 OR description LIKE ?2)
              ORDER BY order_index ASC"
         ).map_err(|e| e.to_string())?;
 
