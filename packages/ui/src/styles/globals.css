@@ -2,8 +2,9 @@
 @import "tailwindcss";
 @source "../**";
 
+@custom-variant dark (&:where(.dark, .dark *));
 
-:root {
+@theme {
   /* Tech Learning Aesthetic - Icon-Aligned Color Palette */
   /* Primary - Navy Blue (from icon) */
   --color-primary: #1e40af;
@@ -101,7 +102,7 @@
 }
 
 /* Dark Mode Theme */
-:root.dark {
+.dark {
   /* Primary - Brighter navy for dark mode */
   --color-primary: #3b82f6;
   --color-primary-light: #60a5fa;
@@ -210,6 +211,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -266,9 +268,9 @@
       /* Horizontal lines */
       linear-gradient(90deg, rgba(96, 165, 250, 0.08) 1px, transparent 1px),
       /* Vertical lines */
-        linear-gradient(rgba(96, 165, 250, 0.08) 1px, transparent 1px),
+      linear-gradient(rgba(96, 165, 250, 0.08) 1px, transparent 1px),
       /* Diagonal accent lines */
-        linear-gradient(45deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
+      linear-gradient(45deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
     background-size:
       60px 60px,
       60px 60px,
@@ -304,11 +306,9 @@
     content: "";
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(
-      circle at 0 0,
-      var(--color-secondary) 2px,
-      transparent 2px
-    );
+    background-image: radial-gradient(circle at 0 0,
+        var(--color-secondary) 2px,
+        transparent 2px);
     background-size: 60px 60px;
     opacity: 0.3;
     pointer-events: none;
@@ -397,10 +397,12 @@
   .prose {
     color: var(--color-text-primary);
   }
+
   .prose strong {
     color: var(--color-text-primary);
     font-weight: 600;
   }
+
   .prose h1,
   .prose h2,
   .prose h3,
@@ -411,28 +413,35 @@
     font-family: var(--font-heading);
     font-weight: 700;
   }
+
   .prose code {
     color: var(--color-text-primary);
-    background-color: #adc9ff; /* Specific light mode background for inline code */
+    background-color: #adc9ff;
+    /* Specific light mode background for inline code */
     padding: 0.125rem 0.25rem;
     border-radius: var(--radius-sm);
   }
+
   .prose pre {
     background: var(--color-bg-muted);
     border-radius: var(--radius-md);
   }
 
-/* Dark mode overrides for prose code blocks */
-.dark .prose code {
-  background-color: #68a2ed; /* Specific dark mode background for code */
-}
+  /* Dark mode overrides for prose code blocks */
+  .dark .prose code {
+    background-color: #68a2ed;
+    /* Specific dark mode background for code */
+  }
+
   .prose blockquote {
     border-left-color: var(--color-primary);
   }
+
   .prose a {
     color: var(--color-primary);
     text-underline-offset: 4px;
   }
+
   .prose a:hover {
     text-decoration: underline;
   }
