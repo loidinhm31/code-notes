@@ -1,1 +1,0 @@
-export { ProgressBadge } from "./ProgressBadge";

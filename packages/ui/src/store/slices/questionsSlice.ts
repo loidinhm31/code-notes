@@ -4,7 +4,10 @@ import type {
   CreateQuestionDto,
   UpdateQuestionDto,
 } from "@code-notes/shared";
-import { getQueryService, getQuestionsService } from "@code-notes/ui/adapters";
+import {
+  getQueryService,
+  getQuestionsService,
+} from "@code-notes/ui/adapters/factory";
 
 export interface QuestionFilters {
   keyword: string;

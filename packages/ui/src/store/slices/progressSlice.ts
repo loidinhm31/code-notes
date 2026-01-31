@@ -1,5 +1,5 @@
 ﻿import { StateCreator } from "zustand";
-import { getProgressService } from "@code-notes/ui/adapters";
+import { getProgressService } from "@code-notes/ui/adapters/factory";
 import type {
   QuestionProgress,
   UpdateProgressDto,

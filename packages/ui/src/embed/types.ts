@@ -32,4 +32,10 @@ export interface CodeNotesEmbedProps {
    * Callback when user requests logout.
    */
   onLogoutRequest?: () => void;
+
+  /**
+   * Skip auth check - use when tokens are provided externally (e.g., embedded mode).
+   * Defaults to the value of `embedded` if not specified.
+   */
+  skipAuth?: boolean;
 }

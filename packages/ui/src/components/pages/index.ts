@@ -8,3 +8,4 @@ export * from "./ProgressDashboardPage";
 export * from "./DataManagementPage";
 export * from "./SettingsPage";
 export * from "./ImportPage";
+export * from "./LoginPage";

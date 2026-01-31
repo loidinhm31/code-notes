@@ -9,12 +9,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 import type { IPlatformServices } from "@code-notes/ui/platform";
 import { PlatformProvider } from "@code-notes/ui/platform";
-import App from "../App";
 import type { CodeNotesEmbedProps } from "./types";
-import {
-  BasePathContext,
-  PortalContainerContext,
-} from "@code-notes/ui/hooks/useNav";
+import { BasePathContext, PortalContainerContext } from "@code-notes/ui/hooks";
 
 // Adapters
 import {
@@ -26,30 +22,33 @@ import {
   setQuizService,
   setSyncService,
   setTopicsService,
-} from "@code-notes/ui/adapters";
+} from "@code-notes/ui/adapters/factory";
 import { QmServerAuthAdapter } from "@code-notes/ui/adapters/shared";
 
 // Web adapters
-import { WebTopicsAdapter } from "@code-notes/ui/adapters/web";
-import { WebQuestionsAdapter } from "@code-notes/ui/adapters/web";
-import { WebDataManagementAdapter } from "@code-notes/ui/adapters/web";
-import { WebQueryAdapter } from "@code-notes/ui/adapters/web";
-import { WebProgressAdapter } from "@code-notes/ui/adapters/web";
-import { WebQuizAdapter } from "@code-notes/ui/adapters/web";
-import { webPlatform } from "@code-notes/ui/adapters/web";
-import { IndexedDBSyncAdapter } from "@code-notes/ui/adapters/web";
+import {
+  IndexedDBSyncAdapter,
+  WebDataManagementAdapter,
+  webPlatform,
+  WebProgressAdapter,
+  WebQueryAdapter,
+  WebQuestionsAdapter,
+  WebQuizAdapter,
+  WebTopicsAdapter,
+} from "@code-notes/ui/adapters/web";
 import { env } from "@code-notes/shared";
 
 // Tauri adapters
 import {
-  topicsService as tauriTopicsService,
-  questionsService as tauriQuestionsService,
-  queryService as tauriQueryService,
   progressService as tauriProgressService,
+  queryService as tauriQueryService,
+  questionsService as tauriQuestionsService,
   quizService as tauriQuizService,
   TauriDataManagementService,
+  tauriPlatform,
+  topicsService as tauriTopicsService,
 } from "@code-notes/ui/adapters/tauri";
-import { tauriPlatform } from "@code-notes/ui/adapters/tauri";
+import { AppShell } from "@code-notes/ui/components/templates";
 
 /**
  * Check if running in Tauri
@@ -66,6 +65,8 @@ export function CodeNotesApp({
   useRouter = true,
   basePath,
   className,
+  onLogoutRequest,
+  skipAuth,
 }: CodeNotesEmbedProps) {
   // Initialize services synchronously before first render
   // useMemo runs during render (before effects), ensuring services are
@@ -115,7 +116,13 @@ export function CodeNotesApp({
     setPortalContainer(containerRef.current);
   }, []);
 
-  const content = <App />;
+  const content = (
+    <AppShell
+      embedded={embedded}
+      onLogoutRequest={onLogoutRequest}
+      skipAuth={skipAuth ?? embedded}
+    />
+  );
 
   return (
     <div ref={containerRef} className={className}>

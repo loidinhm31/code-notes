@@ -1,4 +1,4 @@
-import type { SyncResult, SyncStatus } from "../types";
+import type { SyncResult, SyncStatus } from "@code-notes/shared";
 
 /**
  * Sync service interface for data synchronization

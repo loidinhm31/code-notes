@@ -1,4 +1,4 @@
-import { AuthResponse, AuthStatus, SyncConfig } from "../types";
+import { AuthResponse, AuthStatus, SyncConfig } from "@code-notes/shared";
 
 /**
  * Auth service interface for user authentication

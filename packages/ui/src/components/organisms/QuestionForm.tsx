@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
   Textarea,
-} from "@code-notes/ui/components";
+} from "@code-notes/ui/components/atoms";
 
 interface QuestionFormProps {
   question?: Question;

@@ -11,11 +11,11 @@ import {
   Server,
   User,
 } from "lucide-react";
-import { Button, Input, Label } from "@code-notes/ui/components";
+import { Button, Input, Label } from "@code-notes/ui/components/atoms";
 import {
   getAuthService,
   getSyncServiceOptional,
-} from "@code-notes/ui/adapters";
+} from "@code-notes/ui/adapters/factory";
 import type { AuthStatus, SyncResult } from "@code-notes/shared";
 import { env } from "@code-notes/shared";
 

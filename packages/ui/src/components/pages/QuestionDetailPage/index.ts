@@ -1,1 +1,0 @@
-export { QuestionDetailPage } from "./QuestionDetailPage";

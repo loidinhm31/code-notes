@@ -1,1 +1,0 @@
-export { ConfidenceRating } from "./ConfidenceRating";

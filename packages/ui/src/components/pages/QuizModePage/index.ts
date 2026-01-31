@@ -1,1 +1,0 @@
-export { QuizModePage } from "./QuizModePage";

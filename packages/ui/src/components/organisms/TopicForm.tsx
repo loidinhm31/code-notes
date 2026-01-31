@@ -1,7 +1,12 @@
 ﻿import { FormEvent, useState } from "react";
 import { useStore } from "@code-notes/ui/store";
 import type { CreateTopicDto, Topic, UpdateTopicDto } from "@code-notes/shared";
-import { Button, Input, Label, Textarea } from "@code-notes/ui/components";
+import {
+  Button,
+  Input,
+  Label,
+  Textarea,
+} from "@code-notes/ui/components/atoms";
 
 interface TopicFormProps {
   topic?: Topic;

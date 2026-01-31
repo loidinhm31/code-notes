@@ -1,1 +1,0 @@
-export { DataManagementPage } from "./DataManagementPage";

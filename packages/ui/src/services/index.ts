@@ -1,2 +1,1 @@
-export * from "@code-notes/ui/adapters/interfaces";
-export { importService as unifiedImportService } from "./importer/ImportService";
+export { importService as unifiedImportService } from "./ImportService";

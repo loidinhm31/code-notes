@@ -1,12 +1,10 @@
-﻿import React, { useState, useRef, useEffect } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import {
-  unifiedImportService as importService,
-  ImportResult,
-} from "@code-notes/ui/services";
+import { unifiedImportService as importService } from "@code-notes/ui/services";
 import { useStore } from "@code-notes/ui/store";
 import { readTextFile } from "@tauri-apps/plugin-fs";
-import { Button } from "@code-notes/ui/components";
+import { Button } from "@code-notes/ui/components/atoms";
+import { ImportResult } from "@code-notes/ui/adapters/factory";
 
 export const ImportForm: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<string>("");

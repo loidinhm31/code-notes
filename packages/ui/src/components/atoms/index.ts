@@ -1,4 +1,6 @@
 export * from "./ThemeToggle";
+export * from "./LoadingSpinner";
+export * from "./ErrorBoundary";
 export * from "./Badge";
 export * from "./Button";
 export * from "./Card";
