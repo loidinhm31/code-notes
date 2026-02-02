@@ -7,6 +7,7 @@ use qm_sync_client::{Checkpoint, ReqwestHttpClient, QmSyncClient, SyncClientConf
 
 use crate::auth::AuthService;
 use crate::database::LazyDatabase;
+use crate::sync_table_map;
 
 /// Sync service for synchronizing local data with qm-sync
 #[derive(Clone)]
@@ -362,7 +363,7 @@ impl SyncService {
             for row in rows {
                 let (id, version) = row.map_err(|e| e.to_string())?;
                 records.push(SyncRecord {
-                    table_name: "quiz_sessions".to_string(),
+                    table_name: "quizSessions".to_string(),
                     row_id: id,
                     data: serde_json::json!({}),
                     version,
@@ -405,7 +406,7 @@ impl SyncService {
                     obj.retain(|_, v| !v.is_null());
                 }
                 records.push(SyncRecord {
-                    table_name: "quiz_sessions".to_string(),
+                    table_name: "quizSessions".to_string(),
                     row_id: id,
                     data,
                     version: sync_version,
@@ -426,13 +427,13 @@ impl SyncService {
         non_deleted.sort_by_key(|r| match r.table_name.as_str() {
             "topics" => 0,
             "questions" => 1,
-            "progress" | "quiz_sessions" => 2,
+            "progress" | "quizSessions" => 2,
             _ => 3,
         });
 
         // Sort: children first for deletes
         deleted.sort_by_key(|r| match r.table_name.as_str() {
-            "progress" | "quiz_sessions" => 0,
+            "progress" | "quizSessions" => 0,
             "questions" => 1,
             "topics" => 2,
             _ => 3,
@@ -589,7 +590,7 @@ impl SyncService {
                         ).map_err(|e| e.to_string())?;
                     }
                 }
-                "quiz_sessions" => {
+                "quizSessions" => {
                     let data = &record.data;
                     let exists: bool = conn.query_row(
                         "SELECT COUNT(*) FROM quiz_sessions WHERE id = ?",
@@ -652,7 +653,7 @@ impl SyncService {
                     conn.execute("DELETE FROM progress WHERE question_id = ?", rusqlite::params![record.row_id])
                         .map_err(|e| e.to_string())?;
                 }
-                "quiz_sessions" => {
+                "quizSessions" => {
                     conn.execute("DELETE FROM quiz_sessions WHERE id = ?", rusqlite::params![record.row_id])
                         .map_err(|e| e.to_string())?;
                 }
@@ -686,7 +687,7 @@ impl SyncService {
                         conn.execute("DELETE FROM progress WHERE question_id = ?", rusqlite::params![record.row_id])
                             .map_err(|e| e.to_string())?;
                     }
-                    "quiz_sessions" => {
+                    "quizSessions" => {
                         conn.execute("DELETE FROM quiz_sessions WHERE id = ?", rusqlite::params![record.row_id])
                             .map_err(|e| e.to_string())?;
                     }
@@ -694,16 +695,17 @@ impl SyncService {
                 }
             } else {
                 // Update synced_at for active records
-                let (table, pk_col) = match record.table_name.as_str() {
-                    "topics" => ("topics", "id"),
-                    "questions" => ("questions", "id"),
-                    "progress" => ("progress", "question_id"),
-                    "quiz_sessions" => ("quiz_sessions", "id"),
+                let db_table = sync_table_map::sync_to_db(&record.table_name);
+                let pk_col = match record.table_name.as_str() {
+                    "topics" => "id",
+                    "questions" => "id",
+                    "progress" => "question_id",
+                    "quizSessions" => "id",
                     _ => continue,
                 };
                 let query = format!(
                     "UPDATE {} SET synced_at = ? WHERE {} = ?",
-                    table, pk_col
+                    db_table, pk_col
                 );
                 conn.execute(&query, rusqlite::params![synced_at, record.row_id])
                     .map_err(|e| e.to_string())?;

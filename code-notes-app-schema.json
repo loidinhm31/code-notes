@@ -46,7 +46,7 @@
       ],
       "primaryKey": "rowId"
     },
-    "quiz_sessions": {
+    "quizSessions": {
       "columns": [
         { "name": "sessionType", "type": "string", "nullable": false },
         { "name": "topicIds", "type": "string", "nullable": true },

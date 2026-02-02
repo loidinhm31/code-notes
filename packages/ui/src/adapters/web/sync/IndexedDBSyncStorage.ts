@@ -134,7 +134,7 @@ export class IndexedDBSyncStorage {
           ? JSON.stringify(session.results)
           : undefined;
         records.push({
-          tableName: "quiz_sessions",
+          tableName: "quizSessions",
           rowId: session.id,
           data: {
             sessionType:
@@ -159,12 +159,8 @@ export class IndexedDBSyncStorage {
       .filter((change) => change.operation === "delete")
       .toArray();
     for (const change of pendingDeletes) {
-      // Map local table names to server table names
-      let tableName = change.tableName;
-      if (tableName === "quizSessions") tableName = "quiz_sessions";
-
       records.push({
-        tableName,
+        tableName: change.tableName,
         rowId: change.rowId,
         data: {},
         version: change.version,
@@ -288,12 +284,7 @@ export class IndexedDBSyncStorage {
    * Convert server table name to local table name.
    */
   private serverToLocalTableName(tableName: string): string {
-    switch (tableName) {
-      case "quiz_sessions":
-        return "quizSessions";
-      default:
-        return tableName;
-    }
+    return tableName;
   }
 
   // =========================================================================
@@ -434,7 +425,7 @@ export class IndexedDBSyncStorage {
         break;
       }
 
-      case "quiz_sessions": {
+      case "quizSessions": {
         let topicIds: string[] = [];
         let questionIds: string[] = [];
         let results: any[] = [];
@@ -554,7 +545,6 @@ export class IndexedDBSyncStorage {
       case "progress":
         return db.progress;
       case "quizSessions":
-      case "quiz_sessions":
         return db.quizSessions;
       default:
         return undefined;
@@ -572,7 +562,6 @@ export class IndexedDBSyncStorage {
       case "questions":
         return 1;
       case "progress":
-      case "quiz_sessions":
       case "quizSessions":
         return 2;
       default:

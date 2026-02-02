@@ -2,6 +2,7 @@ mod auth;
 mod commands;
 mod database;
 mod sync;
+mod sync_table_map;
 mod utils;
 
 use crate::auth::AuthService;
