@@ -1,5 +1,5 @@
 import { db, trackDelete } from "./database";
-import type { ITopicsService } from "../interfaces";
+import type { ITopicsService } from "@code-notes/ui/adapters/factory/interfaces";
 import type { Topic, CreateTopicDto, UpdateTopicDto } from "@code-notes/shared";
 import { v4 as uuidv4 } from "uuid";
 

@@ -3,9 +3,24 @@
  */
 
 /**
+ * Auth tokens passed from parent application
+ */
+export interface AuthTokens {
+  accessToken?: string;
+  refreshToken?: string;
+  userId?: string;
+}
+
+/**
  * Props for the embeddable CodeNotesApp component
  */
 export interface CodeNotesEmbedProps {
+  /**
+   * Auth tokens from parent application.
+   * When provided, code-notes will use these tokens instead of showing login.
+   */
+  authTokens?: AuthTokens;
+
   /**
    * Whether code-notes is running in embedded mode.
    * When true, hides outer navigation elements.

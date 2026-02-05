@@ -5,7 +5,6 @@
  * Combines QmSyncClient and IndexedDBSyncStorage to provide full sync functionality.
  */
 
-import type { ISyncService } from "@code-notes/shared/services";
 import type { SyncResult, SyncStatus } from "@code-notes/shared/types";
 import {
   createSyncClientConfig,
@@ -14,6 +13,7 @@ import {
 } from "@code-notes/shared";
 import { IndexedDBSyncStorage } from "./IndexedDBSyncStorage";
 import { getCurrentTimestamp } from "../database";
+import { ISyncService } from "@code-notes/ui/adapters/factory/interfaces";
 
 /**
  * Token provider function type.

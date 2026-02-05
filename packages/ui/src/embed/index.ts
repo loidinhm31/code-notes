@@ -3,4 +3,4 @@
  */
 
 export { CodeNotesApp } from "./CodeNotesApp";
-export type { CodeNotesEmbedProps } from "./types";
+export type { CodeNotesEmbedProps, AuthTokens } from "./types";

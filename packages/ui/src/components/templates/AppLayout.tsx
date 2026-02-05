@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { ThemeToggle } from "@code-notes/ui/components/atoms";
 
 interface AppLayoutProps {
@@ -6,16 +6,7 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
-
-    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
+  // Theme initialization is handled by ThemeProvider in CodeNotesApp
 
   return (
     <div className="min-h-screen-safe bg-background text-foreground">

@@ -1,16 +1,14 @@
-import { db } from "./database";
-import type {
-  IDataManagementService,
-  DatabaseStats,
-  ExportResult,
-  GenericImportResult,
-} from "../interfaces";
 import type {
   Topic,
   Question,
   QuestionProgress,
   QuizSession,
+  DatabaseStats,
+  GenericImportResult,
 } from "@code-notes/shared";
+import { IDataManagementService } from "@code-notes/ui/adapters/factory/interfaces";
+import { ExportResult } from "@code-notes/shared";
+import { db } from "@code-notes/ui/adapters/web";
 
 // Structure matches the JSON format used in Tauri
 interface DatabaseExport {
@@ -34,16 +32,6 @@ export class WebDataManagementAdapter implements IDataManagementService {
   async getDatabaseStats(): Promise<DatabaseStats> {
     const topicsCount = await db.topics.count();
     const questionsCount = await db.questions.count();
-
-    // Rough estimate of size in browser (JSON stringify estimation)
-    // Accurate size is hard in IndexedDB without specific APIs or overhead
-    let size = 0;
-    // Sample check? Or just 0 if hard.
-    // Let's optimize by just returning a placeholder or simple estimation if needed,
-    // but for now 0 is safer than hanging on large DBs.
-    // Actually, let's fetch all and measure for consistency with "Export size" expectation if feasible.
-    // For large DBs this is slow. Tauri implementation does file size.
-    // Let's skip size or returns 0.
 
     return {
       topics_count: topicsCount,
@@ -150,19 +138,6 @@ export class WebDataManagementAdapter implements IDataManagementService {
         );
       }
 
-      // Bulk add/put
-      // Dexie bulkPut overwrites by key, bulkAdd fails on duplicates.
-      // "Merge" implies overwriting existing or keeping?
-      // In Tauri "Merge": Add new items, "skip duplicates by ID" (actually check existence).
-      // "put" in Dexie overwrites. "add" fails.
-      // If "Merge" means "Update existing and Add new", then bulkPut is correct.
-      // If "Merge" means "Only Add new, Keep existing untouched", then we need logic.
-      // The UI says "Merge (add new items, keep existing)". Keep existing usually means don't overwrite?
-      // "Merge (add new items, keep existing)" -> "Skip existing"?
-      // Let's assume standard behavior: Update or specific logic.
-      // Tauri logic I wrote: "if !exists { push }". So it skips duplicates!
-      // I should replicate "Skip duplicates" for Merge.
-
       await db.transaction(
         "rw",
         db.topics,
@@ -171,10 +146,6 @@ export class WebDataManagementAdapter implements IDataManagementService {
         db.quizSessions,
         async () => {
           if (merge) {
-            // Filter out existing IDs?
-            // Or just use 'add' and catch errors? bulkAdd doesn't partial fail easily unless refined.
-            // Doing check manually for correctness with "Keep Existing".
-
             const existingTopicIds = new Set(
               await db.topics.toCollection().primaryKeys(),
             );

@@ -13,12 +13,10 @@ import {
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { confirm } from "@tauri-apps/plugin-dialog";
 import { readTextFile } from "@tauri-apps/plugin-fs";
-import {
-  getDataManagementService,
-  type DatabaseStats,
-} from "@code-notes/ui/adapters/factory";
+import { getDataManagementService } from "@code-notes/ui/adapters/factory";
 import { useStore } from "@code-notes/ui/store";
 import { Button } from "@code-notes/ui/components/atoms";
+import { DatabaseStats } from "@code-notes/shared";
 
 declare global {
   interface Window {

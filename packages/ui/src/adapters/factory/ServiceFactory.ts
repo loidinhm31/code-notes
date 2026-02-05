@@ -7,9 +7,14 @@ import type {
   IFileSystemService,
   IDataManagementService,
   ISyncService,
+  IAuthService,
 } from "./interfaces";
-import type { IAuthService } from "@code-notes/shared";
 import { QmServerAuthAdapter } from "@code-notes/ui/adapters/shared";
+import {
+  TauriAuthAdapter,
+  TauriSyncAdapter,
+} from "@code-notes/ui/adapters/tauri";
+import { isTauri, serviceLogger } from "@code-notes/ui/utils";
 
 let topicsService: ITopicsService | null = null;
 let questionsService: IQuestionsService | null = null;
@@ -90,7 +95,14 @@ export const setSyncService = (service: ISyncService) => {
 };
 
 export const getSyncService = (): ISyncService => {
-  if (!syncService) throw new Error("SyncService not initialized");
+  if (!syncService) {
+    if (isTauri()) {
+      syncService = new TauriSyncAdapter();
+      serviceLogger.factory("Created SyncService for Tauri");
+    } else {
+      throw new Error("SyncService not initialized for web platform");
+    }
+  }
   return syncService;
 };
 
@@ -104,7 +116,13 @@ export const setAuthService = (service: IAuthService) => {
 
 export const getAuthService = (): IAuthService => {
   if (!authService) {
-    authService = new QmServerAuthAdapter();
+    if (isTauri()) {
+      authService = new TauriAuthAdapter();
+      serviceLogger.factory("Created AuthService for Tauri");
+    } else {
+      authService = new QmServerAuthAdapter();
+      serviceLogger.factory("Created AuthService for Web");
+    }
   }
   return authService;
 };
@@ -112,3 +130,34 @@ export const getAuthService = (): IAuthService => {
 export const getAuthServiceOptional = (): IAuthService | null => {
   return authService;
 };
+
+/**
+ * Reset all services (useful for testing or logout)
+ */
+export const resetServices = (): void => {
+  topicsService = null;
+  questionsService = null;
+  queryService = null;
+  progressService = null;
+  quizService = null;
+  fileSystemService = null;
+  dataManagementService = null;
+  syncService = null;
+  authService = null;
+  serviceLogger.factory("All services reset");
+};
+
+/**
+ * Get all initialized services
+ */
+export const getAllServices = () => ({
+  topics: topicsService,
+  questions: questionsService,
+  query: queryService,
+  progress: progressService,
+  quiz: quizService,
+  fileSystem: fileSystemService,
+  dataManagement: dataManagementService,
+  sync: syncService,
+  auth: authService,
+});

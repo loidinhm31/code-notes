@@ -1,10 +1,6 @@
-import type {
-  AuthResponse,
-  AuthStatus,
-  IAuthService,
-  SyncConfig,
-} from "@code-notes/shared";
+import type { AuthResponse, AuthStatus, SyncConfig } from "@code-notes/shared";
 import { AUTH_STORAGE_KEYS, env } from "@code-notes/shared";
+import { IAuthService } from "@code-notes/ui/adapters/factory/interfaces";
 
 function getDefaultBaseUrl(): string {
   return env.serverUrl;

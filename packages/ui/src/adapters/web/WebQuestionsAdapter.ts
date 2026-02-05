@@ -1,5 +1,5 @@
 import { db, trackDelete } from "./database";
-import type { IQuestionsService } from "../interfaces";
+import type { IQuestionsService } from "@code-notes/ui/adapters/factory/interfaces";
 import type {
   Question,
   CreateQuestionDto,

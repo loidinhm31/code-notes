@@ -22,6 +22,8 @@
     "./adapters/factory/interfaces": "./src/adapters/factory/interfaces/index.ts",
     "./embed": "./src/embed/index.ts",
     "./store": "./src/store/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./contexts": "./src/contexts/index.ts",
     "./lib/utils": "./src/lib/utils.ts"
   },
   "scripts": {
@@ -55,7 +57,8 @@
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
     "uuid": "^13.0.0",
-    "zustand": "^5.0.9"
+    "zustand": "^5.0.9",
+    "@fontsource/fredoka": "^5.1.0"
   },
   "devDependencies": {
     "@code-notes/eslint-config": "workspace:*",

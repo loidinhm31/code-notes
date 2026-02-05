@@ -1,5 +1,5 @@
 import { db } from "./database";
-import type { IQuizService } from "../interfaces";
+import type { IQuizService } from "@code-notes/ui/adapters/factory/interfaces";
 import type {
   QuizSession,
   CreateQuizSessionDto,

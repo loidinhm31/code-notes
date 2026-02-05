@@ -1,8 +1,8 @@
 import {
   getQuestionsService,
   getTopicsService,
-  ImportResult,
 } from "@code-notes/ui/adapters/factory";
+import { ImportResult } from "@code-notes/shared";
 
 interface ParsedQuestion {
   question: string;

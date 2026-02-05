@@ -1,11 +1,11 @@
 import { db } from "./database";
-import type { IProgressService } from "../interfaces";
 import type {
   QuestionProgress,
   UpdateProgressDto,
   ProgressStatistics,
   ProgressStatus,
 } from "@code-notes/shared";
+import { IProgressService } from "@code-notes/ui/adapters/factory/interfaces";
 
 export class WebProgressAdapter implements IProgressService {
   async getAll(): Promise<QuestionProgress[]> {

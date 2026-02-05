@@ -49,6 +49,7 @@ import {
   topicsService as tauriTopicsService,
 } from "@code-notes/ui/adapters/tauri";
 import { AppShell } from "@code-notes/ui/components/templates";
+import { ThemeProvider } from "@code-notes/ui/contexts";
 
 /**
  * Check if running in Tauri
@@ -61,6 +62,7 @@ function isTauri(): boolean {
  * CodeNotesApp - Main embeddable component
  */
 export function CodeNotesApp({
+  authTokens,
   embedded = false,
   useRouter = true,
   basePath,
@@ -116,26 +118,46 @@ export function CodeNotesApp({
     setPortalContainer(containerRef.current);
   }, []);
 
+  // If external auth tokens are provided, save them to the auth service
+  useEffect(() => {
+    if (authTokens?.accessToken && authTokens?.refreshToken) {
+      const auth = getAuthService() as QmServerAuthAdapter;
+      auth
+        .saveTokensExternal?.(
+          authTokens.accessToken,
+          authTokens.refreshToken,
+          authTokens.userId || "",
+        )
+        .catch(console.error);
+    }
+  }, [authTokens]);
+
+  // Determine if we should skip auth (tokens provided externally)
+  const resolvedSkipAuth =
+    skipAuth ?? !!(authTokens?.accessToken && authTokens?.refreshToken);
+
   const content = (
     <AppShell
       embedded={embedded}
       onLogoutRequest={onLogoutRequest}
-      skipAuth={skipAuth ?? embedded}
+      skipAuth={resolvedSkipAuth}
     />
   );
 
   return (
     <div ref={containerRef} className={className}>
       <PlatformProvider services={platform}>
-        <BasePathContext.Provider value={basePath || ""}>
-          <PortalContainerContext.Provider value={portalContainer}>
-            {useRouter ? (
-              <BrowserRouter basename={basePath}>{content}</BrowserRouter>
-            ) : (
-              content
-            )}
-          </PortalContainerContext.Provider>
-        </BasePathContext.Provider>
+        <ThemeProvider embedded={embedded}>
+          <BasePathContext.Provider value={basePath || ""}>
+            <PortalContainerContext.Provider value={portalContainer}>
+              {useRouter ? (
+                <BrowserRouter basename={basePath}>{content}</BrowserRouter>
+              ) : (
+                content
+              )}
+            </PortalContainerContext.Provider>
+          </BasePathContext.Provider>
+        </ThemeProvider>
       </PlatformProvider>
     </div>
   );

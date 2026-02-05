@@ -1,4 +1,5 @@
 export * from "./ImportForm";
 export * from "./QuestionForm";
-export * from "./TopicForm";
+export * from "./Sidebar";
 export * from "./SyncSettings";
+export * from "./TopicForm";

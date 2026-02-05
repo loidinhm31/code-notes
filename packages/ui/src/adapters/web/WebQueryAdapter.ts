@@ -1,6 +1,6 @@
-import type { IQueryService } from "../interfaces";
 import type { Question, Topic, TopicStats } from "@code-notes/shared";
 import { db } from "./database";
+import { IQueryService } from "@code-notes/ui/adapters/factory/interfaces";
 
 export class WebQueryAdapter implements IQueryService {
   async queryDatabase(query: string): Promise<string> {

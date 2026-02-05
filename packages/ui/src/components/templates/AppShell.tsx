@@ -1,11 +1,9 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
-import {
-  ErrorBoundary,
-  LoadingSpinner,
-  ThemeToggle,
-} from "@code-notes/ui/components/atoms";
-import { useAuth } from "@code-notes/ui/hooks";
+import { lazy, Suspense, useState } from "react";
+import { Route, Routes, useLocation, Navigate } from "react-router-dom";
+import { ErrorBoundary, LoadingSpinner } from "@code-notes/ui/components/atoms";
+import { BottomNav } from "@code-notes/ui/components/molecules";
+import { Sidebar } from "@code-notes/ui/components/organisms";
+import { useAuth, useNav } from "@code-notes/ui/hooks";
 import { LoginPage } from "@code-notes/ui/components/pages";
 
 const TopicsPage = lazy(() =>
@@ -59,6 +57,8 @@ const QuizResultsPage = lazy(() =>
   })),
 );
 
+type Page = "topics" | "quiz" | "progress" | "import" | "settings";
+
 export interface AppShellProps {
   skipAuth?: boolean;
   embedded?: boolean;
@@ -70,7 +70,11 @@ export function AppShell({
   embedded = false,
   onLogoutRequest,
 }: AppShellProps) {
+  const location = useLocation();
+  const { to, nav } = useNav();
+
   const [localSkipAuth, setLocalSkipAuth] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const {
     isAuthenticated,
@@ -78,17 +82,30 @@ export function AppShell({
     checkAuthStatus,
   } = useAuth({ skipInitialCheck: skipAuthProp });
 
-  // Theme initialization
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
+  // Theme initialization is handled by ThemeProvider in CodeNotesApp
 
-    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
+  // Derive current page from path
+  const getCurrentPage = (): Page => {
+    const path = location.pathname;
+    if (path.endsWith("/quiz") || path.includes("/quiz/")) return "quiz";
+    if (path.endsWith("/progress") || path === "/progress") return "progress";
+    if (path.endsWith("/import") || path === "/import") return "import";
+    if (path.endsWith("/settings") || path === "/settings") return "settings";
+    return "topics"; // default
+  };
+
+  const currentPage = getCurrentPage();
+
+  const handleNavigate = (page: Page) => {
+    const pageMap: Record<Page, string> = {
+      topics: "",
+      quiz: "quiz",
+      progress: "progress",
+      import: "import",
+      settings: "settings",
+    };
+    nav(pageMap[page] ?? "");
+  };
 
   const skipAuth = skipAuthProp || localSkipAuth;
 
@@ -121,24 +138,29 @@ export function AppShell({
     checkAuthStatus();
   };
 
+  // Always show navigation - embedded prop is only for theme isolation now
+  const showNavigation = true;
+
   return (
     <div className="min-h-screen-safe bg-background text-foreground">
-      {/* Theme Toggle - only in standalone mode */}
-      {!embedded && (
-        <div
-          style={{
-            position: "fixed",
-            top: "1rem",
-            right: "1rem",
-            zIndex: 1000,
-          }}
-          className="safe-top safe-right"
-        >
-          <ThemeToggle />
-        </div>
+      {/* Desktop Sidebar - Hidden on mobile */}
+      {showNavigation && (isAuthenticated || skipAuth) && (
+        <Sidebar
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+          onSyncTap={() => handleNavigate("settings")}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
       )}
 
-      <main id="main-content" className={embedded ? "pt-2 pb-2" : undefined}>
+      {/* Page Content - Adjust margins for sidebar on desktop */}
+      <main
+        id="main-content"
+        className={`transition-all duration-300 pt-4 md:pt-6 pb-24 md:pb-6 ${
+          isSidebarCollapsed ? "md:ml-16" : "md:ml-64"
+        }`}
+      >
         <ErrorBoundary>
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
@@ -158,10 +180,17 @@ export function AppShell({
                 path="quiz/results/:sessionId"
                 element={<QuizResultsPage />}
               />
+              {/* Fallback redirect */}
+              <Route path="*" element={<Navigate to={to("")} replace />} />
             </Routes>
           </Suspense>
         </ErrorBoundary>
       </main>
+
+      {/* Mobile Bottom Navigation - Hidden on desktop */}
+      {showNavigation && (isAuthenticated || skipAuth) && (
+        <BottomNav currentPage={currentPage} onNavigate={handleNavigate} />
+      )}
     </div>
   );
 }

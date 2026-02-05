@@ -4,7 +4,7 @@ import { unifiedImportService as importService } from "@code-notes/ui/services";
 import { useStore } from "@code-notes/ui/store";
 import { readTextFile } from "@tauri-apps/plugin-fs";
 import { Button } from "@code-notes/ui/components/atoms";
-import { ImportResult } from "@code-notes/ui/adapters/factory";
+import { ImportResult } from "@code-notes/shared";
 
 export const ImportForm: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<string>("");

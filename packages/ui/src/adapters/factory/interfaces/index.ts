@@ -6,12 +6,4 @@ export type { IQueryService } from "./IQueryService";
 export type { IProgressService } from "./IProgressService";
 export type { IQuizService } from "./IQuizService";
 export type { IFileSystemService } from "./IFileSystemService";
-export type {
-  IDataManagementService,
-  QuestionImportDetail,
-  TopicImportDetail,
-  ImportResult,
-  DatabaseStats,
-  ExportResult,
-  GenericImportResult,
-} from "./IDataManagementService";
+export type { IDataManagementService } from "./IDataManagementService";

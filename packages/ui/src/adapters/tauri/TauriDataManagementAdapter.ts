@@ -1,10 +1,10 @@
 import { invoke } from "@tauri-apps/api/core";
+import { IDataManagementService } from "@code-notes/ui/adapters/factory/interfaces";
 import {
-  type IDataManagementService,
-  type DatabaseStats,
-  type ExportResult,
-  type GenericImportResult,
-} from "../interfaces";
+  DatabaseStats,
+  ExportResult,
+  GenericImportResult,
+} from "@code-notes/shared";
 
 export class TauriDataManagementService implements IDataManagementService {
   async getDatabaseStats(): Promise<DatabaseStats> {

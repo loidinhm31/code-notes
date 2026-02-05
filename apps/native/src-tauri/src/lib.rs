@@ -46,6 +46,81 @@ async fn get_auth_status(app: tauri::AppHandle) -> Result<auth::AuthStatus, Stri
     Ok(auth.get_auth_status(&app).await)
 }
 
+// Auth commands (consistent with fin-catch naming)
+#[tauri::command]
+async fn auth_configure_sync(
+    app: tauri::AppHandle,
+    server_url: Option<String>,
+    app_id: Option<String>,
+    api_key: Option<String>,
+) -> Result<(), String> {
+    let auth_service = app.state::<Arc<std::sync::Mutex<AuthService>>>();
+    let auth = auth_service.lock().map_err(|e| format!("Failed to lock auth: {}", e))?.clone();
+    auth.configure_sync(&app, server_url, app_id, api_key).await
+}
+
+#[tauri::command]
+async fn auth_register(
+    app: tauri::AppHandle,
+    username: String,
+    email: String,
+    password: String,
+    app_id: Option<String>,
+    api_key: Option<String>,
+) -> Result<auth::AuthResponse, String> {
+    let auth_service = app.state::<Arc<std::sync::Mutex<AuthService>>>();
+    let auth = auth_service.lock().map_err(|e| format!("Failed to lock auth: {}", e))?.clone();
+
+    // Configure sync first if custom app_id/api_key provided
+    if app_id.is_some() || api_key.is_some() {
+        auth.configure_sync(&app, None, app_id, api_key).await?;
+    }
+
+    auth.register(&app, username, email, password).await
+}
+
+#[tauri::command]
+async fn auth_login(app: tauri::AppHandle, email: String, password: String) -> Result<auth::AuthResponse, String> {
+    let auth_service = app.state::<Arc<std::sync::Mutex<AuthService>>>();
+    let auth = auth_service.lock().map_err(|e| format!("Failed to lock auth: {}", e))?.clone();
+    auth.login(&app, email, password).await
+}
+
+#[tauri::command]
+async fn auth_logout(app: tauri::AppHandle) -> Result<(), String> {
+    let auth_service = app.state::<Arc<std::sync::Mutex<AuthService>>>();
+    let auth = auth_service.lock().map_err(|e| format!("Failed to lock auth: {}", e))?.clone();
+    auth.logout(&app).await
+}
+
+#[tauri::command]
+async fn auth_refresh_token(app: tauri::AppHandle) -> Result<(), String> {
+    let auth_service = app.state::<Arc<std::sync::Mutex<AuthService>>>();
+    let auth = auth_service.lock().map_err(|e| format!("Failed to lock auth: {}", e))?.clone();
+    auth.refresh_token(&app).await
+}
+
+#[tauri::command]
+async fn auth_get_status(app: tauri::AppHandle) -> Result<auth::AuthStatus, String> {
+    let auth_service = app.state::<Arc<std::sync::Mutex<AuthService>>>();
+    let auth = auth_service.lock().map_err(|e| format!("Failed to lock auth: {}", e))?.clone();
+    Ok(auth.get_auth_status(&app).await)
+}
+
+#[tauri::command]
+async fn auth_is_authenticated(app: tauri::AppHandle) -> Result<bool, String> {
+    let auth_service = app.state::<Arc<std::sync::Mutex<AuthService>>>();
+    let auth = auth_service.lock().map_err(|e| format!("Failed to lock auth: {}", e))?.clone();
+    Ok(auth.is_authenticated(&app).await)
+}
+
+#[tauri::command]
+async fn auth_get_access_token(app: tauri::AppHandle) -> Result<String, String> {
+    let auth_service = app.state::<Arc<std::sync::Mutex<AuthService>>>();
+    let auth = auth_service.lock().map_err(|e| format!("Failed to lock auth: {}", e))?.clone();
+    auth.get_access_token(&app).await
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -120,6 +195,15 @@ pub fn run() {
             sync_login,
             sync_logout,
             get_auth_status,
+            // Auth commands (consistent with fin-catch)
+            auth_configure_sync,
+            auth_register,
+            auth_login,
+            auth_logout,
+            auth_refresh_token,
+            auth_get_status,
+            auth_is_authenticated,
+            auth_get_access_token,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

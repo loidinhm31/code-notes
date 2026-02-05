@@ -7,3 +7,6 @@ export * from "./TauriQuizAdapter";
 export * from "./TauriDataManagementAdapter";
 export * from "./TauriDebugAdapter";
 export * from "./TauriImportAdapter";
+export * from "./tauriInvoke";
+export * from "./TauriAuthAdapter";
+export * from "./TauriSyncAdapter";

@@ -146,44 +146,6 @@ export const TopicsPage = () => {
               Browse questions by topic
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild className="flex items-center gap-2">
-              <Link to={to("progress")} aria-label="View Progress Dashboard">
-                <TrendingUp className="w-5 h-5" />
-                <span className="hidden sm:inline">Progress</span>
-              </Link>
-            </Button>
-            <Button asChild className="flex items-center gap-2">
-              <Link to={to("quiz")} aria-label="Start Quiz">
-                <Target className="w-5 h-5" />
-                <span className="hidden sm:inline">Quiz</span>
-              </Link>
-            </Button>
-            <Button asChild className="flex items-center gap-2">
-              <Link to={to("settings")} aria-label="Open Settings">
-                <Settings className="w-5 h-5" />
-                <span className="hidden sm:inline">Settings</span>
-              </Link>
-            </Button>
-            <Button
-              variant="accent"
-              asChild
-              className="flex items-center gap-2"
-            >
-              <Link to={to("import")} aria-label="Import Questions">
-                <Upload className="w-5 h-5" />
-                <span className="hidden sm:inline">Import</span>
-              </Link>
-            </Button>
-            <Button
-              onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2"
-              aria-label="Create New Topic"
-            >
-              <Plus className="w-5 h-5" />
-              <span className="hidden sm:inline">Create Topic</span>
-            </Button>
-          </div>
         </div>
 
         {/* Search Input */}

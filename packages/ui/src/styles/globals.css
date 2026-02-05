@@ -1,6 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
-@source "../**";
+
+@import "@fontsource/fredoka/300.css";
+@import "@fontsource/fredoka/400.css";
+@import "@fontsource/fredoka/500.css";
+@import "@fontsource/fredoka/600.css";
+@import "@fontsource/fredoka/700.css";
+
+@source "../**/*.{ts,tsx}";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -101,86 +107,6 @@
   --radius: var(--radius-md);
 }
 
-/* Dark Mode Theme */
-.dark {
-  /* Primary - Brighter navy for dark mode */
-  --color-primary: #3b82f6;
-  --color-primary-light: #60a5fa;
-  --color-primary-dark: #2563eb;
-
-  /* Secondary - Bright cyan */
-  --color-secondary: #7dd3fc;
-  --color-secondary-light: #a5f3fc;
-  --color-secondary-dark: #38bdf8;
-
-  /* Accent - Bright orange */
-  --color-accent: #fb923c;
-  --color-accent-light: #fdba74;
-  --color-accent-dark: #f97316;
-
-  /* Status Colors - Bright for dark mode */
-  --color-success: #10b981;
-  --color-success-light: #34d399;
-  --color-error: #ef4444;
-  --color-error-light: #f87171;
-
-  /* Pastel Colors - Brighter for dark mode */
-  --color-peach: #fdba74;
-  --color-lavender: #a5b4fc;
-  --color-mint: #6ee7b7;
-  --color-sky: #7dd3fc;
-  --color-lilac: #c4b5fd;
-
-  /* Dark backgrounds */
-  --color-bg-base: #0f172a;
-  --color-bg-card: #1e293b;
-  --color-bg-muted: #334155;
-
-  /* Text - Light colors */
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #cbd5e1;
-  --color-text-muted: #94a3b8;
-
-  /* Borders - Bright blue */
-  --color-border: #3b82f6;
-  --color-border-light: #60a5fa;
-
-  /* Dark mode shadows with glow effect */
-  --shadow-clay-sm:
-    0 4px 8px rgba(0, 0, 0, 0.3), 0 0 4px rgba(59, 130, 246, 0.1);
-
-  --shadow-clay-md:
-    0 6px 12px rgba(0, 0, 0, 0.4), 0 0 6px rgba(59, 130, 246, 0.15);
-
-  --shadow-clay-lg:
-    0 8px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(59, 130, 246, 0.2);
-
-  --shadow-clay-hover:
-    0 10px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(59, 130, 246, 0.3);
-
-  /* shadcn/ui theme tokens - dark mode */
-  --background: var(--color-bg-base);
-  --foreground: var(--color-text-primary);
-  --card: var(--color-bg-card);
-  --card-foreground: var(--color-text-primary);
-  --popover: var(--color-bg-card);
-  --popover-foreground: var(--color-text-primary);
-  --primary: var(--color-primary);
-  --primary-foreground: #ffffff;
-  --secondary: var(--color-secondary);
-  --secondary-foreground: var(--color-primary-dark);
-  --accent: var(--color-accent);
-  --accent-foreground: #ffffff;
-  --destructive: var(--color-accent);
-  --destructive-foreground: #ffffff;
-  --muted: var(--color-bg-muted);
-  --muted-foreground: var(--color-text-muted);
-  --border: var(--color-border);
-  --input: var(--color-border);
-  --ring: var(--color-primary);
-  --radius: var(--radius-md);
-}
-
 @layer base {
   * {
     border-color: var(--color-border-light);
@@ -219,6 +145,86 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+
+  /* Dark Mode Theme */
+  .dark {
+    /* Primary - Brighter navy for dark mode */
+    --color-primary: #3b82f6;
+    --color-primary-light: #60a5fa;
+    --color-primary-dark: #2563eb;
+
+    /* Secondary - Bright cyan */
+    --color-secondary: #7dd3fc;
+    --color-secondary-light: #a5f3fc;
+    --color-secondary-dark: #38bdf8;
+
+    /* Accent - Bright orange */
+    --color-accent: #fb923c;
+    --color-accent-light: #fdba74;
+    --color-accent-dark: #f97316;
+
+    /* Status Colors - Bright for dark mode */
+    --color-success: #10b981;
+    --color-success-light: #34d399;
+    --color-error: #ef4444;
+    --color-error-light: #f87171;
+
+    /* Pastel Colors - Brighter for dark mode */
+    --color-peach: #fdba74;
+    --color-lavender: #a5b4fc;
+    --color-mint: #6ee7b7;
+    --color-sky: #7dd3fc;
+    --color-lilac: #c4b5fd;
+
+    /* Dark backgrounds */
+    --color-bg-base: #0f172a;
+    --color-bg-card: #1e293b;
+    --color-bg-muted: #334155;
+
+    /* Text - Light colors */
+    --color-text-primary: #f1f5f9;
+    --color-text-secondary: #cbd5e1;
+    --color-text-muted: #94a3b8;
+
+    /* Borders - Bright blue */
+    --color-border: #3b82f6;
+    --color-border-light: #60a5fa;
+
+    /* Dark mode shadows with glow effect */
+    --shadow-clay-sm:
+            0 4px 8px rgba(0, 0, 0, 0.3), 0 0 4px rgba(59, 130, 246, 0.1);
+
+    --shadow-clay-md:
+            0 6px 12px rgba(0, 0, 0, 0.4), 0 0 6px rgba(59, 130, 246, 0.15);
+
+    --shadow-clay-lg:
+            0 8px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(59, 130, 246, 0.2);
+
+    --shadow-clay-hover:
+            0 10px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(59, 130, 246, 0.3);
+
+    /* shadcn/ui theme tokens - dark mode */
+    --background: var(--color-bg-base);
+    --foreground: var(--color-text-primary);
+    --card: var(--color-bg-card);
+    --card-foreground: var(--color-text-primary);
+    --popover: var(--color-bg-card);
+    --popover-foreground: var(--color-text-primary);
+    --primary: var(--color-primary);
+    --primary-foreground: #ffffff;
+    --secondary: var(--color-secondary);
+    --secondary-foreground: var(--color-primary-dark);
+    --accent: var(--color-accent);
+    --accent-foreground: #ffffff;
+    --destructive: var(--color-accent);
+    --destructive-foreground: #ffffff;
+    --muted: var(--color-bg-muted);
+    --muted-foreground: var(--color-text-muted);
+    --border: var(--color-border);
+    --input: var(--color-border);
+    --ring: var(--color-primary);
+    --radius: var(--radius-md);
   }
 }
 
