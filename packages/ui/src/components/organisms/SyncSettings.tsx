@@ -6,10 +6,8 @@ import {
   CheckCircle2,
   Cloud,
   CloudOff,
-  LogOut,
   RefreshCw,
   Server,
-  User,
 } from "lucide-react";
 import { Button, Input, Label } from "@code-notes/ui/components/atoms";
 import {
@@ -19,11 +17,7 @@ import {
 import type { AuthStatus, SyncResult } from "@code-notes/shared";
 import { env } from "@code-notes/shared";
 
-interface SyncSettingsProps {
-  onLogout?: () => void;
-}
-
-export const SyncSettings: React.FC<SyncSettingsProps> = ({ onLogout }) => {
+export const SyncSettings: React.FC = () => {
   const [authStatus, setAuthStatus] = useState<AuthStatus>({
     isAuthenticated: false,
   });
@@ -34,16 +28,8 @@ export const SyncSettings: React.FC<SyncSettingsProps> = ({ onLogout }) => {
   const [lastSyncAt, setLastSyncAt] = useState<number | undefined>();
   const [pendingChanges, setPendingChanges] = useState<number>(0);
 
-  // Login form state
-  const [showLoginForm, setShowLoginForm] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-
   // Server config
   const [serverUrl, setServerUrl] = useState<string>(env.serverUrl);
-  const [appId, setAppId] = useState<string>(env.appId);
-  const [apiKey, setApiKey] = useState<string>(env.apiKey);
 
   useEffect(() => {
     loadStatus();
@@ -76,45 +62,17 @@ export const SyncSettings: React.FC<SyncSettingsProps> = ({ onLogout }) => {
   const handleSaveConfig = async () => {
     try {
       const auth = getAuthService();
-      await auth.configureSync({ serverUrl, appId, apiKey });
+      await auth.configureSync({
+        serverUrl,
+        appId: "code-notes",
+        apiKey: "",
+      });
       setError(null);
       await loadStatus();
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to save configuration",
       );
-    }
-  };
-
-  const handleLogin = async () => {
-    const auth = getAuthService();
-
-    setIsLoggingIn(true);
-    setError(null);
-
-    try {
-      await auth.login(email, password);
-      setShowLoginForm(false);
-      setEmail("");
-      setPassword("");
-      await loadStatus();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      const auth = getAuthService();
-      await auth.logout();
-      setAuthStatus({ isAuthenticated: false });
-      setSyncResult(null);
-      setError(null);
-      onLogout?.();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Logout failed");
     }
   };
 
@@ -342,69 +300,10 @@ export const SyncSettings: React.FC<SyncSettingsProps> = ({ onLogout }) => {
                 />
                 {isSyncing ? "Syncing..." : "Sync Now"}
               </Button>
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                <LogOut className="w-4 h-4" />
-                Logout
-              </Button>
             </>
-          ) : (
-            <>
-              <Button
-                variant="default"
-                size="default"
-                onClick={() => setShowLoginForm(!showLoginForm)}
-              >
-                <User className="w-4 h-4" />
-                {showLoginForm ? "Cancel" : "Login to Sync"}
-              </Button>
-            </>
-          )}
+          ) : null}
         </div>
       </div>
-
-      {/* Login Form */}
-      {showLoginForm && !authStatus.isAuthenticated && (
-        <div className="clay-card p-6">
-          <h3 className="text-lg font-semibold mb-4">Login</h3>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="sync-email" className="mb-2 block text-sm">
-                Email
-              </Label>
-              <Input
-                id="sync-email"
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-              />
-            </div>
-            <div>
-              <Label htmlFor="sync-password" className="mb-2 block text-sm">
-                Password
-              </Label>
-              <Input
-                id="sync-password"
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-              />
-            </div>
-            <Button
-              variant="default"
-              size="default"
-              className="w-full"
-              onClick={handleLogin}
-              disabled={isLoggingIn || !email || !password}
-            >
-              {isLoggingIn ? "Logging in..." : "Login"}
-            </Button>
-          </div>
-        </div>
-      )}
 
       {/* Server Configuration */}
       <div className="clay-card p-6">
@@ -432,30 +331,6 @@ export const SyncSettings: React.FC<SyncSettingsProps> = ({ onLogout }) => {
                   placeholder="http://localhost:3000"
                   value={serverUrl}
                   onChange={(e) => setServerUrl(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="app-id" className="mb-2 block text-sm">
-                  App ID
-                </Label>
-                <Input
-                  id="app-id"
-                  type="text"
-                  placeholder="code-notes"
-                  value={appId}
-                  onChange={(e) => setAppId(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="api-key" className="mb-2 block text-sm">
-                  API Key
-                </Label>
-                <Input
-                  id="api-key"
-                  type="password"
-                  placeholder="API Key from server admin"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
                 />
               </div>
               <Button

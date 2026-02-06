@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
-import { useNav } from "@code-notes/ui/hooks";
-import { ArrowLeft, Database } from "lucide-react";
+import { useNav, useAuth } from "@code-notes/ui/hooks";
+import { ArrowLeft, Database, LogIn, LogOut, User } from "lucide-react";
+import { Button, Card } from "@code-notes/ui/components/atoms";
 import { SyncSettings } from "@code-notes/ui/components/organisms";
 
 export const SettingsPage = () => {
-  const { to } = useNav();
+  const { to, nav } = useNav();
+  const { isAuthenticated, logout } = useAuth();
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
@@ -50,6 +52,60 @@ export const SettingsPage = () => {
             </div>
           </div>
         </div>
+
+        {isAuthenticated ? (
+          <Card className="p-6">
+            <div className="flex items-start gap-4">
+              <User
+                className="w-6 h-6"
+                style={{ color: "var(--color-primary)" }}
+              />
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold mb-2">Account</h3>
+                <p
+                  className="mb-4"
+                  style={{ color: "var(--color-text-muted)" }}
+                >
+                  Manage your account connection
+                </p>
+                <Button
+                  variant="secondary"
+                  onClick={async () => {
+                    await logout();
+                  }}
+                  className="w-full"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </Card>
+        ) : (
+          <Card className="p-6">
+            <div className="flex items-start gap-4">
+              <LogIn
+                className="w-6 h-6"
+                style={{ color: "var(--color-primary)" }}
+              />
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold mb-2">
+                  Login to connect to server
+                </h3>
+                <p
+                  className="mb-4"
+                  style={{ color: "var(--color-text-muted)" }}
+                >
+                  Connect your account to sync data
+                </p>
+                <Button className="w-full" onClick={() => nav("/login")}>
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Login / Register
+                </Button>
+              </div>
+            </div>
+          </Card>
+        )}
 
         <SyncSettings />
       </div>

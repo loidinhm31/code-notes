@@ -118,18 +118,6 @@ export function AppShell({
     );
   }
 
-  // Login gate
-  if (!isAuthenticated && !skipAuth) {
-    return (
-      <LoginPage
-        onLoginSuccess={() => {
-          checkAuthStatus();
-        }}
-        onSkip={() => setLocalSkipAuth(true)}
-      />
-    );
-  }
-
   const handleLogout = () => {
     if (onLogoutRequest) {
       onLogoutRequest();
@@ -144,7 +132,7 @@ export function AppShell({
   return (
     <div className="min-h-screen-safe bg-background text-foreground">
       {/* Desktop Sidebar - Hidden on mobile */}
-      {showNavigation && (isAuthenticated || skipAuth) && (
+      {showNavigation && (
         <Sidebar
           currentPage={currentPage}
           onNavigate={handleNavigate}
@@ -167,6 +155,21 @@ export function AppShell({
               <Route path="" element={<TopicsPage />} />
               <Route path="import" element={<ImportPage />} />
               <Route path="settings" element={<SettingsPage />} />
+              <Route
+                path="login"
+                element={
+                  <LoginPage
+                    onLoginSuccess={() => {
+                      checkAuthStatus();
+                      nav("");
+                    }}
+                    onSkip={() => {
+                      setLocalSkipAuth(true);
+                      nav("");
+                    }}
+                  />
+                }
+              />
               <Route path="data-management" element={<DataManagementPage />} />
               <Route path="topics/:topicId" element={<QuestionsPage />} />
               <Route
@@ -188,7 +191,7 @@ export function AppShell({
       </main>
 
       {/* Mobile Bottom Navigation - Hidden on desktop */}
-      {showNavigation && (isAuthenticated || skipAuth) && (
+      {showNavigation && (
         <BottomNav currentPage={currentPage} onNavigate={handleNavigate} />
       )}
     </div>
