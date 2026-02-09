@@ -59,7 +59,7 @@ impl SyncService {
 
         let last_sync_at = self.get_last_sync_timestamp()?;
         let pending_changes = self.count_pending_changes()?;
-        let server_url = std::env::var("SYNC_SERVER_URL").ok();
+        let server_url = self.get_stored_server_url(app_handle);
 
         Ok(SyncStatus {
             configured: server_url.is_some(),
@@ -84,8 +84,8 @@ impl SyncService {
             let auth = self.auth.lock().map_err(|e| format!("Failed to lock auth: {}", e))?.clone();
             let access_token = auth.get_access_token(app_handle).await?;
             let refresh_token = auth.get_refresh_token(app_handle).await?;
-            let server_url = std::env::var("SYNC_SERVER_URL")
-                .map_err(|_| "SYNC_SERVER_URL not configured")?;
+            let server_url = self.get_stored_server_url(app_handle)
+                .ok_or("Server URL not configured. Please configure it in Sync Settings.")?;
             let app_id = self.get_app_id(app_handle).await?;
             let api_key = auth.get_stored_api_key(app_handle)?;
             (server_url, app_id, api_key, access_token, refresh_token)
@@ -756,6 +756,14 @@ impl SyncService {
         count += self.db.query_count("SELECT COUNT(*) FROM progress WHERE synced_at IS NULL")?;
         count += self.db.query_count("SELECT COUNT(*) FROM quiz_sessions WHERE synced_at IS NULL")?;
         Ok(count)
+    }
+
+    /// Get server URL from auth store (saved by SyncSettings UI)
+    fn get_stored_server_url(&self, app_handle: &tauri::AppHandle) -> Option<String> {
+        use tauri_plugin_store::StoreExt;
+        app_handle.store("auth.json").ok()
+            .and_then(|store| store.get("server_url").and_then(|v| v.as_str().map(|s| s.to_string())))
+            .filter(|url| !url.is_empty())
     }
 
     /// Get app_id from stored auth data
