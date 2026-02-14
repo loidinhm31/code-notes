@@ -1,8 +1,5 @@
 ﻿import { StateCreator } from "zustand";
-import {
-  getQuizService,
-  getProgressService,
-} from "@code-notes/ui/adapters/factory";
+import { quizService, progressService } from "@code-notes/ui/services";
 import type {
   QuizSession,
   CreateQuizSessionDto,
@@ -42,7 +39,7 @@ export const createQuizSlice: StateCreator<QuizSlice> = (set, get) => ({
   createQuizSession: async (dto: CreateQuizSessionDto) => {
     set({ quizLoading: true, quizError: null });
     try {
-      const session = await getQuizService().createSession(dto);
+      const session = await quizService.createSession(dto);
       set({ activeSession: session, quizLoading: false });
       return session;
     } catch (error) {
@@ -61,7 +58,7 @@ export const createQuizSlice: StateCreator<QuizSlice> = (set, get) => ({
   loadActiveSession: async () => {
     set({ quizLoading: true, quizError: null });
     try {
-      const session = await getQuizService().getActiveSession();
+      const session = await quizService.getActiveSession();
       set({ activeSession: session, quizLoading: false });
     } catch (error) {
       set({
@@ -82,14 +79,11 @@ export const createQuizSlice: StateCreator<QuizSlice> = (set, get) => ({
 
     set({ quizError: null });
     try {
-      const updatedSession = await getQuizService().submitAnswer(
-        session.id,
-        result,
-      );
+      const updatedSession = await quizService.submitAnswer(session.id, result);
 
       // Try to update progress for the question
       try {
-        await getProgressService().update(result.questionId, {
+        await progressService.update(result.questionId, {
           wasCorrect: result.wasCorrect,
           confidenceLevel: result.confidenceRating,
         });
@@ -118,9 +112,7 @@ export const createQuizSlice: StateCreator<QuizSlice> = (set, get) => ({
 
     set({ quizError: null });
     try {
-      const completedSession = await getQuizService().completeSession(
-        session.id,
-      );
+      const completedSession = await quizService.completeSession(session.id);
       set({ activeSession: null });
 
       // Refresh quiz history
@@ -140,7 +132,7 @@ export const createQuizSlice: StateCreator<QuizSlice> = (set, get) => ({
   fetchQuizHistory: async (limit?: number) => {
     set({ quizLoading: true, quizError: null });
     try {
-      const history = await getQuizService().getHistory(limit);
+      const history = await quizService.getHistory(limit);
       set({ quizHistory: history, quizLoading: false });
     } catch (error) {
       set({

@@ -10,19 +10,21 @@ import {
   Server,
 } from "lucide-react";
 import { Button, Input, Label } from "@code-notes/ui/components/atoms";
-import {
-  getAuthService,
-  getSyncServiceOptional,
-} from "@code-notes/ui/adapters/factory";
-import type { AuthStatus, SyncResult } from "@code-notes/shared";
+import { authService, syncService } from "@code-notes/ui/services";
+import type { AuthStatus, SyncProgress, SyncResult } from "@code-notes/shared";
 import { env } from "@code-notes/shared";
+import { isTauri } from "@code-notes/ui/utils";
 
-export const SyncSettings: React.FC = () => {
+interface SyncSettingsProps {
+}
+
+export const SyncSettings: React.FC<SyncSettingsProps> = ({}) => {
   const [authStatus, setAuthStatus] = useState<AuthStatus>({
     isAuthenticated: false,
   });
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<SyncResult | null>(null);
+  const [syncProgress, setSyncProgress] = useState<SyncProgress | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [lastSyncAt, setLastSyncAt] = useState<number | undefined>();
@@ -38,15 +40,13 @@ export const SyncSettings: React.FC = () => {
   const loadStatus = async () => {
     setIsLoading(true);
     try {
-      const auth = getAuthService();
-      const status = await auth.getStatus();
+      const status = await authService.getStatus();
       setAuthStatus(status);
 
       if (status.serverUrl) setServerUrl(status.serverUrl);
 
-      const syncService = getSyncServiceOptional();
-      if (syncService) {
-        const syncStatus = await syncService.getStatus();
+      const syncStatus = await syncService.getStatus();
+      if (syncStatus) {
         setLastSyncAt(syncStatus.lastSyncAt);
         setPendingChanges(syncStatus.pendingChanges);
       }
@@ -61,8 +61,7 @@ export const SyncSettings: React.FC = () => {
 
   const handleSaveConfig = async () => {
     try {
-      const auth = getAuthService();
-      await auth.configureSync({
+      await authService.configureSync({
         serverUrl,
         appId: "code-notes",
         apiKey: "",
@@ -82,24 +81,33 @@ export const SyncSettings: React.FC = () => {
       return;
     }
 
-    const syncService = getSyncServiceOptional();
-    if (!syncService) {
-      setError("Sync service not initialized");
-      return;
-    }
-
     setIsSyncing(true);
     setError(null);
     setSyncResult(null);
+    setSyncProgress(null);
 
     try {
-      const result = await syncService.syncNow();
+      let result: SyncResult | null;
+      result = await syncService.syncWithProgress((progress) => {
+        setSyncProgress(progress);
+      });
+
+      if (!result) {
+        result = await syncService.syncNow();
+      }
+
+      if (!result) {
+        setError("Sync service not available");
+        return;
+      }
+
       setSyncResult(result);
       await loadStatus();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sync failed");
     } finally {
       setIsSyncing(false);
+      setSyncProgress(null);
     }
   };
 
@@ -271,6 +279,41 @@ export const SyncSettings: React.FC = () => {
           </div>
         )}
 
+        {/* Sync Progress */}
+        {isSyncing && syncProgress && (
+          <div
+            className="mt-4 p-3 rounded-lg"
+            style={{
+              background: "var(--color-bg-muted)",
+              border: "2px solid var(--color-border-light)",
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <RefreshCw
+                className="w-4 h-4 animate-spin"
+                style={{ color: "var(--color-primary)" }}
+              />
+              <span className="text-sm font-medium">
+                {syncProgress.phase === "pushing" ? "Pushing..." : "Pulling..."}
+              </span>
+            </div>
+            <div
+              className="text-sm"
+              style={{ color: "var(--color-text-muted)" }}
+            >
+              {syncProgress.phase === "pushing" ? (
+                <span>{syncProgress.recordsPushed} records pushed</span>
+              ) : (
+                <span>
+                  {syncProgress.recordsPulled} records pulled (page{" "}
+                  {syncProgress.currentPage})
+                  {syncProgress.hasMore && " - more pages available"}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Error */}
         {error && (
           <div
@@ -305,46 +348,48 @@ export const SyncSettings: React.FC = () => {
         </div>
       </div>
 
-      {/* Server Configuration */}
-      <div className="clay-card p-6">
-        <div className="flex items-start gap-4">
-          <Server
-            className="w-6 h-6"
-            style={{ color: "var(--color-primary)" }}
-          />
-          <div className="flex-1">
-            <h2 className="text-2xl font-semibold mb-2">
-              Server Configuration
-            </h2>
-            <p className="mb-4" style={{ color: "var(--color-text-muted)" }}>
-              Configure the sync server connection
-            </p>
+      {/* Server Configuration - Only shown in Tauri (native) mode */}
+      {isTauri() && (
+        <div className="clay-card p-6">
+          <div className="flex items-start gap-4">
+            <Server
+              className="w-6 h-6"
+              style={{ color: "var(--color-primary)" }}
+            />
+            <div className="flex-1">
+              <h2 className="text-2xl font-semibold mb-2">
+                Server Configuration
+              </h2>
+              <p className="mb-4" style={{ color: "var(--color-text-muted)" }}>
+                Configure the sync server connection
+              </p>
 
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="server-url" className="mb-2 block text-sm">
-                  Server URL
-                </Label>
-                <Input
-                  id="server-url"
-                  type="text"
-                  placeholder="http://localhost:3000"
-                  value={serverUrl}
-                  onChange={(e) => setServerUrl(e.target.value)}
-                />
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="server-url" className="mb-2 block text-sm">
+                    Server URL
+                  </Label>
+                  <Input
+                    id="server-url"
+                    type="text"
+                    placeholder="http://localhost:3000"
+                    value={serverUrl}
+                    onChange={(e) => setServerUrl(e.target.value)}
+                  />
+                </div>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleSaveConfig}
+                  disabled={isLoading || !serverUrl}
+                >
+                  Save Configuration
+                </Button>
               </div>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={handleSaveConfig}
-                disabled={isLoading || !serverUrl}
-              >
-                Save Configuration
-              </Button>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

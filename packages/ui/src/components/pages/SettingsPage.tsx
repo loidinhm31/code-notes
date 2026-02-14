@@ -4,7 +4,10 @@ import { ArrowLeft, Database, LogIn, LogOut, User } from "lucide-react";
 import { Button, Card } from "@code-notes/ui/components/atoms";
 import { SyncSettings } from "@code-notes/ui/components/organisms";
 
-export const SettingsPage = () => {
+interface SettingsPageProps {
+}
+
+export const SettingsPage = ({}: SettingsPageProps) => {
   const { to, nav } = useNav();
   const { isAuthenticated, logout } = useAuth();
   return (
@@ -12,7 +15,7 @@ export const SettingsPage = () => {
       <div className="mb-8">
         <Link
           to={to("")}
-          className="inline-flex items-center gap-2 text-sm mb-4 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[var(--color-bg-muted)] border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
+          className="inline-flex items-center gap-2 text-sm mb-4 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-(--color-bg-muted) border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Topics
@@ -44,7 +47,7 @@ export const SettingsPage = () => {
               </p>
               <Link
                 to={to("data-management")}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-light)] hover:shadow-[var(--shadow-clay-md)] cursor-pointer border-2 border-[var(--color-primary-dark)]"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 bg-(--color-primary) text-white hover:bg-[var(--color-primary-light)] hover:shadow-[var(--shadow-clay-md)] cursor-pointer border-2 border-[var(--color-primary-dark)]"
               >
                 <Database className="w-4 h-4" />
                 Manage Data (Import/Export)

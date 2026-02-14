@@ -1,42 +1,42 @@
 export interface QuestionImportDetail {
-  question_id: string;
-  question_number: number;
+  questionId: string;
+  questionNumber: number;
   question: string;
 }
 
 export interface TopicImportDetail {
-  topic_id: string;
-  topic_name: string;
-  questions_count: number;
+  topicId: string;
+  topicName: string;
+  questionsCount: number;
   questions: QuestionImportDetail[];
 }
 
 export interface ImportResult {
   success: boolean;
-  topics_imported: number;
-  questions_imported: number;
+  topicsImported: number;
+  questionsImported: number;
   message: string;
   errors: string[];
-  topics_details: TopicImportDetail[];
+  topicsDetails: TopicImportDetail[];
 }
 
 export interface DatabaseStats {
-  topics_count: number;
-  questions_count: number;
-  database_size: number;
+  topicsCount: number;
+  questionsCount: number;
+  databaseSize: number;
 }
 
 export interface ExportResult {
   success: boolean;
   message: string;
-  exported_path?: string;
+  exportedPath?: string;
 }
 
 export interface GenericImportResult {
   success: boolean;
   message: string;
-  topics_count: number;
-  questions_count: number;
-  progress_count: number;
-  quiz_sessions_count: number;
+  topicsCount: number;
+  questionsCount: number;
+  progressCount: number;
+  quizSessionsCount: number;
 }

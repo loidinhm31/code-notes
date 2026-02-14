@@ -1,8 +1,5 @@
 ﻿import { StateCreator } from "zustand";
-import {
-  getQueryService,
-  getTopicsService,
-} from "@code-notes/ui/adapters/factory";
+import { topicService, queryService } from "@code-notes/ui/services";
 import type { CreateTopicDto, Topic, UpdateTopicDto } from "@code-notes/shared";
 
 export interface TopicsSlice {
@@ -32,7 +29,7 @@ export const createTopicsSlice: StateCreator<TopicsSlice> = (set, get) => ({
   fetchTopics: async () => {
     set({ loading: true, error: null });
     try {
-      const topics = await getTopicsService().getAll();
+      const topics = await topicService.getAll();
       set({ topics, loading: false });
     } catch (error) {
       set({
@@ -46,7 +43,7 @@ export const createTopicsSlice: StateCreator<TopicsSlice> = (set, get) => ({
 
   getTopicById: async (id: string) => {
     try {
-      return await getTopicsService().getById(id);
+      return await topicService.getById(id);
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : "Failed to get topic",
@@ -58,7 +55,7 @@ export const createTopicsSlice: StateCreator<TopicsSlice> = (set, get) => ({
   addTopic: async (dto: CreateTopicDto) => {
     set({ error: null });
     try {
-      const id = await getTopicsService().create(dto);
+      const id = await topicService.create(dto);
       // Refresh topics after creation
       await get().fetchTopics();
       return id;
@@ -74,7 +71,7 @@ export const createTopicsSlice: StateCreator<TopicsSlice> = (set, get) => ({
   updateTopic: async (id: string, dto: UpdateTopicDto) => {
     set({ error: null });
     try {
-      const success = await getTopicsService().update(id, dto);
+      const success = await topicService.update(id, dto);
       if (success) {
         // Refresh topics after update
         await get().fetchTopics();
@@ -92,7 +89,7 @@ export const createTopicsSlice: StateCreator<TopicsSlice> = (set, get) => ({
   deleteTopic: async (id: string) => {
     set({ error: null });
     try {
-      const success = await getTopicsService().delete(id);
+      const success = await topicService.remove(id);
       if (success) {
         // Remove from local state
         set({ topics: get().topics.filter((t) => t.id !== id) });
@@ -110,7 +107,7 @@ export const createTopicsSlice: StateCreator<TopicsSlice> = (set, get) => ({
   searchTopics: async (keyword: string) => {
     set({ isSearchingTopics: true, searchKeyword: keyword, error: null });
     try {
-      const results = await getQueryService().searchTopics(keyword);
+      const results = await queryService.searchTopics(keyword);
       set({ topicsSearchResults: results, isSearchingTopics: false });
     } catch (error) {
       set({

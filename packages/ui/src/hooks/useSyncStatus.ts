@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { SyncStatus, AUTH_STORAGE_KEYS } from "@code-notes/shared";
-import { getSyncServiceOptional } from "@code-notes/ui/adapters/factory";
+import { syncService } from "@code-notes/ui/services";
 
 /**
  * Check auth status from localStorage without calling the server.
@@ -43,9 +43,8 @@ export function useSyncStatus(
       setIsAuthenticated(auth.isAuthenticated);
 
       // Only get sync status if sync service is available
-      const syncService = getSyncServiceOptional();
-      if (syncService) {
-        const sync = await syncService.getStatus();
+      const sync = await syncService.getStatus();
+      if (sync) {
         setSyncStatus(sync);
       }
       setError(null);
@@ -62,17 +61,16 @@ export function useSyncStatus(
 
     if (isSyncing) return;
 
-    const syncService = getSyncServiceOptional();
-    if (!syncService) {
-      setError("Sync service not available");
-      return;
-    }
-
     setIsSyncing(true);
     setError(null);
 
     try {
       const result = await syncService.syncNow();
+      if (!result) {
+        setError("Sync service not available");
+        setLastSyncSuccess(false);
+        return;
+      }
       setLastSyncSuccess(result.success);
       await loadStatus();
     } catch (err) {

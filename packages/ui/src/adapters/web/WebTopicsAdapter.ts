@@ -15,7 +15,7 @@ export class WebTopicsAdapter implements ITopicsService {
   async create(dto: CreateTopicDto): Promise<string> {
     const id = uuidv4();
     const now = new Date().toISOString();
-    const topic: any = {
+    const topic: Topic = {
       id,
       name: dto.name,
       description: dto.description,
@@ -26,8 +26,8 @@ export class WebTopicsAdapter implements ITopicsService {
       order: dto.order || 0,
       createdAt: now,
       updatedAt: now,
-      sync_version: 1,
-      synced_at: undefined,
+      syncVersion: 1,
+      syncedAt: undefined,
     };
     await db.topics.add(topic);
     return id;
@@ -37,11 +37,11 @@ export class WebTopicsAdapter implements ITopicsService {
     const topic = await db.topics.get(id);
     if (!topic) return false;
 
-    const updates: any = {
+    const updates: Partial<Topic> = {
       ...dto,
       updatedAt: new Date().toISOString(),
-      sync_version: ((topic as any).sync_version || 0) + 1,
-      synced_at: undefined,
+      syncVersion: (topic.syncVersion || 0) + 1,
+      syncedAt: undefined,
     };
     await db.topics.update(id, updates);
     return true;
@@ -61,21 +61,17 @@ export class WebTopicsAdapter implements ITopicsService {
           // Track progress deletes
           const progress = await db.progress.get(q.id);
           if (progress) {
-            await trackDelete(
-              "progress",
-              q.id,
-              (progress as any).sync_version || 0,
-            );
+            await trackDelete("progress", q.id, progress.syncVersion || 0);
           }
           await db.progress.delete(q.id);
-          await trackDelete("questions", q.id, (q as any).sync_version || 0);
+          await trackDelete("questions", q.id, q.syncVersion || 0);
         }
         await db.questions.where("topicId").equals(id).delete();
 
         // Track parent delete
         const topic = await db.topics.get(id);
         if (topic) {
-          await trackDelete("topics", id, (topic as any).sync_version || 0);
+          await trackDelete("topics", id, topic.syncVersion || 0);
         }
         await db.topics.delete(id);
       },

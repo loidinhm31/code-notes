@@ -18,6 +18,9 @@ export interface QuestionProgress {
   nextReviewAt?: string;
   createdAt: string;
   updatedAt: string;
+  // Sync fields
+  syncVersion?: number;
+  syncedAt?: number;
 }
 
 export interface UpdateProgressDto {
@@ -63,6 +66,9 @@ export interface QuizSession {
   startedAt: string;
   completedAt?: string;
   results: QuizResult[];
+  // Sync fields
+  syncVersion?: number;
+  syncedAt?: number;
 }
 
 export interface CreateQuizSessionDto {

@@ -1,5 +1,5 @@
 ﻿import { StateCreator } from "zustand";
-import { getProgressService } from "@code-notes/ui/adapters/factory";
+import { progressService } from "@code-notes/ui/services";
 import type {
   QuestionProgress,
   UpdateProgressDto,
@@ -43,7 +43,7 @@ export const createProgressSlice: StateCreator<ProgressSlice> = (set, get) => ({
   fetchAllProgress: async () => {
     set({ progressLoading: true, progressError: null });
     try {
-      const progressArray = await getProgressService().getAll();
+      const progressArray = await progressService.getAll();
       const progressMap = new Map(progressArray.map((p) => [p.questionId, p]));
       set({ progressMap, progressLoading: false });
     } catch (error) {
@@ -65,7 +65,7 @@ export const createProgressSlice: StateCreator<ProgressSlice> = (set, get) => ({
   updateProgress: async (questionId: string, dto: UpdateProgressDto) => {
     set({ progressError: null });
     try {
-      const updated = await getProgressService().update(questionId, dto);
+      const updated = await progressService.update(questionId, dto);
 
       // Update local state
       const progressMap = new Map(get().progressMap);
@@ -87,7 +87,7 @@ export const createProgressSlice: StateCreator<ProgressSlice> = (set, get) => ({
   resetProgress: async (questionId: string) => {
     set({ progressError: null });
     try {
-      await getProgressService().reset(questionId);
+      await progressService.reset(questionId);
 
       // Refresh progress data
       await get().fetchAllProgress();
@@ -104,7 +104,7 @@ export const createProgressSlice: StateCreator<ProgressSlice> = (set, get) => ({
   // Fetch statistics
   fetchStatistics: async () => {
     try {
-      const statistics = await getProgressService().getStatistics();
+      const statistics = await progressService.getStatistics();
       set({ statistics });
     } catch (error) {
       set({

@@ -10,11 +10,7 @@ import type {
   IAuthService,
 } from "./interfaces";
 import { QmServerAuthAdapter } from "@code-notes/ui/adapters/shared";
-import {
-  TauriAuthAdapter,
-  TauriSyncAdapter,
-} from "@code-notes/ui/adapters/tauri";
-import { isTauri, serviceLogger } from "@code-notes/ui/utils";
+import { serviceLogger } from "@code-notes/ui/utils";
 
 let topicsService: ITopicsService | null = null;
 let questionsService: IQuestionsService | null = null;
@@ -96,12 +92,7 @@ export const setSyncService = (service: ISyncService) => {
 
 export const getSyncService = (): ISyncService => {
   if (!syncService) {
-    if (isTauri()) {
-      syncService = new TauriSyncAdapter();
-      serviceLogger.factory("Created SyncService for Tauri");
-    } else {
-      throw new Error("SyncService not initialized for web platform");
-    }
+    throw new Error("SyncService not initialized");
   }
   return syncService;
 };
@@ -116,13 +107,9 @@ export const setAuthService = (service: IAuthService) => {
 
 export const getAuthService = (): IAuthService => {
   if (!authService) {
-    if (isTauri()) {
-      authService = new TauriAuthAdapter();
-      serviceLogger.factory("Created AuthService for Tauri");
-    } else {
-      authService = new QmServerAuthAdapter();
-      serviceLogger.factory("Created AuthService for Web");
-    }
+    // Both platforms use QmServerAuthAdapter for web-based auth
+    authService = new QmServerAuthAdapter();
+    serviceLogger.factory("Created AuthService (QmServerAuthAdapter)");
   }
   return authService;
 };

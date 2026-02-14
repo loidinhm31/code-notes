@@ -9,6 +9,9 @@ export interface Topic {
   order: number;
   createdAt: string;
   updatedAt: string;
+  // Sync fields
+  syncVersion?: number;
+  syncedAt?: number;
 }
 
 export interface CreateTopicDto {
@@ -34,5 +37,5 @@ export interface UpdateTopicDto {
 export interface TopicStats {
   id: string;
   name: string;
-  question_count: number;
+  questionCount: number;
 }

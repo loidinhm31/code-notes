@@ -1,5 +1,8 @@
 import { AuthResponse, AuthStatus, SyncConfig } from "@code-notes/shared";
 
+/** Sync config with all required fields (used when reading current config) */
+export type RequiredSyncConfig = Required<SyncConfig>;
+
 /**
  * Auth service interface for user authentication
  * Implemented by platform-specific adapters
@@ -68,4 +71,10 @@ export interface IAuthService {
     refreshToken: string,
     userId: string,
   ): Promise<void>;
+
+  /**
+   * Get current sync configuration (serverUrl, appId, apiKey)
+   * Allows sync adapter to get config from the auth service (single source of truth)
+   */
+  getSyncConfig(): RequiredSyncConfig;
 }

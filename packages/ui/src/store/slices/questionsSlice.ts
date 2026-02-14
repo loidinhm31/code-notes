@@ -4,10 +4,7 @@ import type {
   CreateQuestionDto,
   UpdateQuestionDto,
 } from "@code-notes/shared";
-import {
-  getQueryService,
-  getQuestionsService,
-} from "@code-notes/ui/adapters/factory";
+import { questionService, queryService } from "@code-notes/ui/services";
 
 export interface QuestionFilters {
   keyword: string;
@@ -52,7 +49,7 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
   fetchQuestions: async () => {
     set({ loading: true, error: null });
     try {
-      const questions = await getQuestionsService().getAll();
+      const questions = await questionService.getAll();
       set({ questions, loading: false });
     } catch (error) {
       set({
@@ -67,7 +64,7 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
   fetchQuestionsByTopic: async (topicId: string) => {
     set({ loading: true, error: null });
     try {
-      const questions = await getQuestionsService().getByTopicId(topicId);
+      const questions = await questionService.getByTopicId(topicId);
       set({ questions, loading: false });
     } catch (error) {
       set({
@@ -81,7 +78,7 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
 
   getQuestionById: async (id: string) => {
     try {
-      const question = await getQuestionsService().getById(id);
+      const question = await questionService.getById(id);
       if (question) {
         set({ currentQuestion: question });
       }
@@ -102,7 +99,7 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
   addQuestion: async (dto: CreateQuestionDto) => {
     set({ error: null });
     try {
-      const id = await getQuestionsService().create(dto);
+      const id = await questionService.create(dto);
       // Refresh questions after creation
       await get().fetchQuestionsByTopic(dto.topicId);
       return id;
@@ -118,7 +115,7 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
   updateQuestion: async (id: string, dto: UpdateQuestionDto) => {
     set({ error: null });
     try {
-      const success = await getQuestionsService().update(id, dto);
+      const success = await questionService.update(id, dto);
       if (success && get().currentQuestion?.id === id) {
         // Refresh current question if it was updated
         await get().getQuestionById(id);
@@ -136,7 +133,7 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
   deleteQuestion: async (id: string) => {
     set({ error: null });
     try {
-      const success = await getQuestionsService().delete(id);
+      const success = await questionService.remove(id);
       if (success) {
         // Remove from local state
         set({ questions: get().questions.filter((q) => q.id !== id) });
@@ -167,7 +164,7 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
 
     try {
       // Backend search by keyword
-      let results = await getQueryService().searchQuestions(keyword);
+      let results = await queryService.searchQuestions(keyword);
 
       // Client-side filtering by tags
       if (filters?.tags && filters.tags.length > 0) {

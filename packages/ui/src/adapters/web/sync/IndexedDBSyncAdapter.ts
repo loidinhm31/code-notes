@@ -5,7 +5,11 @@
  * Combines QmSyncClient and IndexedDBSyncStorage to provide full sync functionality.
  */
 
-import type { SyncResult, SyncStatus } from "@code-notes/shared/types";
+import type {
+  SyncProgress,
+  SyncResult,
+  SyncStatus,
+} from "@code-notes/shared/types";
 import {
   createSyncClientConfig,
   type HttpClientFn,
@@ -33,10 +37,17 @@ export type TokenSaver = (
   userId: string,
 ) => Promise<void>;
 
-export interface IndexedDBSyncAdapterConfig {
+/**
+ * Sync config provider function type.
+ */
+export type SyncConfigProvider = () => {
   serverUrl: string;
   appId: string;
   apiKey: string;
+};
+
+export interface IndexedDBSyncAdapterConfig {
+  getConfig: SyncConfigProvider;
   httpClient?: HttpClientFn;
   getTokens: TokenProvider;
   saveTokens?: TokenSaver;
@@ -46,20 +57,42 @@ export interface IndexedDBSyncAdapterConfig {
  * ISyncService implementation for IndexedDB.
  */
 export class IndexedDBSyncAdapter implements ISyncService {
-  private client: QmSyncClient;
+  private client: QmSyncClient | null = null;
   private storage: IndexedDBSyncStorage;
   private config: IndexedDBSyncAdapterConfig;
   private initialized = false;
+  private lastConfigHash: string = "";
 
   constructor(config: IndexedDBSyncAdapterConfig) {
     this.config = config;
-    const clientConfig = createSyncClientConfig(
-      config.serverUrl,
-      config.appId,
-      config.apiKey,
-    );
-    this.client = new QmSyncClient(clientConfig, config.httpClient);
     this.storage = new IndexedDBSyncStorage();
+  }
+
+  private getConfigHash(config: {
+    serverUrl: string;
+    appId: string;
+    apiKey: string;
+  }): string {
+    return `${config.serverUrl}|${config.appId}|${config.apiKey}`;
+  }
+
+  private ensureClient(): QmSyncClient {
+    const config = this.config.getConfig();
+    const hash = this.getConfigHash(config);
+
+    if (!this.client || hash !== this.lastConfigHash) {
+      // Config changed, recreate client
+      const clientConfig = createSyncClientConfig(
+        config.serverUrl,
+        config.appId,
+        config.apiKey,
+      );
+      this.client = new QmSyncClient(clientConfig, this.config.httpClient);
+      this.lastConfigHash = hash;
+      this.initialized = false;
+    }
+
+    return this.client;
   }
 
   /**
@@ -68,9 +101,10 @@ export class IndexedDBSyncAdapter implements ISyncService {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
+    const client = this.ensureClient();
     const { accessToken, refreshToken, userId } = await this.config.getTokens();
     if (accessToken && refreshToken) {
-      this.client.setTokens(accessToken, refreshToken, userId);
+      client.setTokens(accessToken, refreshToken, userId);
     }
 
     this.initialized = true;
@@ -80,7 +114,8 @@ export class IndexedDBSyncAdapter implements ISyncService {
    * Login and store tokens.
    */
   async login(email: string, password: string): Promise<void> {
-    const auth = await this.client.login(email, password);
+    const client = this.ensureClient();
+    const auth = await client.login(email, password);
     if (this.config.saveTokens) {
       await this.config.saveTokens(
         auth.accessToken,
@@ -98,7 +133,8 @@ export class IndexedDBSyncAdapter implements ISyncService {
     email: string,
     password: string,
   ): Promise<void> {
-    const auth = await this.client.register(username, email, password);
+    const client = this.ensureClient();
+    const auth = await client.register(username, email, password);
     if (this.config.saveTokens) {
       await this.config.saveTokens(
         auth.accessToken,
@@ -112,7 +148,8 @@ export class IndexedDBSyncAdapter implements ISyncService {
    * Logout.
    */
   async logout(): Promise<void> {
-    this.client.logout();
+    const client = this.ensureClient();
+    client.logout();
     this.initialized = false;
   }
 
@@ -120,7 +157,8 @@ export class IndexedDBSyncAdapter implements ISyncService {
    * Check if authenticated.
    */
   isAuthenticated(): boolean {
-    return this.client.isAuthenticated();
+    const client = this.ensureClient();
+    return client.isAuthenticated();
   }
 
   // =========================================================================
@@ -128,14 +166,24 @@ export class IndexedDBSyncAdapter implements ISyncService {
   // =========================================================================
 
   async syncNow(): Promise<SyncResult> {
+    // Call syncWithProgress with a no-op callback for backwards compatibility
+    return this.syncWithProgress(() => {});
+  }
+
+  async syncWithProgress(
+    onProgress: (progress: SyncProgress) => void,
+  ): Promise<SyncResult> {
+    // Ensure client is up-to-date with current config
+    const client = this.ensureClient();
+
     // Always refresh tokens before syncing
     const { accessToken, refreshToken, userId } = await this.config.getTokens();
     if (accessToken && refreshToken) {
-      this.client.setTokens(accessToken, refreshToken, userId);
+      client.setTokens(accessToken, refreshToken, userId);
     }
     this.initialized = true;
 
-    if (!this.client.isAuthenticated()) {
+    if (!client.isAuthenticated()) {
       return {
         pushed: 0,
         pulled: 0,
@@ -150,7 +198,7 @@ export class IndexedDBSyncAdapter implements ISyncService {
       const pendingChanges = await this.storage.getPendingChanges();
       const checkpoint = await this.storage.getCheckpoint();
 
-      const response = await this.client.delta(pendingChanges, checkpoint);
+      const response = await client.delta(pendingChanges, checkpoint);
 
       let pushed = 0;
       let pulled = 0;
@@ -167,16 +215,68 @@ export class IndexedDBSyncAdapter implements ISyncService {
           }));
           await this.storage.markSynced(syncedIds);
         }
+
+        // Emit progress after push phase
+        onProgress({
+          phase: "pushing",
+          recordsPushed: pushed,
+          recordsPulled: 0,
+          hasMore: response.pull?.hasMore ?? false,
+          currentPage: 0,
+        });
       }
 
       if (response.pull) {
-        pulled = response.pull.records.length;
+        // Collect ALL records from ALL pages first to ensure proper ordering
+        const allRecords = [...response.pull.records];
+        pulled = allRecords.length;
 
-        if (pulled > 0) {
-          await this.storage.applyRemoteChanges(response.pull.records);
+        // Auto-continue pulling while hasMore is true
+        let currentCheckpoint = response.pull.checkpoint;
+        let hasMore = response.pull.hasMore;
+        let page = 1;
+
+        // Emit progress after initial pull
+        onProgress({
+          phase: "pulling",
+          recordsPushed: pushed,
+          recordsPulled: pulled,
+          hasMore,
+          currentPage: page,
+        });
+
+        while (hasMore) {
+          page++;
+          console.log("Pulling more records, checkpoint:", currentCheckpoint);
+
+          const pullResponse = await client.pull(currentCheckpoint);
+
+          // Collect records from this page
+          allRecords.push(...pullResponse.records);
+          pulled += pullResponse.records.length;
+
+          currentCheckpoint = pullResponse.checkpoint;
+          hasMore = pullResponse.hasMore;
+
+          // Emit progress after each page
+          onProgress({
+            phase: "pulling",
+            recordsPushed: pushed,
+            recordsPulled: pulled,
+            hasMore,
+            currentPage: page,
+          });
         }
 
-        await this.storage.saveCheckpoint(response.pull.checkpoint);
+        // Apply ALL changes at once after collecting from all pages
+        console.log(
+          `Applying ${allRecords.length} total records from ${page} pages`,
+        );
+        if (allRecords.length > 0) {
+          await this.storage.applyRemoteChanges(allRecords);
+        }
+
+        await this.storage.saveCheckpoint(currentCheckpoint);
       }
 
       const syncedAt = getCurrentTimestamp();
@@ -205,6 +305,7 @@ export class IndexedDBSyncAdapter implements ISyncService {
   async getStatus(): Promise<SyncStatus> {
     await this.initialize();
 
+    const client = this.ensureClient();
     const [pendingChanges, lastSyncAt] = await Promise.all([
       this.storage.getPendingChangesCount(),
       this.storage.getLastSyncAt(),
@@ -212,10 +313,10 @@ export class IndexedDBSyncAdapter implements ISyncService {
 
     return {
       configured: true,
-      authenticated: this.client.isAuthenticated(),
+      authenticated: client.isAuthenticated(),
       lastSyncAt,
       pendingChanges,
-      serverUrl: this.client.config.serverUrl,
+      serverUrl: client.config.serverUrl,
     };
   }
 
@@ -228,7 +329,7 @@ export class IndexedDBSyncAdapter implements ISyncService {
   }
 
   getClient(): QmSyncClient {
-    return this.client;
+    return this.ensureClient();
   }
 }
 

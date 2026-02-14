@@ -10,10 +10,10 @@ import { IDataManagementService } from "@code-notes/ui/adapters/factory/interfac
 import { ExportResult } from "@code-notes/shared";
 import { db } from "@code-notes/ui/adapters/web";
 
-// Structure matches the JSON format used in Tauri
+// Structure matches the JSON format used for export/import
 interface DatabaseExport {
   version: string;
-  exported_at: string;
+  exportedAt: string;
   database: {
     topics: Topic[];
     questions: Question[];
@@ -22,7 +22,7 @@ interface DatabaseExport {
     version: string;
     data: QuestionProgress[];
   };
-  quiz_sessions: {
+  quizSessions: {
     version: string;
     sessions: QuizSession[];
   };
@@ -34,9 +34,9 @@ export class WebDataManagementAdapter implements IDataManagementService {
     const questionsCount = await db.questions.count();
 
     return {
-      topics_count: topicsCount,
-      questions_count: questionsCount,
-      database_size: 0,
+      topicsCount: topicsCount,
+      questionsCount: questionsCount,
+      databaseSize: 0,
     };
   }
 
@@ -51,7 +51,7 @@ export class WebDataManagementAdapter implements IDataManagementService {
 
       const exportData: DatabaseExport = {
         version: "2.1",
-        exported_at: new Date().toISOString(),
+        exportedAt: new Date().toISOString(),
         database: {
           topics,
           questions,
@@ -60,7 +60,7 @@ export class WebDataManagementAdapter implements IDataManagementService {
           version: "2.1",
           data: progress,
         },
-        quiz_sessions: {
+        quizSessions: {
           version: "2.1",
           sessions: quizSessions,
         },
@@ -81,7 +81,7 @@ export class WebDataManagementAdapter implements IDataManagementService {
       return {
         success: true,
         message: "Export started",
-        exported_path: "Downloads folder",
+        exportedPath: "Downloads folder",
       };
     } catch (error) {
       return {
@@ -96,27 +96,37 @@ export class WebDataManagementAdapter implements IDataManagementService {
     merge: boolean,
   ): Promise<GenericImportResult> {
     try {
-      const data = JSON.parse(content) as any;
+      const data = JSON.parse(content) as Record<string, unknown>;
 
       // Basic validation
-      // Supports v2 (nested) and maybe v1 (flat) similar to Tauri?
-      // Let's implement v2 structure support first as it's the current export format.
+      // Supports v2 (nested) and maybe v1 (flat)
+      // Also supports both camelCase and snake_case for backwards compatibility
 
       let topics: Topic[] = [];
       let questions: Question[] = [];
       let progress: QuestionProgress[] = [];
       let sessions: QuizSession[] = [];
 
-      if (data.database && Array.isArray(data.database.topics)) {
+      const database = data.database as
+        | { topics?: Topic[]; questions?: Question[] }
+        | undefined;
+      const progressData = (data.progress || data.progress_data) as
+        | { data?: QuestionProgress[] }
+        | undefined;
+      const quizSessionsData = (data.quizSessions || data.quiz_sessions) as
+        | { sessions?: QuizSession[] }
+        | undefined;
+
+      if (database && Array.isArray(database.topics)) {
         // V2 format
-        topics = data.database.topics;
-        questions = data.database.questions || [];
-        progress = data.progress?.data || [];
-        sessions = data.quiz_sessions?.sessions || [];
+        topics = database.topics;
+        questions = database.questions || [];
+        progress = progressData?.data || [];
+        sessions = quizSessionsData?.sessions || [];
       } else if (Array.isArray(data.topics)) {
         // V1 format (fallback)
-        topics = data.topics;
-        questions = data.questions || [];
+        topics = data.topics as Topic[];
+        questions = (data.questions as Question[]) || [];
       } else {
         throw new Error("Invalid database format");
       }
@@ -163,8 +173,7 @@ export class WebDataManagementAdapter implements IDataManagementService {
 
             const existingProgressIds = new Set(
               await db.progress.toCollection().primaryKeys(),
-            ); // [questionId]
-            // Progress primary key is questionId? Yes.
+            );
             const newProgress = progress.filter(
               (p) => !existingProgressIds.has(p.questionId),
             );
@@ -196,19 +205,19 @@ export class WebDataManagementAdapter implements IDataManagementService {
       return {
         success: true,
         message: "Import successful",
-        topics_count: finalTopicsCount,
-        questions_count: finalQuestionsCount,
-        progress_count: finalProgressCount,
-        quiz_sessions_count: finalSessionsCount,
+        topicsCount: finalTopicsCount,
+        questionsCount: finalQuestionsCount,
+        progressCount: finalProgressCount,
+        quizSessionsCount: finalSessionsCount,
       };
     } catch (error) {
       return {
         success: false,
         message: error instanceof Error ? error.message : String(error),
-        topics_count: 0,
-        questions_count: 0,
-        progress_count: 0,
-        quiz_sessions_count: 0,
+        topicsCount: 0,
+        questionsCount: 0,
+        progressCount: 0,
+        quizSessionsCount: 0,
       };
     }
   }

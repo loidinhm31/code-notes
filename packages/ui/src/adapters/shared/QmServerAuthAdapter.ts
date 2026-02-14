@@ -1,6 +1,10 @@
 import type { AuthResponse, AuthStatus, SyncConfig } from "@code-notes/shared";
 import { AUTH_STORAGE_KEYS, env } from "@code-notes/shared";
-import { IAuthService } from "@code-notes/ui/adapters/factory/interfaces";
+import {
+  IAuthService,
+  RequiredSyncConfig,
+} from "@code-notes/ui/adapters/factory/interfaces";
+import { isTauri } from "@code-notes/ui/utils";
 
 function getDefaultBaseUrl(): string {
   return env.serverUrl;
@@ -51,18 +55,27 @@ export class QmServerAuthAdapter implements IAuthService {
   private static STATUS_CACHE_TTL = 10000; // 10 seconds cache
 
   constructor(config?: QmServerAuthConfig) {
-    this.baseUrl =
-      config?.baseUrl ||
-      this.getStoredValue(STORAGE_KEYS.SERVER_URL) ||
-      getDefaultBaseUrl();
-    this.appId =
-      config?.appId ||
-      this.getStoredValue(STORAGE_KEYS.APP_ID) ||
-      getDefaultAppId();
-    this.apiKey =
-      config?.apiKey ||
-      this.getStoredValue(STORAGE_KEYS.API_KEY) ||
-      getDefaultApiKey();
+    // In web mode, skip localStorage and use env directly
+    // In Tauri mode, allow localStorage to override env for user configuration
+    if (isTauri()) {
+      this.baseUrl =
+        config?.baseUrl ||
+        this.getStoredValue(STORAGE_KEYS.SERVER_URL) ||
+        getDefaultBaseUrl();
+      this.appId =
+        config?.appId ||
+        this.getStoredValue(STORAGE_KEYS.APP_ID) ||
+        getDefaultAppId();
+      this.apiKey =
+        config?.apiKey ||
+        this.getStoredValue(STORAGE_KEYS.API_KEY) ||
+        getDefaultApiKey();
+    } else {
+      // Web/embed mode: use env directly, config can override
+      this.baseUrl = config?.baseUrl || getDefaultBaseUrl();
+      this.appId = config?.appId || getDefaultAppId();
+      this.apiKey = config?.apiKey || getDefaultApiKey();
+    }
   }
 
   private getStoredValue(key: string): string | null {
@@ -171,15 +184,22 @@ export class QmServerAuthAdapter implements IAuthService {
   async configureSync(config: SyncConfig): Promise<void> {
     if (config.serverUrl) {
       this.baseUrl = config.serverUrl;
-      this.setStoredValue(STORAGE_KEYS.SERVER_URL, config.serverUrl);
+      // Only store to localStorage in Tauri mode
+      if (isTauri()) {
+        this.setStoredValue(STORAGE_KEYS.SERVER_URL, config.serverUrl);
+      }
     }
     if (config.appId) {
       this.appId = config.appId;
-      this.setStoredValue(STORAGE_KEYS.APP_ID, config.appId);
+      if (isTauri()) {
+        this.setStoredValue(STORAGE_KEYS.APP_ID, config.appId);
+      }
     }
     if (config.apiKey) {
       this.apiKey = config.apiKey;
-      this.setStoredValue(STORAGE_KEYS.API_KEY, config.apiKey);
+      if (isTauri()) {
+        this.setStoredValue(STORAGE_KEYS.API_KEY, config.apiKey);
+      }
     }
   }
 
@@ -398,5 +418,17 @@ export class QmServerAuthAdapter implements IAuthService {
     this.setStoredValue(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
     this.setStoredValue(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
     this.setStoredValue(STORAGE_KEYS.USER_ID, userId);
+  }
+
+  /**
+   * Get current sync configuration (serverUrl, appId, apiKey).
+   * Returns the current values from adapter instance (single source of truth).
+   */
+  getSyncConfig(): RequiredSyncConfig {
+    return {
+      serverUrl: this.baseUrl,
+      appId: this.appId,
+      apiKey: this.apiKey,
+    };
   }
 }

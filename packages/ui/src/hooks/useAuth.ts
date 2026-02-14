@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { getAuthService } from "@code-notes/ui/adapters/factory";
+import { authService } from "@code-notes/ui/services";
 
 export interface UseAuthOptions {
   /**
@@ -26,7 +26,6 @@ export const useAuth = (options: UseAuthOptions = {}) => {
     isCheckingRef.current = true;
     setIsLoading(true);
     try {
-      const authService = getAuthService();
       const status = await authService.getStatus();
       setIsAuthenticated(status.isAuthenticated);
       setError(null);
@@ -43,7 +42,7 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
   const logout = useCallback(async () => {
     try {
-      await getAuthService().logout();
+      await authService.logout();
       setIsAuthenticated(false);
       setError(null);
     } catch (err) {
@@ -53,7 +52,7 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
   const refreshToken = useCallback(async () => {
     try {
-      await getAuthService().refreshToken();
+      await authService.refreshToken();
       await checkAuthStatus();
       setError(null);
     } catch (err) {

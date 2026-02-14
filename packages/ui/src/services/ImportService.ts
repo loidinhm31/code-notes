@@ -26,11 +26,11 @@ export class ImportService {
 
     const result: ImportResult = {
       success: true,
-      topics_imported: 0,
-      questions_imported: 0,
+      topicsImported: 0,
+      questionsImported: 0,
       message: "Import completed successfully",
       errors: [],
-      topics_details: [],
+      topicsDetails: [],
     };
 
     try {
@@ -49,12 +49,12 @@ export class ImportService {
             subtopics: [],
           });
 
-          result.topics_imported++;
+          result.topicsImported++;
 
           const topicDetail = {
-            topic_id: topicId,
-            topic_name: topicData.name,
-            questions_count: 0,
+            topicId: topicId,
+            topicName: topicData.name,
+            questionsCount: 0,
             questions: [] as any[],
           };
 
@@ -78,15 +78,15 @@ export class ImportService {
               questionNumber: qIndex,
             });
             qIndex++;
-            result.questions_imported++;
-            topicDetail.questions_count++;
+            result.questionsImported++;
+            topicDetail.questionsCount++;
             topicDetail.questions.push({
-              question_id: qId,
-              question_number: qIndex - 1,
+              questionId: qId,
+              questionNumber: qIndex - 1,
               question: qData.question,
             });
           }
-          result.topics_details.push(topicDetail);
+          result.topicsDetails.push(topicDetail);
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
           result.errors.push(

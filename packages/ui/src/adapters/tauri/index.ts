@@ -1,12 +1,3 @@
+// Only PlatformAdapter is needed for Tauri-specific platform services (openUrl)
+// Data storage and sync now use IndexedDB (Web adapters) for both platforms
 export * from "./PlatformAdapter";
-export * from "./TauriTopicsAdapter";
-export * from "./TauriQuestionsAdapter";
-export * from "./TauriQueryAdapter";
-export * from "./TauriProgressAdapter";
-export * from "./TauriQuizAdapter";
-export * from "./TauriDataManagementAdapter";
-export * from "./TauriDebugAdapter";
-export * from "./TauriImportAdapter";
-export * from "./tauriInvoke";
-export * from "./TauriAuthAdapter";
-export * from "./TauriSyncAdapter";

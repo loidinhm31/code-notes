@@ -13,7 +13,7 @@ import {
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { confirm } from "@tauri-apps/plugin-dialog";
 import { readTextFile } from "@tauri-apps/plugin-fs";
-import { getDataManagementService } from "@code-notes/ui/adapters/factory";
+import { dataManagementService } from "@code-notes/ui/services";
 import { useStore } from "@code-notes/ui/store";
 import { Button } from "@code-notes/ui/components/atoms";
 import { DatabaseStats } from "@code-notes/shared";
@@ -42,7 +42,7 @@ export const DataManagementPage = () => {
 
   const loadStats = async () => {
     try {
-      const dbStats = await getDataManagementService().getDatabaseStats();
+      const dbStats = await dataManagementService.getDatabaseStats();
       setStats(dbStats);
     } catch (error) {
       console.error("Failed to load database stats:", error);
@@ -60,7 +60,6 @@ export const DataManagementPage = () => {
       // Tauri service needs a path from dialog
       // Web service handles download internally
 
-      const service = getDataManagementService();
       let exportPath: string | undefined;
 
       // Check if Tauri (could use isTauri check or just try/catch)
@@ -87,11 +86,11 @@ export const DataManagementPage = () => {
         exportPath = defaultFilename;
       }
 
-      const result = await service.exportDatabase(exportPath);
+      const result = await dataManagementService.exportDatabase(exportPath);
 
       if (result.success) {
         setStatus(
-          `Database exported successfully${result.exported_path ? ` to ${result.exported_path}` : ""}`,
+          `Database exported successfully${result.exportedPath ? ` to ${result.exportedPath}` : ""}`,
         );
         setStatusType("success");
       } else {
@@ -161,14 +160,14 @@ export const DataManagementPage = () => {
         });
       }
 
-      const result = await getDataManagementService().importDatabase(
+      const result = await dataManagementService.importDatabase(
         content,
         importMode === "merge",
       );
 
       if (result.success) {
         setStatus(
-          `Successfully imported ${result.topics_count} topics and ${result.questions_count} questions!`,
+          `Successfully imported ${result.topicsCount} topics and ${result.questionsCount} questions!`,
         );
         setStatusType("success");
 
@@ -242,7 +241,7 @@ export const DataManagementPage = () => {
                       className="text-3xl font-bold"
                       style={{ color: "var(--color-primary)" }}
                     >
-                      {stats.topics_count}
+                      {stats.topicsCount}
                     </div>
                   </div>
                   <div className="clay-card p-4">
@@ -256,7 +255,7 @@ export const DataManagementPage = () => {
                       className="text-3xl font-bold"
                       style={{ color: "var(--color-primary)" }}
                     >
-                      {stats.questions_count}
+                      {stats.questionsCount}
                     </div>
                   </div>
                   <div className="clay-card p-4">
@@ -270,7 +269,7 @@ export const DataManagementPage = () => {
                       className="text-3xl font-bold"
                       style={{ color: "var(--color-primary)" }}
                     >
-                      {formatFileSize(stats.database_size)}
+                      {formatFileSize(stats.databaseSize)}
                     </div>
                   </div>
                 </div>

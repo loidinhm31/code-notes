@@ -29,7 +29,7 @@ export class WebQuestionsAdapter implements IQuestionsService {
       .equals(dto.topicId)
       .count();
 
-    const question: any = {
+    const question: Question = {
       id,
       topicId: dto.topicId,
       questionNumber: dto.questionNumber || count + 1,
@@ -41,8 +41,8 @@ export class WebQuestionsAdapter implements IQuestionsService {
       subtopic: dto.subtopic,
       createdAt: now,
       updatedAt: now,
-      sync_version: 1,
-      synced_at: undefined,
+      syncVersion: 1,
+      syncedAt: undefined,
     };
     await db.questions.add(question);
     return id;
@@ -52,11 +52,11 @@ export class WebQuestionsAdapter implements IQuestionsService {
     const question = await db.questions.get(id);
     if (!question) return false;
 
-    const updates: any = {
+    const updates: Partial<Question> = {
       ...dto,
       updatedAt: new Date().toISOString(),
-      sync_version: ((question as any).sync_version || 0) + 1,
-      synced_at: undefined,
+      syncVersion: (question.syncVersion || 0) + 1,
+      syncedAt: undefined,
     };
     await db.questions.update(id, updates);
     return true;
@@ -70,22 +70,14 @@ export class WebQuestionsAdapter implements IQuestionsService {
         // Track progress delete
         const progress = await db.progress.get(id);
         if (progress) {
-          await trackDelete(
-            "progress",
-            id,
-            (progress as any).sync_version || 0,
-          );
+          await trackDelete("progress", id, progress.syncVersion || 0);
         }
         await db.progress.delete(id);
 
         // Track question delete
         const question = await db.questions.get(id);
         if (question) {
-          await trackDelete(
-            "questions",
-            id,
-            (question as any).sync_version || 0,
-          );
+          await trackDelete("questions", id, question.syncVersion || 0);
         }
         await db.questions.delete(id);
       },

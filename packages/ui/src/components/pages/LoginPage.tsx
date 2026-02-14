@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Lock, Mail, ShieldCheck, User, KeyRound } from "lucide-react";
-import { getAuthService } from "@code-notes/ui/adapters/factory";
+import { authService } from "@code-notes/ui/services";
 import { Button, Input, Label } from "@code-notes/ui/components/atoms";
 
 interface LoginPageProps {
@@ -32,7 +32,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     setIsLoading(true);
 
     try {
-      await getAuthService().login(loginEmail, loginPassword);
+      await authService.login(loginEmail, loginPassword);
       onLoginSuccess();
     } catch (err) {
       setError(
@@ -65,7 +65,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     setIsLoading(true);
 
     try {
-      await getAuthService().register(
+      await authService.register(
         registerUsername,
         registerEmail,
         registerPassword,

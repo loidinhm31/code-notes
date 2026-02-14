@@ -62,7 +62,7 @@ export class WebQueryAdapter implements IQueryService {
       stats.push({
         id: topic.id,
         name: topic.name,
-        question_count: questionCount,
+        questionCount: questionCount,
       });
     }
 

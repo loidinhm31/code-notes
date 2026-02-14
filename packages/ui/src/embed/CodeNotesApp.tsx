@@ -3,6 +3,10 @@
  *
  * This component can be used to embed code-notes into other applications.
  * It sets up all necessary services and providers.
+ *
+ * Both Tauri and Web platforms now use the same IndexedDB-backed adapters
+ * for data storage and sync. The only difference is platform services
+ * (openUrl, file system access via Tauri plugins).
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -15,6 +19,7 @@ import { BasePathContext, PortalContainerContext } from "@code-notes/ui/hooks";
 // Adapters
 import {
   getAuthService,
+  setAuthService,
   setDataManagementService,
   setProgressService,
   setQueryService,
@@ -25,7 +30,7 @@ import {
 } from "@code-notes/ui/adapters/factory";
 import { QmServerAuthAdapter } from "@code-notes/ui/adapters/shared";
 
-// Web adapters
+// Web adapters (used for both platforms)
 import {
   IndexedDBSyncAdapter,
   WebDataManagementAdapter,
@@ -38,16 +43,8 @@ import {
 } from "@code-notes/ui/adapters/web";
 import { env } from "@code-notes/shared";
 
-// Tauri adapters
-import {
-  progressService as tauriProgressService,
-  queryService as tauriQueryService,
-  questionsService as tauriQuestionsService,
-  quizService as tauriQuizService,
-  TauriDataManagementService,
-  tauriPlatform,
-  topicsService as tauriTopicsService,
-} from "@code-notes/ui/adapters/tauri";
+// Tauri platform services (only for openUrl, file system)
+import { tauriPlatform } from "@code-notes/ui/adapters/tauri";
 import { AppShell } from "@code-notes/ui/components/templates";
 import { ThemeProvider } from "@code-notes/ui/contexts";
 
@@ -68,22 +65,9 @@ export function CodeNotesApp({
   basePath,
   className,
   onLogoutRequest,
-  skipAuth,
 }: CodeNotesEmbedProps) {
   // Initialize services synchronously before first render
-  // useMemo runs during render (before effects), ensuring services are
-  // available when child components mount and call getXxxService()
   const platform = useMemo<IPlatformServices>(() => {
-    if (isTauri()) {
-      setTopicsService(tauriTopicsService);
-      setQuestionsService(tauriQuestionsService);
-      setQueryService(tauriQueryService);
-      setProgressService(tauriProgressService);
-      setQuizService(tauriQuizService);
-      setDataManagementService(new TauriDataManagementService());
-      return tauriPlatform;
-    }
-
     setTopicsService(new WebTopicsAdapter());
     setQuestionsService(new WebQuestionsAdapter());
     setQueryService(new WebQueryAdapter());
@@ -91,14 +75,12 @@ export function CodeNotesApp({
     setQuizService(new WebQuizAdapter());
     setDataManagementService(new WebDataManagementAdapter());
 
-    // Initialize auth service and sync service
-    // Auth service is the single source of truth for tokens
+    // Auth service - single source of truth for tokens
     const auth = getAuthService() as QmServerAuthAdapter;
+    setAuthService(auth);
 
     const syncAdapter = new IndexedDBSyncAdapter({
-      serverUrl: env.serverUrl,
-      appId: env.appId,
-      apiKey: env.apiKey,
+      getConfig: () => auth.getSyncConfig(),
       getTokens: () => auth.getTokens(),
       saveTokens: (accessToken, refreshToken, userId) =>
         auth.saveTokensExternal(accessToken, refreshToken, userId),
@@ -106,7 +88,10 @@ export function CodeNotesApp({
 
     setSyncService(syncAdapter);
 
-    return webPlatform;
+    // Platform differs only for openUrl/fileSystem:
+    // - Tauri: uses @tauri-apps/plugin-opener for native URL handling
+    // - Web: uses window.open for browser URL handling
+    return isTauri() ? tauriPlatform : webPlatform;
   }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -133,14 +118,13 @@ export function CodeNotesApp({
   }, [authTokens]);
 
   // Determine if we should skip auth (tokens provided externally)
-  const resolvedSkipAuth =
-    skipAuth ?? !!(authTokens?.accessToken && authTokens?.refreshToken);
+  const skipAuth = !!(authTokens?.accessToken && authTokens?.refreshToken);
 
   const content = (
     <AppShell
       embedded={embedded}
       onLogoutRequest={onLogoutRequest}
-      skipAuth={resolvedSkipAuth}
+      skipAuth={skipAuth}
     />
   );
 

@@ -14,6 +14,9 @@ export interface Question {
   order: number;
   createdAt: string;
   updatedAt: string;
+  // Sync fields
+  syncVersion?: number;
+  syncedAt?: number;
 }
 
 export interface CreateQuestionDto {
