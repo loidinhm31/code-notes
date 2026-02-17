@@ -6,9 +6,16 @@
 @import "@fontsource/fredoka/600.css";
 @import "@fontsource/fredoka/700.css";
 
+@import "@fontsource/jetbrains-mono/300.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/jetbrains-mono/600.css";
+@import "@fontsource/jetbrains-mono/700.css";
+
 @source "../**/*.{ts,tsx}";
 
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant cyber (&:where(.cyber, .cyber *));
 
 @theme {
   /* Tech Learning Aesthetic - Icon-Aligned Color Palette */
@@ -226,6 +233,108 @@
     --ring: var(--color-primary);
     --radius: var(--radius-md);
   }
+
+  /* Cyber Theme - Developer Terminal Aesthetic */
+  .cyber {
+    /* Primary - VS Code Blue */
+    --color-primary: #3B82F6;
+    --color-primary-light: #60A5FA;
+    --color-primary-dark: #2563EB;
+
+    /* Secondary - Cyan */
+    --color-secondary: #06B6D4;
+    --color-secondary-light: #22D3EE;
+    --color-secondary-dark: #0891B2;
+
+    /* Accent - Orange */
+    --color-accent: #F97316;
+    --color-accent-light: #FB923C;
+    --color-accent-dark: #EA580C;
+
+    /* Status Colors */
+    --color-success: #10B981;
+    --color-success-light: #34D399;
+    --color-error: #DC2626;
+    --color-error-light: #EF4444;
+
+    /* Pastel Colors - Cyber neon */
+    --color-peach: #FB923C;
+    --color-lavender: #A855F7;
+    --color-mint: #10B981;
+    --color-sky: #06B6D4;
+    --color-lilac: #EC4899;
+
+    /* Background Colors */
+    --color-bg-base: #0F172A;
+    --color-bg-card: #1E293B;
+    --color-bg-muted: #334155;
+
+    /* Text Colors */
+    --color-text-primary: #F1F5F9;
+    --color-text-secondary: #94A3B8;
+    --color-text-muted: #64748B;
+
+    /* Borders - Blue glow */
+    --color-border: #334155;
+    --color-border-light: #475569;
+
+    /* Shadows - Blue glow */
+    --shadow-clay-sm:
+      0 4px 8px rgba(0, 0, 0, 0.3), 0 0 4px rgba(59, 130, 246, 0.1);
+    --shadow-clay-md:
+      0 6px 12px rgba(0, 0, 0, 0.4), 0 0 6px rgba(59, 130, 246, 0.15);
+    --shadow-clay-lg:
+      0 8px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(59, 130, 246, 0.2);
+    --shadow-clay-hover:
+      0 10px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(59, 130, 246, 0.3);
+
+    /* shadcn/ui theme tokens - cyber mode */
+    --background: var(--color-bg-base);
+    --foreground: var(--color-text-primary);
+    --card: var(--color-bg-card);
+    --card-foreground: var(--color-text-primary);
+    --popover: var(--color-bg-card);
+    --popover-foreground: var(--color-text-primary);
+    --primary: var(--color-primary);
+    --primary-foreground: #ffffff;
+    --secondary: var(--color-secondary);
+    --secondary-foreground: #ffffff;
+    --accent: var(--color-accent);
+    --accent-foreground: #ffffff;
+    --destructive: var(--color-error);
+    --destructive-foreground: #ffffff;
+    --muted: var(--color-bg-muted);
+    --muted-foreground: var(--color-text-muted);
+    --border: var(--color-border);
+    --input: var(--color-border);
+    --ring: var(--color-primary);
+    --radius: var(--radius-md);
+
+    /* Typography - Use IBM Plex Sans for cyber */
+    --font-family-heading: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+    --font-family-body: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+
+    --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  }
+}
+
+/* Cyber theme font application */
+.cyber,
+.cyber *,
+[data-theme="cyber"],
+[data-theme="cyber"] * ,.cyber h1, .cyber h2, .cyber h3, .cyber h4, .cyber h5, .cyber h6,
+[data-theme="cyber"] h1, [data-theme="cyber"] h2, [data-theme="cyber"] h3,
+[data-theme="cyber"] h4, [data-theme="cyber"] h5, [data-theme="cyber"] h6,
+.cyber .font-mono, .cyber code, .cyber pre,
+[data-theme="cyber"] .font-mono, [data-theme="cyber"] code, [data-theme="cyber"] pre {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+}
+
+/* Cyber theme body and shadow-body */
+.cyber, .cyber.shadow-body,
+[data-theme="cyber"], [data-theme="cyber"] .shadow-body {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
 }
 
 /* Safe Area Utilities for Mobile */

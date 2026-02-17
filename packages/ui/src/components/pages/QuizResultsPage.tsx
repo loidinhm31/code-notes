@@ -90,12 +90,7 @@ export const QuizResultsPage = () => {
         <div
           className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4"
           style={{
-            backgroundColor:
-              successRate >= 80
-                ? "rgba(16, 185, 129, 0.2)"
-                : successRate >= 60
-                  ? "rgba(245, 158, 11, 0.2)"
-                  : "rgba(239, 68, 68, 0.2)",
+            backgroundColor: "var(--color-bg-muted)",
           }}
         >
           <Trophy
@@ -103,10 +98,10 @@ export const QuizResultsPage = () => {
             style={{
               color:
                 successRate >= 80
-                  ? "#10B981"
+                  ? "var(--color-success)"
                   : successRate >= 60
-                    ? "#F59E0B"
-                    : "#EF4444",
+                    ? "var(--color-accent)"
+                    : "var(--color-error)",
             }}
           />
         </div>
@@ -128,10 +123,10 @@ export const QuizResultsPage = () => {
           style={{
             color:
               successRate >= 80
-                ? "#10B981"
+                ? "var(--color-success)"
                 : successRate >= 60
-                  ? "#F59E0B"
-                  : "#EF4444",
+                  ? "var(--color-accent)"
+                  : "var(--color-error)",
           }}
         >
           {successRate}%
@@ -169,7 +164,10 @@ export const QuizResultsPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="clay-card p-4">
           <div className="flex items-center gap-3 mb-2">
-            <CheckCircle className="w-6 h-6" style={{ color: "#10B981" }} />
+            <CheckCircle
+              className="w-6 h-6"
+              style={{ color: "var(--color-success)" }}
+            />
             <span
               className="text-sm"
               style={{ color: "var(--color-text-secondary)" }}
@@ -177,14 +175,20 @@ export const QuizResultsPage = () => {
               Correct
             </span>
           </div>
-          <p className="text-3xl font-bold" style={{ color: "#10B981" }}>
+          <p
+            className="text-3xl font-bold"
+            style={{ color: "var(--color-success)" }}
+          >
             {correctAnswers}
           </p>
         </div>
 
         <div className="clay-card p-4">
           <div className="flex items-center gap-3 mb-2">
-            <XCircle className="w-6 h-6" style={{ color: "#EF4444" }} />
+            <XCircle
+              className="w-6 h-6"
+              style={{ color: "var(--color-error)" }}
+            />
             <span
               className="text-sm"
               style={{ color: "var(--color-text-secondary)" }}
@@ -192,7 +196,10 @@ export const QuizResultsPage = () => {
               Incorrect
             </span>
           </div>
-          <p className="text-3xl font-bold" style={{ color: "#EF4444" }}>
+          <p
+            className="text-3xl font-bold"
+            style={{ color: "var(--color-error)" }}
+          >
             {totalQuestions - correctAnswers}
           </p>
         </div>
@@ -235,19 +242,17 @@ export const QuizResultsPage = () => {
                 key={result.questionId}
                 className="flex items-center gap-4 p-4"
                 style={{
-                  backgroundColor: result.wasCorrect
-                    ? "rgba(16, 185, 129, 0.1)"
-                    : "rgba(239, 68, 68, 0.1)",
+                  backgroundColor: "var(--color-bg-muted)",
                   borderRadius: "var(--radius-md)",
-                  border: result.wasCorrect
-                    ? "2px solid #10B981"
-                    : "2px solid #EF4444",
+                  border: `2px solid ${result.wasCorrect ? "var(--color-success)" : "var(--color-error)"}`,
                 }}
               >
                 <div
                   className="flex items-center justify-center w-10 h-10 rounded-full font-bold"
                   style={{
-                    backgroundColor: result.wasCorrect ? "#10B981" : "#EF4444",
+                    backgroundColor: result.wasCorrect
+                      ? "var(--color-success)"
+                      : "var(--color-error)",
                     color: "white",
                   }}
                 >
@@ -268,8 +273,12 @@ export const QuizResultsPage = () => {
                         key={i}
                         className="w-4 h-4"
                         style={{
-                          fill: result.wasCorrect ? "#10B981" : "#EF4444",
-                          color: result.wasCorrect ? "#10B981" : "#EF4444",
+                          fill: result.wasCorrect
+                            ? "var(--color-success)"
+                            : "var(--color-error)",
+                          color: result.wasCorrect
+                            ? "var(--color-success)"
+                            : "var(--color-error)",
                         }}
                       />
                     ),

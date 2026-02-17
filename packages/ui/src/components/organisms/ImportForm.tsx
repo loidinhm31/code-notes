@@ -128,18 +128,30 @@ export const ImportForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+    <div
+      className="max-w-2xl mx-auto p-6 rounded-lg shadow-md"
+      style={{ backgroundColor: "var(--color-bg-card)" }}
+    >
+      <h2
+        className="text-2xl font-bold mb-6"
+        style={{ color: "var(--color-text-primary)" }}
+      >
         Import from Markdown
       </h2>
 
       <div className="mb-6">
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        <p
+          className="text-sm mb-4"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
           Import questions and topics from a markdown file. The file should
           follow this format:
         </p>
-        <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-md text-sm font-mono mb-4">
-          <div className="text-gray-800 dark:text-gray-200">
+        <div
+          className="p-4 rounded-md text-sm font-mono mb-4"
+          style={{ backgroundColor: "var(--color-bg-muted)" }}
+        >
+          <div style={{ color: "var(--color-text-primary)" }}>
             ## Topic Name
             <br />
             <br />
@@ -171,7 +183,10 @@ export const ImportForm: React.FC = () => {
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            className="block text-sm font-medium mb-2"
+            style={{ color: "var(--color-text-primary)" }}
+          >
             Select Markdown File
           </label>
           <div className="flex gap-2">
@@ -180,7 +195,12 @@ export const ImportForm: React.FC = () => {
               value={selectedFile}
               readOnly
               placeholder="No file selected"
-              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+              className="flex-1 px-3 py-2 border rounded-md"
+              style={{
+                borderColor: "var(--color-border)",
+                backgroundColor: "var(--color-bg-muted)",
+                color: "var(--color-text-primary)",
+              }}
             />
             {useMobileInput ? (
               <>
@@ -225,42 +245,55 @@ export const ImportForm: React.FC = () => {
 
       {result && (
         <div
-          className={`mt-6 p-4 rounded-md ${
-            result.success
-              ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
-              : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
-          }`}
+          className="mt-6 p-4 rounded-md border-2"
+          style={{
+            backgroundColor: "var(--color-bg-card)",
+            borderColor: result.success
+              ? "var(--color-success-light)"
+              : "var(--color-error-light)",
+          }}
         >
           <h3
-            className={`font-semibold mb-2 ${
-              result.success
-                ? "text-green-800 dark:text-green-200"
-                : "text-red-800 dark:text-red-200"
-            }`}
+            className="font-semibold mb-2"
+            style={{
+              color: result.success
+                ? "var(--color-success)"
+                : "var(--color-error)",
+            }}
           >
             {result.success ? "Import Successful" : "Import Failed"}
           </h3>
           <p
-            className={`text-sm mb-2 ${
-              result.success
-                ? "text-green-700 dark:text-green-300"
-                : "text-red-700 dark:text-red-300"
-            }`}
+            className="text-sm mb-2"
+            style={{
+              color: result.success
+                ? "var(--color-success)"
+                : "var(--color-error)",
+            }}
           >
             {result.message}
           </p>
           {result.success && (
-            <div className="text-sm text-green-700 dark:text-green-300 mb-4">
+            <div
+              className="text-sm mb-4"
+              style={{ color: "var(--color-success)" }}
+            >
               <p>Topics imported: {result.topicsImported}</p>
               <p>Questions imported: {result.questionsImported}</p>
             </div>
           )}
           {result.errors.length > 0 && (
             <div className="mt-2 mb-4">
-              <p className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">
+              <p
+                className="text-sm font-semibold mb-1"
+                style={{ color: "var(--color-error)" }}
+              >
                 Errors:
               </p>
-              <ul className="list-disc list-inside text-sm text-red-700 dark:text-red-300">
+              <ul
+                className="list-disc list-inside text-sm"
+                style={{ color: "var(--color-error)" }}
+              >
                 {result.errors.map((error, index) => (
                   <li key={index}>{error}</li>
                 ))}
@@ -272,34 +305,59 @@ export const ImportForm: React.FC = () => {
           {result.success &&
             result.topicsDetails &&
             result.topicsDetails.length > 0 && (
-              <div className="mt-4 border-t border-green-200 dark:border-green-800 pt-4">
-                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-3">
+              <div
+                className="mt-4 border-t pt-4"
+                style={{ borderColor: "var(--color-success-light)" }}
+              >
+                <h4
+                  className="font-semibold mb-3"
+                  style={{ color: "var(--color-success)" }}
+                >
                   Import Details
                 </h4>
                 <div className="space-y-4">
                   {result.topicsDetails.map((topic) => (
                     <div
                       key={topic.topicId}
-                      className="bg-white dark:bg-gray-800 border border-green-100 dark:border-green-900 rounded-md p-3"
+                      className="border rounded-md p-3"
+                      style={{
+                        backgroundColor: "var(--color-bg-card)",
+                        borderColor: "var(--color-success-light)",
+                      }}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <h5 className="font-medium text-gray-900 dark:text-gray-100">
+                        <h5
+                          className="font-medium"
+                          style={{ color: "var(--color-text-primary)" }}
+                        >
                           {topic.topicName}
                         </h5>
-                        <span className="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">
+                        <span
+                          className="text-xs px-2 py-1 rounded"
+                          style={{
+                            backgroundColor: "var(--color-bg-muted)",
+                            color: "var(--color-success)",
+                          }}
+                        >
                           {topic.questionsCount} question
                           {topic.questionsCount !== 1 ? "s" : ""}
                         </span>
                       </div>
 
                       {topic.questions.length > 0 && (
-                        <ul className="mt-2 space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                        <ul
+                          className="mt-2 space-y-1 text-sm"
+                          style={{ color: "var(--color-text-secondary)" }}
+                        >
                           {topic.questions.map((question) => (
                             <li
                               key={question.questionId}
                               className="flex items-start gap-2 pl-2"
                             >
-                              <span className="text-green-600 dark:text-green-400 font-mono text-xs mt-0.5">
+                              <span
+                                className="font-mono text-xs mt-0.5"
+                                style={{ color: "var(--color-success)" }}
+                              >
                                 {question.questionNumber}.
                               </span>
                               <span className="flex-1">

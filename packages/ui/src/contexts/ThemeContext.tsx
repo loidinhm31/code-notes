@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-export type Theme = "light" | "dark";
+export type Theme = "light" | "dark" | "cyber";
 
-// Custom event name for theme changes (used by ShadowWrapper in qm-center-app)
+// Custom event name for theme changes (used by ShadowWrapper in qm-hub-app)
 export const CODE_NOTES_THEME_EVENT = "code-notes-theme-change";
 export const CODE_NOTES_THEME_STORAGE_KEY = "code-notes-theme";
 
@@ -17,7 +17,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 interface ThemeProviderProps {
   children: React.ReactNode;
   /**
-   * When true, the app is embedded in another app (e.g., qm-center).
+   * When true, the app is embedded in another app (e.g., qm-hub).
    * In embedded mode, theme changes are dispatched via custom events
    * instead of modifying document.documentElement directly.
    * This prevents theme conflicts between multiple embedded apps.
@@ -32,7 +32,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const [theme, setThemeState] = useState<Theme>(() => {
     // Check localStorage first
     const savedTheme = localStorage.getItem(CODE_NOTES_THEME_STORAGE_KEY);
-    if (savedTheme === "light" || savedTheme === "dark") {
+    if (
+      savedTheme === "light" ||
+      savedTheme === "dark" ||
+      savedTheme === "cyber"
+    ) {
       return savedTheme;
     }
 
@@ -68,12 +72,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       root.setAttribute("data-theme", theme);
 
       // Remove all previous theme classes
-      root.classList.remove("dark");
+      root.classList.remove("dark", "cyber");
 
       if (theme === "dark") {
         root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
+      } else if (theme === "cyber") {
+        root.classList.add("cyber");
       }
     }
   }, [theme, embedded]);
@@ -83,7 +87,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   };
 
   const toggleTheme = () => {
-    setThemeState((prev) => (prev === "dark" ? "light" : "dark"));
+    setThemeState((prev) => {
+      if (prev === "light") return "dark";
+      if (prev === "dark") return "cyber";
+      return "light";
+    });
   };
 
   return (

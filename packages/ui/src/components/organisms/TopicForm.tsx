@@ -24,7 +24,7 @@ export const TopicForm = ({ topic, onSuccess, onCancel }: TopicFormProps) => {
     description: topic?.description || "",
     slug: topic?.slug || "",
     icon: topic?.icon || "",
-    color: topic?.color || "#3b82f6",
+    color: topic?.color || "var(--color-primary-light)",
     subtopics: topic?.subtopics?.join(", ") || "",
     order: topic?.order || 0,
   });
@@ -91,9 +91,9 @@ export const TopicForm = ({ topic, onSuccess, onCancel }: TopicFormProps) => {
         <div
           className="p-4 text-sm font-medium"
           style={{
-            backgroundColor: "rgba(234, 88, 12, 0.1)",
-            color: "var(--color-accent)",
-            border: "2px solid var(--color-accent)",
+            backgroundColor: "var(--color-bg-muted)",
+            color: "var(--color-error)",
+            border: "2px solid var(--color-error)",
             borderRadius: "var(--radius-md)",
           }}
         >

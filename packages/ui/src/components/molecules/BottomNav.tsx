@@ -131,36 +131,6 @@ export function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
               </button>
             );
           })}
-
-          {/* Theme Toggle in Menu */}
-          <div
-            className="mx-3 my-2"
-            style={{
-              borderTop: "2px solid var(--color-border-light)",
-              paddingTop: "8px",
-            }}
-          >
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleTheme();
-              }}
-              className="w-full flex items-center gap-3 px-4 py-3 transition-all"
-              style={{
-                color: "var(--color-text-muted)",
-                fontFamily: "var(--font-heading)",
-              }}
-            >
-              {isDark ? (
-                <Sun className="w-5 h-5" />
-              ) : (
-                <Moon className="w-5 h-5" />
-              )}
-              <span className="text-sm font-medium">
-                {isDark ? "Light Mode" : "Dark Mode"}
-              </span>
-            </button>
-          </div>
         </div>
       )}
 

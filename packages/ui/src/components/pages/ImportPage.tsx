@@ -7,7 +7,10 @@ import { ImportForm } from "@code-notes/ui/components/organisms";
 export const ImportPage: React.FC = () => {
   const { to } = useNav();
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: "var(--color-bg-base)" }}
+    >
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <Link

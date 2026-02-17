@@ -46,6 +46,6 @@ export const hasNativeFileSystem = (): boolean => isTauri();
 
 /**
  * Check if auth/sync features are available
- * Available on all platforms via qm-center-server
+ * Available on all platforms via qm-hub-server
  */
 export const hasAuthSupport = (): boolean => true;

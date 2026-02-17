@@ -14,23 +14,23 @@ const STATUS_CONFIG: Record<
 > = {
   NotStudied: {
     label: "Not Studied",
-    color: "#6B7280",
-    bgColor: "rgba(107, 114, 128, 0.1)",
+    color: "var(--color-text-muted)",
+    bgColor: "var(--color-bg-muted)",
   },
   Studying: {
     label: "Studying",
-    color: "#3B82F6",
-    bgColor: "rgba(59, 130, 246, 0.1)",
+    color: "var(--color-primary-light)",
+    bgColor: "var(--color-bg-muted)",
   },
   Mastered: {
     label: "Mastered",
-    color: "#10B981",
-    bgColor: "rgba(16, 185, 129, 0.1)",
+    color: "var(--color-success)",
+    bgColor: "var(--color-bg-muted)",
   },
   NeedsReview: {
     label: "Needs Review",
-    color: "#F59E0B",
-    bgColor: "rgba(245, 158, 11, 0.1)",
+    color: "var(--color-accent)",
+    bgColor: "var(--color-bg-muted)",
   },
 };
 

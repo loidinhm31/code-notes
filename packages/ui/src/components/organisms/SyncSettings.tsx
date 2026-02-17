@@ -15,8 +15,7 @@ import type { AuthStatus, SyncProgress, SyncResult } from "@code-notes/shared";
 import { env } from "@code-notes/shared";
 import { isTauri } from "@code-notes/ui/utils";
 
-interface SyncSettingsProps {
-}
+interface SyncSettingsProps {}
 
 export const SyncSettings: React.FC<SyncSettingsProps> = ({}) => {
   const [authStatus, setAuthStatus] = useState<AuthStatus>({

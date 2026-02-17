@@ -18,13 +18,13 @@
     "clean": "rimraf dist .turbo"
   },
   "devDependencies": {
-    "typescript": "^5.8.3",
+    "@code-notes/eslint-config": "workspace:*",
     "@code-notes/tsconfig": "workspace:*",
-    "@code-notes/eslint-config": "workspace:*"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@qm-center/sync-client-types": "^0.2.0",
+    "@qm-hub/sync-client-types": "^0.2.1",
     "clsx": "^2.1.1",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.1"
   }
 }

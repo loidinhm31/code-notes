@@ -207,32 +207,6 @@ export function Sidebar({
         </ul>
       </nav>
 
-      {/* Theme Toggle */}
-      <div className={`px-3 ${isCollapsed ? "" : "px-4"}`}>
-        <button
-          onClick={toggleTheme}
-          title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-          className={`w-full flex items-center gap-2 p-2 rounded-lg transition-all hover:bg-[var(--color-bg-muted)] ${
-            isCollapsed ? "justify-center" : ""
-          }`}
-          style={{
-            color: "var(--color-text-muted)",
-            borderRadius: "var(--radius-md)",
-          }}
-        >
-          {isDark ? (
-            <Sun className="w-5 h-5 flex-shrink-0" />
-          ) : (
-            <Moon className="w-5 h-5 flex-shrink-0" />
-          )}
-          {!isCollapsed && (
-            <span className="text-sm font-medium">
-              {isDark ? "Light Mode" : "Dark Mode"}
-            </span>
-          )}
-        </button>
-      </div>
-
       {/* Collapse Toggle Button */}
       <button
         onClick={onToggleCollapse}
