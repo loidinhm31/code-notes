@@ -220,7 +220,7 @@ export const SyncSettings: React.FC<SyncSettingsProps> = ({}) => {
               <div className="grid grid-cols-3 gap-3">
                 <div
                   className="text-center p-2 rounded"
-                  style={{ background: "var(--color-bg-card)" }}
+                  style={{ background: "var(--color-bg-white)" }}
                 >
                   <ArrowUpCircle
                     className="w-4 h-4 mx-auto mb-1"
@@ -236,7 +236,7 @@ export const SyncSettings: React.FC<SyncSettingsProps> = ({}) => {
                 </div>
                 <div
                   className="text-center p-2 rounded"
-                  style={{ background: "var(--color-bg-card)" }}
+                  style={{ background: "var(--color-bg-white)" }}
                 >
                   <ArrowDownCircle
                     className="w-4 h-4 mx-auto mb-1"
@@ -252,7 +252,7 @@ export const SyncSettings: React.FC<SyncSettingsProps> = ({}) => {
                 </div>
                 <div
                   className="text-center p-2 rounded"
-                  style={{ background: "var(--color-bg-card)" }}
+                  style={{ background: "var(--color-bg-white)" }}
                 >
                   <AlertCircle
                     className="w-4 h-4 mx-auto mb-1"

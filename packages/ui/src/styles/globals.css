@@ -48,8 +48,8 @@
   --color-lilac: #ddd6fe;
 
   /* Background Colors */
-  --color-bg-base: #f8fafc;
-  --color-bg-card: #ffffff;
+  --color-bg-light: #f8fafc;
+  --color-bg-white: #ffffff;
   --color-bg-muted: #f1f5f9;
 
   /* Text Colors - Navy based */
@@ -73,8 +73,8 @@
   --radius-xl: 24px;
 
   /* Font Families */
-  --font-heading: "Fredoka", sans-serif;
-  --font-body: "Nunito", sans-serif;
+  --font-family-heading: "Fredoka", sans-serif;
+  --font-family-body: "Nunito", sans-serif;
 
   /* Shadows - Claymorphism with Navy Blue Tints */
   --shadow-clay-sm:
@@ -92,11 +92,11 @@
     -5px -5px 12px rgba(255, 255, 255, 1);
 
   /* shadcn/ui theme tokens - mapped to existing claymorphism variables */
-  --background: var(--color-bg-base);
+  --background: var(--color-bg-light);
   --foreground: var(--color-text-primary);
-  --card: var(--color-bg-card);
+  --card: var(--color-bg-white);
   --card-foreground: var(--color-text-primary);
-  --popover: var(--color-bg-card);
+  --popover: var(--color-bg-white);
   --popover-foreground: var(--color-text-primary);
   --primary: var(--color-primary);
   --primary-foreground: #ffffff;
@@ -120,9 +120,9 @@
   }
 
   body {
-    background: var(--color-bg-base);
+    background: var(--color-bg-light);
     color: var(--color-text-primary);
-    font-family: var(--font-body);
+    font-family: var(--font-family-body);
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
@@ -139,7 +139,7 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-heading);
+    font-family: var(--font-family-heading);
     font-weight: 600;
   }
 
@@ -185,8 +185,8 @@
     --color-lilac: #c4b5fd;
 
     /* Dark backgrounds */
-    --color-bg-base: #0f172a;
-    --color-bg-card: #1e293b;
+    --color-bg-light: #0f172a;
+    --color-bg-white: #1e293b;
     --color-bg-muted: #334155;
 
     /* Text - Light colors */
@@ -212,11 +212,11 @@
             0 10px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(59, 130, 246, 0.3);
 
     /* shadcn/ui theme tokens - dark mode */
-    --background: var(--color-bg-base);
+    --background: var(--color-bg-light);
     --foreground: var(--color-text-primary);
-    --card: var(--color-bg-card);
+    --card: var(--color-bg-white);
     --card-foreground: var(--color-text-primary);
-    --popover: var(--color-bg-card);
+    --popover: var(--color-bg-white);
     --popover-foreground: var(--color-text-primary);
     --primary: var(--color-primary);
     --primary-foreground: #ffffff;
@@ -265,8 +265,8 @@
     --color-lilac: #EC4899;
 
     /* Background Colors */
-    --color-bg-base: #0F172A;
-    --color-bg-card: #1E293B;
+    --color-bg-light: #0F172A;
+    --color-bg-white: #1E293B;
     --color-bg-muted: #334155;
 
     /* Text Colors */
@@ -289,11 +289,11 @@
       0 10px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(59, 130, 246, 0.3);
 
     /* shadcn/ui theme tokens - cyber mode */
-    --background: var(--color-bg-base);
+    --background: var(--color-bg-light);
     --foreground: var(--color-text-primary);
-    --card: var(--color-bg-card);
+    --card: var(--color-bg-white);
     --card-foreground: var(--color-text-primary);
-    --popover: var(--color-bg-card);
+    --popover: var(--color-bg-white);
     --popover-foreground: var(--color-text-primary);
     --primary: var(--color-primary);
     --primary-foreground: #ffffff;
@@ -333,7 +333,7 @@
 /* Cyber theme body and shadow-body */
 .cyber, .cyber.shadow-body,
 [data-theme="cyber"], [data-theme="cyber"] .shadow-body {
-  background-color: var(--color-bg-base);
+  background-color: var(--color-bg-light);
   color: var(--color-text-primary);
 }
 
@@ -378,7 +378,7 @@
 
   /* Circuit Board Pattern Backgrounds - Tech Aesthetic */
   .circuit-pattern-light {
-    background-color: var(--color-bg-base);
+    background-color: var(--color-bg-light);
     background-image:
       /* Horizontal lines */
       linear-gradient(90deg, rgba(96, 165, 250, 0.08) 1px, transparent 1px),
@@ -397,7 +397,7 @@
   }
 
   .circuit-pattern-dark {
-    background-color: var(--color-bg-base);
+    background-color: var(--color-bg-light);
     background-image:
       linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
       linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
@@ -461,7 +461,7 @@
 /* Claymorphism Card Components */
 @layer components {
   .clay-card {
-    background: var(--color-bg-card);
+    background: var(--color-bg-white);
     border-radius: var(--radius-lg);
     border: 3px solid var(--color-border-light);
     box-shadow: var(--shadow-clay-md);
@@ -525,7 +525,7 @@
   .prose h5,
   .prose h6 {
     color: var(--color-text-primary);
-    font-family: var(--font-heading);
+    font-family: var(--font-family-heading);
     font-weight: 700;
   }
 
@@ -566,7 +566,7 @@
     width: 100%;
     border-collapse: collapse;
     margin: 1.5rem 0;
-    background: var(--color-bg-card);
+    background: var(--color-bg-white);
     border-radius: var(--radius-md);
     overflow: hidden;
     box-shadow: var(--shadow-clay-sm);
@@ -590,7 +590,7 @@
     padding: 0.75rem 1rem;
     text-align: left;
     font-weight: 600;
-    font-family: var(--font-heading);
+    font-family: var(--font-family-heading);
     border-bottom: 3px solid var(--color-primary-dark);
   }
 

@@ -10,15 +10,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white border-[3px] border-[var(--color-primary-dark)] shadow-[var(--shadow-clay-sm)] hover:shadow-[var(--shadow-clay-md)] hover:brightness-105 active:brightness-95",
+          "bg-[var(--color-primary)] text-white border-[3px] border-[var(--color-primary-dark)] shadow-[var(--shadow-clay-sm)] hover:shadow-[var(--shadow-clay-md)] hover:brightness-105 active:brightness-95",
         accent:
-          "bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-light)] text-white border-[3px] border-[var(--color-accent-dark)] shadow-[var(--shadow-clay-sm)] hover:shadow-[var(--shadow-clay-md)] hover:brightness-105 active:brightness-95",
+          "bg-[var(--color-accent)] text-white border-[3px] border-[var(--color-accent-dark)] shadow-[var(--shadow-clay-sm)] hover:shadow-[var(--shadow-clay-md)] hover:brightness-105 active:brightness-95",
         secondary:
-          "bg-gradient-to-br from-[var(--color-secondary)] to-[var(--color-secondary-light)] text-[var(--color-primary-dark)] border-[3px] border-[var(--color-secondary-dark)] shadow-[var(--shadow-clay-sm)] hover:shadow-[var(--shadow-clay-md)] hover:brightness-105 active:brightness-95",
+          "bg-[var(--color-secondary)] text-[var(--color-primary-dark)] border-[3px] border-[var(--color-secondary-dark)] shadow-[var(--shadow-clay-sm)] hover:shadow-[var(--shadow-clay-md)] hover:brightness-105 active:brightness-95",
         ghost:
           "bg-[var(--color-bg-muted)] text-[var(--color-text-muted)] border-2 border-[var(--color-border-light)] shadow-[var(--shadow-clay-sm)] hover:bg-[var(--color-secondary)] hover:text-[var(--color-text-primary)]",
         destructive:
-          "bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-light)] text-white border-[3px] border-[var(--color-accent-dark)] shadow-[var(--shadow-clay-sm)] hover:shadow-[var(--shadow-clay-md)] hover:brightness-105 active:brightness-95",
+          "bg-[var(--color-accent)] text-white border-[3px] border-[var(--color-accent-dark)] shadow-[var(--shadow-clay-sm)] hover:shadow-[var(--shadow-clay-md)] hover:brightness-105 active:brightness-95",
         link: "text-[var(--color-primary)] underline-offset-4 hover:underline",
       },
       size: {

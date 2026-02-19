@@ -250,7 +250,7 @@ export const QuizSessionPage = () => {
                 backgroundColor:
                   wasCorrect === true
                     ? "var(--color-success)"
-                    : "var(--color-bg-card)",
+                    : "var(--color-bg-white)",
                 color: wasCorrect === true ? "white" : "var(--color-text)",
                 border:
                   wasCorrect === true
@@ -277,7 +277,7 @@ export const QuizSessionPage = () => {
                 backgroundColor:
                   wasCorrect === false
                     ? "var(--color-error)"
-                    : "var(--color-bg-card)",
+                    : "var(--color-bg-white)",
                 color: wasCorrect === false ? "white" : "var(--color-text)",
                 border:
                   wasCorrect === false

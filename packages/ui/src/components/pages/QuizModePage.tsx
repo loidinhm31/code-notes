@@ -143,7 +143,7 @@ export const QuizModePage = () => {
                 style={{
                   backgroundColor: isSelected
                     ? "var(--color-primary)"
-                    : "var(--color-bg-card)",
+                    : "var(--color-bg-white)",
                   border: isSelected
                     ? "2px solid var(--color-primary)"
                     : "2px solid var(--color-border-light)",
@@ -203,7 +203,7 @@ export const QuizModePage = () => {
                   style={{
                     backgroundColor: isSelected
                       ? "var(--color-primary)"
-                      : "var(--color-bg-card)",
+                      : "var(--color-bg-white)",
                     border: isSelected
                       ? "2px solid var(--color-primary)"
                       : "2px solid var(--color-border-light)",
@@ -260,7 +260,7 @@ export const QuizModePage = () => {
                     style={{
                       backgroundColor: isSelected
                         ? "var(--color-primary)"
-                        : "var(--color-bg-card)",
+                        : "var(--color-bg-white)",
                       border: isSelected
                         ? "2px solid var(--color-primary)"
                         : "2px solid var(--color-border-light)",

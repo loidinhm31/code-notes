@@ -103,7 +103,7 @@ export function Sidebar({
         isCollapsed ? "w-16" : "w-64"
       }`}
       style={{
-        background: "var(--color-bg-card)",
+        background: "var(--color-bg-white)",
         borderRight: "3px solid var(--color-border-light)",
         boxShadow: "var(--shadow-clay-md)",
       }}
@@ -118,8 +118,7 @@ export function Sidebar({
         <div
           className="w-10 h-10 flex items-center justify-center text-white font-bold flex-shrink-0"
           style={{
-            background:
-              "linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%)",
+            background: "var(--color-primary)",
             borderRadius: "var(--radius-lg)",
             border: "3px solid rgba(255, 255, 255, 0.5)",
             boxShadow: "var(--shadow-clay-sm)",
@@ -133,7 +132,7 @@ export function Sidebar({
               className="text-lg font-bold whitespace-nowrap"
               style={{
                 color: "var(--color-primary)",
-                fontFamily: "var(--font-heading)",
+                fontFamily: "var(--font-family-heading)",
               }}
             >
               Code Notes
@@ -173,7 +172,7 @@ export function Sidebar({
                       ? "2px solid var(--color-secondary)"
                       : "2px solid transparent",
                     boxShadow: isActive ? "var(--shadow-clay-sm)" : "none",
-                    fontFamily: "var(--font-heading)",
+                    fontFamily: "var(--font-family-heading)",
                   }}
                 >
                   <Icon
@@ -262,8 +261,7 @@ export function Sidebar({
             <span
               className="absolute ml-6 -mt-4 flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-bold text-white"
               style={{
-                background:
-                  "linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)",
+                background: "var(--color-primary)",
               }}
             >
               {pendingCount > 99 ? "99+" : pendingCount}

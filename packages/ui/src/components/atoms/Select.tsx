@@ -17,7 +17,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex w-full items-center justify-between bg-[var(--color-bg-card)]",
+      "flex w-full items-center justify-between bg-[var(--color-bg-white)]",
       "border-[3px] border-[var(--color-border)]",
       "rounded-[var(--radius-md)]",
       "px-4 py-3",
@@ -84,7 +84,7 @@ const SelectContent = React.forwardRef<
       ref={ref}
       className={cn(
         "relative z-50 max-h-[--radix-select-content-available-height] min-w-[8rem] overflow-y-auto overflow-x-hidden",
-        "bg-[var(--color-bg-card)]",
+        "bg-[var(--color-bg-white)]",
         "border-[3px] border-[var(--color-border-light)]",
         "rounded-[var(--radius-md)]",
         "shadow-[var(--shadow-clay-lg)]",

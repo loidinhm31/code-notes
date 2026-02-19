@@ -93,7 +93,7 @@ export function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
         <div
           className="absolute bottom-full right-4 mb-2 min-w-[180px] py-2"
           style={{
-            background: "var(--color-bg-card)",
+            background: "var(--color-bg-white)",
             borderRadius: "var(--radius-lg)",
             border: "3px solid var(--color-border-light)",
             boxShadow: "var(--shadow-clay-lg)",
@@ -117,7 +117,7 @@ export function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
                   background: isActive
                     ? "var(--color-secondary-light)"
                     : "transparent",
-                  fontFamily: "var(--font-heading)",
+                  fontFamily: "var(--font-family-heading)",
                 }}
               >
                 <Icon className="w-5 h-5" />
@@ -137,7 +137,7 @@ export function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
       {/* Bottom Navigation Bar */}
       <nav
         style={{
-          background: "var(--color-bg-card)",
+          background: "var(--color-bg-white)",
           borderTop: "3px solid var(--color-border-light)",
           boxShadow: "var(--shadow-clay-md)",
           paddingBottom: "env(safe-area-inset-bottom, 0px)",
@@ -164,7 +164,7 @@ export function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
                     border: isActive
                       ? "2px solid var(--color-secondary)"
                       : "2px solid transparent",
-                    fontFamily: "var(--font-heading)",
+                    fontFamily: "var(--font-family-heading)",
                   }}
                 >
                   <Icon
@@ -200,7 +200,7 @@ export function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
                   isMenuOpen || isMenuItemActive
                     ? "2px solid var(--color-secondary)"
                     : "2px solid transparent",
-                fontFamily: "var(--font-heading)",
+                fontFamily: "var(--font-family-heading)",
               }}
             >
               {isMenuOpen ? (

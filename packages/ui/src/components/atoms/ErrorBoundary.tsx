@@ -22,7 +22,7 @@ function DefaultFallback({ error, resetErrorBoundary }: FallbackProps) {
     <div
       className="flex flex-col items-center justify-center min-h-[200px] p-6 rounded-lg"
       style={{
-        backgroundColor: "var(--color-bg-card)",
+        backgroundColor: "var(--color-bg-white)",
         border: "2px solid var(--color-error-light)",
       }}
     >

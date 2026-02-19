@@ -130,7 +130,7 @@ export const ImportForm: React.FC = () => {
   return (
     <div
       className="max-w-2xl mx-auto p-6 rounded-lg shadow-md"
-      style={{ backgroundColor: "var(--color-bg-card)" }}
+      style={{ backgroundColor: "var(--color-bg-white)" }}
     >
       <h2
         className="text-2xl font-bold mb-6"
@@ -247,7 +247,7 @@ export const ImportForm: React.FC = () => {
         <div
           className="mt-6 p-4 rounded-md border-2"
           style={{
-            backgroundColor: "var(--color-bg-card)",
+            backgroundColor: "var(--color-bg-white)",
             borderColor: result.success
               ? "var(--color-success-light)"
               : "var(--color-error-light)",
@@ -321,7 +321,7 @@ export const ImportForm: React.FC = () => {
                       key={topic.topicId}
                       className="border rounded-md p-3"
                       style={{
-                        backgroundColor: "var(--color-bg-card)",
+                        backgroundColor: "var(--color-bg-white)",
                         borderColor: "var(--color-success-light)",
                       }}
                     >

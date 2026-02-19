@@ -325,7 +325,7 @@ export const QuestionDetailPage = () => {
                         backgroundColor:
                           progress.status === "Studying"
                             ? "var(--color-primary)"
-                            : "var(--color-bg-card)",
+                            : "var(--color-bg-white)",
                         color:
                           progress.status === "Studying"
                             ? "white"
@@ -343,7 +343,7 @@ export const QuestionDetailPage = () => {
                         backgroundColor:
                           progress.status === "Mastered"
                             ? "#10B981"
-                            : "var(--color-bg-card)",
+                            : "var(--color-bg-white)",
                         color:
                           progress.status === "Mastered"
                             ? "white"
@@ -361,7 +361,7 @@ export const QuestionDetailPage = () => {
                         backgroundColor:
                           progress.status === "NeedsReview"
                             ? "#F59E0B"
-                            : "var(--color-bg-card)",
+                            : "var(--color-bg-white)",
                         color:
                           progress.status === "NeedsReview"
                             ? "white"

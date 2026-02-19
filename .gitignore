@@ -28,3 +28,14 @@ dist-ssr
 *.sw?
 
 *.jks
+
+.shared
+.agent
+.claude
+
+packages/**/node_modules
+packages/**/dist
+apps/**/node_modules
+apps/**/dist
+apps/**/.turbo
+
