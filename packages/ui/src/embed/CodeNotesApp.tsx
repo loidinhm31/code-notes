@@ -130,8 +130,8 @@ export function CodeNotesApp({
 
   return (
     <div ref={containerRef} className={className}>
-      <PlatformProvider services={platform}>
-        <ThemeProvider embedded={embedded}>
+      <ThemeProvider embedded={embedded}>
+        <PlatformProvider services={platform}>
           <BasePathContext.Provider value={basePath || ""}>
             <PortalContainerContext.Provider value={portalContainer}>
               {useRouter ? (
@@ -141,8 +141,8 @@ export function CodeNotesApp({
               )}
             </PortalContainerContext.Provider>
           </BasePathContext.Provider>
-        </ThemeProvider>
-      </PlatformProvider>
+        </PlatformProvider>
+      </ThemeProvider>
     </div>
   );
 }

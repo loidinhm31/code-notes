@@ -12,65 +12,32 @@ import {
   CheckCircle2,
   AlertCircle,
   AlertTriangle,
-  Moon,
-  Sun,
 } from "lucide-react";
-import { useSyncStatus } from "@code-notes/ui/hooks";
-import { useTheme } from "@code-notes/ui/contexts";
-
-type Page = "topics" | "quiz" | "progress" | "import" | "settings";
+import { NavLink } from "react-router-dom";
+import { useSyncStatus, useNav } from "@code-notes/ui/hooks";
 
 interface SidebarProps {
-  currentPage: Page;
-  onNavigate: (page: Page) => void;
-  onSyncTap?: () => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  className?: string;
 }
 
-export function Sidebar({
-  currentPage,
-  onNavigate,
-  onSyncTap,
-  isCollapsed,
-  onToggleCollapse,
-}: SidebarProps) {
+export function Sidebar({ isCollapsed, onToggleCollapse }: SidebarProps) {
   const { isAuthenticated, syncStatus, isSyncing, lastSyncSuccess, error } =
     useSyncStatus();
-
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === "dark";
+  const { to, navigate } = useNav();
 
   const navItems: {
-    id: Page;
+    id: string;
     label: string;
     icon: typeof BookOpen;
+    path: string;
   }[] = [
-    {
-      id: "topics",
-      label: "Topics",
-      icon: BookOpen,
-    },
-    {
-      id: "quiz",
-      label: "Quiz",
-      icon: Brain,
-    },
-    {
-      id: "progress",
-      label: "Progress",
-      icon: ChartBar,
-    },
-    {
-      id: "import",
-      label: "Import",
-      icon: Upload,
-    },
-    {
-      id: "settings",
-      label: "Settings",
-      icon: Settings,
-    },
+    { id: "topics", label: "Topics", icon: BookOpen, path: "/" },
+    { id: "quiz", label: "Quiz", icon: Brain, path: "/quiz" },
+    { id: "progress", label: "Progress", icon: ChartBar, path: "/progress" },
+    { id: "import", label: "Import", icon: Upload, path: "/import" },
+    { id: "settings", label: "Settings", icon: Settings, path: "/settings" },
   ];
 
   // Sync status helpers
@@ -150,59 +117,63 @@ export function Sidebar({
       {/* Navigation Items */}
       <nav className="flex-1 px-3 py-4">
         <ul className="space-y-1">
-          {navItems.map(({ id, label, icon: Icon }) => {
-            const isActive = currentPage === id;
-            return (
-              <li key={id}>
-                <button
-                  onClick={() => onNavigate(id)}
-                  title={isCollapsed ? label : undefined}
-                  className={`w-full flex items-center gap-3 py-3 transition-all duration-200 group ${
+          {navItems.map(({ id, label, icon: Icon, path }) => (
+            <li key={id}>
+              <NavLink
+                to={to(path)}
+                end={path === "/"}
+                title={isCollapsed ? label : undefined}
+                className={({ isActive }) =>
+                  `w-full flex items-center gap-3 py-3 transition-all duration-200 group ${
                     isCollapsed ? "px-0 justify-center" : "px-4"
-                  }`}
-                  style={{
-                    color: isActive
-                      ? "var(--color-primary)"
-                      : "var(--color-text-muted)",
-                    background: isActive
-                      ? "var(--color-secondary-light)"
-                      : "transparent",
-                    borderRadius: "var(--radius-lg)",
-                    border: isActive
-                      ? "2px solid var(--color-secondary)"
-                      : "2px solid transparent",
-                    boxShadow: isActive ? "var(--shadow-clay-sm)" : "none",
-                    fontFamily: "var(--font-family-heading)",
-                  }}
-                >
-                  <Icon
-                    className={`w-5 h-5 flex-shrink-0 transition-all ${
-                      isActive
-                        ? "stroke-[2.5]"
-                        : "stroke-2 group-hover:stroke-[2.5]"
-                    }`}
-                  />
-                  {!isCollapsed && (
-                    <>
-                      <span
-                        className={`text-sm whitespace-nowrap ${
-                          isActive ? "font-semibold" : "font-medium"
-                        }`}
-                      >
-                        {label}
-                      </span>
-                      {isActive && (
-                        <div
-                          className="ml-auto w-2 h-2 rounded-full flex-shrink-0"
-                          style={{ background: "var(--color-primary)" }}
-                        />
-                      )}
-                    </>
-                  )}
-                </button>
-              </li>
-            );
-          })}
+                  }`
+                }
+                style={({ isActive }) => ({
+                  color: isActive
+                    ? "var(--color-primary)"
+                    : "var(--color-text-muted)",
+                  background: isActive
+                    ? "var(--color-secondary-light)"
+                    : "transparent",
+                  borderRadius: "var(--radius-lg)",
+                  border: isActive
+                    ? "2px solid var(--color-secondary)"
+                    : "2px solid transparent",
+                  boxShadow: isActive ? "var(--shadow-clay-sm)" : "none",
+                  fontFamily: "var(--font-family-heading)",
+                })}
+              >
+                {({ isActive }) => (
+                  <>
+                    <Icon
+                      className={`w-5 h-5 flex-shrink-0 transition-all ${
+                        isActive
+                          ? "stroke-[2.5]"
+                          : "stroke-2 group-hover:stroke-[2.5]"
+                      }`}
+                    />
+                    {!isCollapsed && (
+                      <>
+                        <span
+                          className={`text-sm whitespace-nowrap ${
+                            isActive ? "font-semibold" : "font-medium"
+                          }`}
+                        >
+                          {label}
+                        </span>
+                        {isActive && (
+                          <div
+                            className="ml-auto w-2 h-2 rounded-full flex-shrink-0"
+                            style={{ background: "var(--color-primary)" }}
+                          />
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
+              </NavLink>
+            </li>
+          ))}
         </ul>
       </nav>
 
@@ -229,7 +200,7 @@ export function Sidebar({
         style={{ borderTop: "3px solid var(--color-border-light)" }}
       >
         <button
-          onClick={onSyncTap}
+          onClick={() => navigate("/settings")}
           title={
             isSyncing
               ? "Syncing..."

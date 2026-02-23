@@ -24,6 +24,7 @@ let authService: IAuthService | null = null;
 
 export const setTopicsService = (service: ITopicsService) => {
   topicsService = service;
+  serviceLogger.factory("Set TopicsService");
 };
 
 export const getTopicsService = (): ITopicsService => {
@@ -33,6 +34,7 @@ export const getTopicsService = (): ITopicsService => {
 
 export const setQuestionsService = (service: IQuestionsService) => {
   questionsService = service;
+  serviceLogger.factory("Set QuestionsService");
 };
 
 export const getQuestionsService = (): IQuestionsService => {
@@ -42,6 +44,7 @@ export const getQuestionsService = (): IQuestionsService => {
 
 export const setQueryService = (service: IQueryService) => {
   queryService = service;
+  serviceLogger.factory("Set QueryService");
 };
 
 export const getQueryService = (): IQueryService => {
@@ -51,6 +54,7 @@ export const getQueryService = (): IQueryService => {
 
 export const setProgressService = (service: IProgressService) => {
   progressService = service;
+  serviceLogger.factory("Set ProgressService");
 };
 
 export const getProgressService = (): IProgressService => {
@@ -60,6 +64,7 @@ export const getProgressService = (): IProgressService => {
 
 export const setQuizService = (service: IQuizService) => {
   quizService = service;
+  serviceLogger.factory("Set QuizService");
 };
 
 export const getQuizService = (): IQuizService => {
@@ -69,6 +74,7 @@ export const getQuizService = (): IQuizService => {
 
 export const setFileSystemService = (service: IFileSystemService) => {
   fileSystemService = service;
+  serviceLogger.factory("Set FileSystemService");
 };
 
 export const getFileSystemService = (): IFileSystemService => {
@@ -78,6 +84,7 @@ export const getFileSystemService = (): IFileSystemService => {
 
 export const setDataManagementService = (service: IDataManagementService) => {
   dataManagementService = service;
+  serviceLogger.factory("Set DataManagementService");
 };
 
 export const getDataManagementService = (): IDataManagementService => {
@@ -88,6 +95,7 @@ export const getDataManagementService = (): IDataManagementService => {
 
 export const setSyncService = (service: ISyncService) => {
   syncService = service;
+  serviceLogger.factory("Set SyncService");
 };
 
 export const getSyncService = (): ISyncService => {
@@ -103,6 +111,7 @@ export const getSyncServiceOptional = (): ISyncService | null => {
 
 export const setAuthService = (service: IAuthService) => {
   authService = service;
+  serviceLogger.factory("Set AuthService");
 };
 
 export const getAuthService = (): IAuthService => {

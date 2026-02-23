@@ -1,3 +1,4 @@
+export * from "./BottomNavigation";
 export * from "./ImportForm";
 export * from "./QuestionForm";
 export * from "./Sidebar";

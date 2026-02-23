@@ -7,7 +7,7 @@ import { Button } from "@code-notes/ui/components/atoms";
 import { ProgressBadge } from "@code-notes/ui/components/molecules";
 
 export const ProgressDashboardPage = () => {
-  const { to, nav } = useNav();
+  const { to, navigate } = useNav();
   const {
     fetchAllProgress,
     fetchStatistics,
@@ -81,7 +81,7 @@ export const ProgressDashboardPage = () => {
         <div className="mb-8">
           <Button asChild className="mb-4">
             <Link
-              to={to("")}
+              to={to("/")}
               className="inline-flex items-center gap-2 text-sm"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -250,7 +250,7 @@ export const ProgressDashboardPage = () => {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Button
-            onClick={() => nav("quiz")}
+            onClick={() => navigate("/quiz")}
             className="clay-card p-6 text-left transition-all duration-200 hover:scale-105 h-auto"
             style={{
               backgroundColor: "var(--color-primary)",

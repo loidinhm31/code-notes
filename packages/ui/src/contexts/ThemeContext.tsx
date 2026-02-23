@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-export type Theme = "light" | "dark" | "cyber";
+export type Theme = "light" | "dark" | "cyber" | "system";
+
+export type ResolvedTheme = "light" | "dark" | "cyber";
 
 // Custom event name for theme changes (used by ShadowWrapper in qm-hub-app)
 export const CODE_NOTES_THEME_EVENT = "code-notes-theme-change";
@@ -8,14 +10,16 @@ export const CODE_NOTES_THEME_STORAGE_KEY = "code-notes-theme";
 
 interface ThemeContextType {
   theme: Theme;
+  resolvedTheme: ResolvedTheme;
   setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 interface ThemeProviderProps {
   children: React.ReactNode;
+  defaultTheme?: Theme;
+  storageKey?: string;
   /**
    * When true, the app is embedded in another app (e.g., qm-hub).
    * In embedded mode, theme changes are dispatched via custom events
@@ -23,45 +27,60 @@ interface ThemeProviderProps {
    * This prevents theme conflicts between multiple embedded apps.
    */
   embedded?: boolean;
+  /**
+   * Custom event name dispatched when theme changes in embedded mode.
+   * @default CODE_NOTES_THEME_EVENT
+   */
+  themeEventName?: string;
 }
+
+const VALID_THEMES: Theme[] = ["light", "dark", "cyber", "system"];
+
+const getSystemTheme = (): "light" | "dark" => {
+  if (typeof window === "undefined") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
+const resolveTheme = (theme: Theme): ResolvedTheme => {
+  if (theme === "system") return getSystemTheme();
+  return theme;
+};
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   children,
+  defaultTheme = "light",
+  storageKey = CODE_NOTES_THEME_STORAGE_KEY,
   embedded = false,
+  themeEventName = CODE_NOTES_THEME_EVENT,
 }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
-    // Check localStorage first
-    const savedTheme = localStorage.getItem(CODE_NOTES_THEME_STORAGE_KEY);
-    if (
-      savedTheme === "light" ||
-      savedTheme === "dark" ||
-      savedTheme === "cyber"
-    ) {
-      return savedTheme;
+    if (typeof window === "undefined") return defaultTheme;
+    const savedTheme = localStorage.getItem(storageKey);
+    if (savedTheme && VALID_THEMES.includes(savedTheme as Theme)) {
+      return savedTheme as Theme;
     }
-
-    // Check system preference
-    if (
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ) {
-      return "dark";
-    }
-
-    // Default to light
-    return "light";
+    return defaultTheme;
   });
+
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() =>
+    resolveTheme(theme),
+  );
 
   useEffect(() => {
     // Save to localStorage (always)
-    localStorage.setItem(CODE_NOTES_THEME_STORAGE_KEY, theme);
+    localStorage.setItem(storageKey, theme);
+
+    const resolved = resolveTheme(theme);
+    setResolvedTheme(resolved);
 
     if (embedded) {
       // In embedded mode, dispatch custom event for ShadowWrapper to handle
       // This avoids modifying document.documentElement which would affect other apps
       window.dispatchEvent(
-        new CustomEvent(CODE_NOTES_THEME_EVENT, {
-          detail: { theme },
+        new CustomEvent(themeEventName, {
+          detail: { theme: resolved },
         }),
       );
     } else {
@@ -69,33 +88,52 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       const root = window.document.documentElement;
 
       // Set data-theme attribute
-      root.setAttribute("data-theme", theme);
+      root.setAttribute("data-theme", resolved);
 
       // Remove all previous theme classes
       root.classList.remove("dark", "cyber");
 
-      if (theme === "dark") {
-        root.classList.add("dark");
-      } else if (theme === "cyber") {
-        root.classList.add("cyber");
+      if (resolved !== "light") {
+        root.classList.add(resolved);
       }
     }
-  }, [theme, embedded]);
+  }, [theme, storageKey, embedded, themeEventName]);
+
+  // Listen for OS theme changes when "system" is selected
+  useEffect(() => {
+    if (theme !== "system") return;
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) => {
+      const newResolved: ResolvedTheme = e.matches ? "dark" : "light";
+      setResolvedTheme(newResolved);
+
+      if (embedded) {
+        window.dispatchEvent(
+          new CustomEvent(themeEventName, {
+            detail: { theme: newResolved },
+          }),
+        );
+      } else {
+        const root = window.document.documentElement;
+        root.setAttribute("data-theme", newResolved);
+        root.classList.remove("dark", "cyber");
+        if (newResolved !== "light") {
+          root.classList.add(newResolved);
+        }
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [theme, embedded, themeEventName]);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
   };
 
-  const toggleTheme = () => {
-    setThemeState((prev) => {
-      if (prev === "light") return "dark";
-      if (prev === "dark") return "cyber";
-      return "light";
-    });
-  };
-
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );

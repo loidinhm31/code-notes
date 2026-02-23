@@ -19,7 +19,7 @@ import {
 
 export const QuizSessionPage = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
-  const { to, nav } = useNav();
+  const { to, navigate } = useNav();
 
   const {
     activeSession,
@@ -85,7 +85,7 @@ export const QuizSessionPage = () => {
   const handleComplete = async () => {
     try {
       const completed = await completeQuiz();
-      nav(`quiz/results/${completed.id}`);
+      navigate(`/quiz/results/${completed.id}`);
     } catch (error) {
       console.error("Failed to complete quiz:", error);
     }
@@ -118,7 +118,7 @@ export const QuizSessionPage = () => {
             No active quiz session
           </p>
           <Button
-            onClick={() => nav("quiz")}
+            onClick={() => navigate("/quiz")}
             className="clay-card px-6 py-3"
             style={{
               backgroundColor: "var(--color-primary)",
@@ -138,7 +138,7 @@ export const QuizSessionPage = () => {
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <Link
-        to={to("quiz")}
+        to={to("/quiz")}
         className="inline-flex items-center gap-2 text-sm mb-6 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[var(--color-bg-muted)] border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" />

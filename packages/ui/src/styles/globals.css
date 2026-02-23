@@ -153,169 +153,173 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
 
-  /* Dark Mode Theme */
-  .dark {
-    /* Primary - Brighter navy for dark mode */
-    --color-primary: #3b82f6;
-    --color-primary-light: #60a5fa;
-    --color-primary-dark: #2563eb;
+/* Dark Mode Theme — outside @layer base so class selectors are unlayered */
+.dark {
+  color-scheme: dark;
 
-    /* Secondary - Bright cyan */
-    --color-secondary: #7dd3fc;
-    --color-secondary-light: #a5f3fc;
-    --color-secondary-dark: #38bdf8;
+  /* Primary - Brighter navy for dark mode */
+  --color-primary: #3b82f6;
+  --color-primary-light: #60a5fa;
+  --color-primary-dark: #2563eb;
 
-    /* Accent - Bright orange */
-    --color-accent: #fb923c;
-    --color-accent-light: #fdba74;
-    --color-accent-dark: #f97316;
+  /* Secondary - Bright cyan */
+  --color-secondary: #7dd3fc;
+  --color-secondary-light: #a5f3fc;
+  --color-secondary-dark: #38bdf8;
 
-    /* Status Colors - Bright for dark mode */
-    --color-success: #10b981;
-    --color-success-light: #34d399;
-    --color-error: #ef4444;
-    --color-error-light: #f87171;
+  /* Accent - Bright orange */
+  --color-accent: #fb923c;
+  --color-accent-light: #fdba74;
+  --color-accent-dark: #f97316;
 
-    /* Pastel Colors - Brighter for dark mode */
-    --color-peach: #fdba74;
-    --color-lavender: #a5b4fc;
-    --color-mint: #6ee7b7;
-    --color-sky: #7dd3fc;
-    --color-lilac: #c4b5fd;
+  /* Status Colors - Bright for dark mode */
+  --color-success: #10b981;
+  --color-success-light: #34d399;
+  --color-error: #ef4444;
+  --color-error-light: #f87171;
 
-    /* Dark backgrounds */
-    --color-bg-light: #0f172a;
-    --color-bg-white: #1e293b;
-    --color-bg-muted: #334155;
+  /* Pastel Colors - Brighter for dark mode */
+  --color-peach: #fdba74;
+  --color-lavender: #a5b4fc;
+  --color-mint: #6ee7b7;
+  --color-sky: #7dd3fc;
+  --color-lilac: #c4b5fd;
 
-    /* Text - Light colors */
-    --color-text-primary: #f1f5f9;
-    --color-text-secondary: #cbd5e1;
-    --color-text-muted: #94a3b8;
+  /* Dark backgrounds */
+  --color-bg-light: #0f172a;
+  --color-bg-white: #1e293b;
+  --color-bg-muted: #334155;
 
-    /* Borders - Bright blue */
-    --color-border: #3b82f6;
-    --color-border-light: #60a5fa;
+  /* Text - Light colors */
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
 
-    /* Dark mode shadows with glow effect */
-    --shadow-clay-sm:
-            0 4px 8px rgba(0, 0, 0, 0.3), 0 0 4px rgba(59, 130, 246, 0.1);
+  /* Borders - Bright blue */
+  --color-border: #3b82f6;
+  --color-border-light: #60a5fa;
 
-    --shadow-clay-md:
-            0 6px 12px rgba(0, 0, 0, 0.4), 0 0 6px rgba(59, 130, 246, 0.15);
+  /* Dark mode shadows with glow effect */
+  --shadow-clay-sm:
+          0 4px 8px rgba(0, 0, 0, 0.3), 0 0 4px rgba(59, 130, 246, 0.1);
 
-    --shadow-clay-lg:
-            0 8px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(59, 130, 246, 0.2);
+  --shadow-clay-md:
+          0 6px 12px rgba(0, 0, 0, 0.4), 0 0 6px rgba(59, 130, 246, 0.15);
 
-    --shadow-clay-hover:
-            0 10px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(59, 130, 246, 0.3);
+  --shadow-clay-lg:
+          0 8px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(59, 130, 246, 0.2);
 
-    /* shadcn/ui theme tokens - dark mode */
-    --background: var(--color-bg-light);
-    --foreground: var(--color-text-primary);
-    --card: var(--color-bg-white);
-    --card-foreground: var(--color-text-primary);
-    --popover: var(--color-bg-white);
-    --popover-foreground: var(--color-text-primary);
-    --primary: var(--color-primary);
-    --primary-foreground: #ffffff;
-    --secondary: var(--color-secondary);
-    --secondary-foreground: var(--color-primary-dark);
-    --accent: var(--color-accent);
-    --accent-foreground: #ffffff;
-    --destructive: var(--color-accent);
-    --destructive-foreground: #ffffff;
-    --muted: var(--color-bg-muted);
-    --muted-foreground: var(--color-text-muted);
-    --border: var(--color-border);
-    --input: var(--color-border);
-    --ring: var(--color-primary);
-    --radius: var(--radius-md);
-  }
+  --shadow-clay-hover:
+          0 10px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(59, 130, 246, 0.3);
 
-  /* Cyber Theme - Developer Terminal Aesthetic */
-  .cyber {
-    /* Primary - VS Code Blue */
-    --color-primary: #3B82F6;
-    --color-primary-light: #60A5FA;
-    --color-primary-dark: #2563EB;
+  /* shadcn/ui theme tokens - dark mode */
+  --background: var(--color-bg-light);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-bg-white);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-bg-white);
+  --popover-foreground: var(--color-text-primary);
+  --primary: var(--color-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-primary-dark);
+  --accent: var(--color-accent);
+  --accent-foreground: #ffffff;
+  --destructive: var(--color-accent);
+  --destructive-foreground: #ffffff;
+  --muted: var(--color-bg-muted);
+  --muted-foreground: var(--color-text-muted);
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-primary);
+  --radius: var(--radius-md);
+}
 
-    /* Secondary - Cyan */
-    --color-secondary: #06B6D4;
-    --color-secondary-light: #22D3EE;
-    --color-secondary-dark: #0891B2;
+/* Cyber Theme - Developer Terminal Aesthetic — outside @layer base */
+.cyber {
+  color-scheme: dark;
 
-    /* Accent - Orange */
-    --color-accent: #F97316;
-    --color-accent-light: #FB923C;
-    --color-accent-dark: #EA580C;
+  /* Primary - VS Code Blue */
+  --color-primary: #3B82F6;
+  --color-primary-light: #60A5FA;
+  --color-primary-dark: #2563EB;
 
-    /* Status Colors */
-    --color-success: #10B981;
-    --color-success-light: #34D399;
-    --color-error: #DC2626;
-    --color-error-light: #EF4444;
+  /* Secondary - Cyan */
+  --color-secondary: #06B6D4;
+  --color-secondary-light: #22D3EE;
+  --color-secondary-dark: #0891B2;
 
-    /* Pastel Colors - Cyber neon */
-    --color-peach: #FB923C;
-    --color-lavender: #A855F7;
-    --color-mint: #10B981;
-    --color-sky: #06B6D4;
-    --color-lilac: #EC4899;
+  /* Accent - Orange */
+  --color-accent: #F97316;
+  --color-accent-light: #FB923C;
+  --color-accent-dark: #EA580C;
 
-    /* Background Colors */
-    --color-bg-light: #0F172A;
-    --color-bg-white: #1E293B;
-    --color-bg-muted: #334155;
+  /* Status Colors */
+  --color-success: #10B981;
+  --color-success-light: #34D399;
+  --color-error: #DC2626;
+  --color-error-light: #EF4444;
 
-    /* Text Colors */
-    --color-text-primary: #F1F5F9;
-    --color-text-secondary: #94A3B8;
-    --color-text-muted: #64748B;
+  /* Pastel Colors - Cyber neon */
+  --color-peach: #FB923C;
+  --color-lavender: #A855F7;
+  --color-mint: #10B981;
+  --color-sky: #06B6D4;
+  --color-lilac: #EC4899;
 
-    /* Borders - Blue glow */
-    --color-border: #334155;
-    --color-border-light: #475569;
+  /* Background Colors */
+  --color-bg-light: #0F172A;
+  --color-bg-white: #1E293B;
+  --color-bg-muted: #334155;
 
-    /* Shadows - Blue glow */
-    --shadow-clay-sm:
-      0 4px 8px rgba(0, 0, 0, 0.3), 0 0 4px rgba(59, 130, 246, 0.1);
-    --shadow-clay-md:
-      0 6px 12px rgba(0, 0, 0, 0.4), 0 0 6px rgba(59, 130, 246, 0.15);
-    --shadow-clay-lg:
-      0 8px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(59, 130, 246, 0.2);
-    --shadow-clay-hover:
-      0 10px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(59, 130, 246, 0.3);
+  /* Text Colors */
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
 
-    /* shadcn/ui theme tokens - cyber mode */
-    --background: var(--color-bg-light);
-    --foreground: var(--color-text-primary);
-    --card: var(--color-bg-white);
-    --card-foreground: var(--color-text-primary);
-    --popover: var(--color-bg-white);
-    --popover-foreground: var(--color-text-primary);
-    --primary: var(--color-primary);
-    --primary-foreground: #ffffff;
-    --secondary: var(--color-secondary);
-    --secondary-foreground: #ffffff;
-    --accent: var(--color-accent);
-    --accent-foreground: #ffffff;
-    --destructive: var(--color-error);
-    --destructive-foreground: #ffffff;
-    --muted: var(--color-bg-muted);
-    --muted-foreground: var(--color-text-muted);
-    --border: var(--color-border);
-    --input: var(--color-border);
-    --ring: var(--color-primary);
-    --radius: var(--radius-md);
+  /* Borders - Blue glow */
+  --color-border: #334155;
+  --color-border-light: #475569;
 
-    /* Typography - Use IBM Plex Sans for cyber */
-    --font-family-heading: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
-    --font-family-body: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  /* Shadows - Blue glow */
+  --shadow-clay-sm:
+    0 4px 8px rgba(0, 0, 0, 0.3), 0 0 4px rgba(59, 130, 246, 0.1);
+  --shadow-clay-md:
+    0 6px 12px rgba(0, 0, 0, 0.4), 0 0 6px rgba(59, 130, 246, 0.15);
+  --shadow-clay-lg:
+    0 8px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(59, 130, 246, 0.2);
+  --shadow-clay-hover:
+    0 10px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(59, 130, 246, 0.3);
 
-    --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
-  }
+  /* shadcn/ui theme tokens - cyber mode */
+  --background: var(--color-bg-light);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-bg-white);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-bg-white);
+  --popover-foreground: var(--color-text-primary);
+  --primary: var(--color-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--color-secondary);
+  --secondary-foreground: #ffffff;
+  --accent: var(--color-accent);
+  --accent-foreground: #ffffff;
+  --destructive: var(--color-error);
+  --destructive-foreground: #ffffff;
+  --muted: var(--color-bg-muted);
+  --muted-foreground: var(--color-text-muted);
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-primary);
+  --radius: var(--radius-md);
+
+  /* Typography - Monospace for cyber */
+  --font-family-heading: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  --font-family-body: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
 }
 
 /* Cyber theme font application */

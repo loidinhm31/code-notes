@@ -26,7 +26,7 @@ import type { ProgressStatus } from "@code-notes/shared";
 
 export const QuestionDetailPage = () => {
   const { questionId } = useParams<{ questionId: string }>();
-  const { to, nav } = useNav();
+  const { to, navigate } = useNav();
   const {
     currentQuestion,
     questions,
@@ -112,7 +112,7 @@ export const QuestionDetailPage = () => {
     if (questionId && currentQuestion) {
       try {
         await deleteQuestion(questionId);
-        nav(`topics/${currentQuestion.topicId}`);
+        navigate(`/topics/${currentQuestion.topicId}`);
       } catch (err) {
         console.error("Failed to delete question:", err);
       }
@@ -149,7 +149,7 @@ export const QuestionDetailPage = () => {
           <p className="text-destructive mb-4">
             {error || "Question not found"}
           </p>
-          <Button onClick={() => nav("")}>Back to Topics</Button>
+          <Button onClick={() => navigate("/")}>Back to Topics</Button>
         </div>
       </div>
     );
@@ -162,7 +162,7 @@ export const QuestionDetailPage = () => {
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4 mr-7">
             <div className="flex items-center gap-2">
               <Link
-                to={to(`topics/${currentQuestion.topicId}`)}
+                to={to(`/topics/${currentQuestion.topicId}`)}
                 className="inline-flex items-center gap-2 text-sm px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[var(--color-bg-muted)] border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
                 title="Back to Questions"
               >
@@ -174,7 +174,7 @@ export const QuestionDetailPage = () => {
               <div className="flex items-center gap-1 border border-input rounded-md overflow-hidden">
                 <Button
                   onClick={() =>
-                    prevQuestionId && nav(`questions/${prevQuestionId}`)
+                    prevQuestionId && navigate(`/questions/${prevQuestionId}`)
                   }
                   disabled={!prevQuestionId}
                   variant="secondary"
@@ -187,7 +187,7 @@ export const QuestionDetailPage = () => {
                 </Button>
                 <Button
                   onClick={() =>
-                    nextQuestionId && nav(`questions/${nextQuestionId}`)
+                    nextQuestionId && navigate(`/questions/${nextQuestionId}`)
                   }
                   disabled={!nextQuestionId}
                   variant="secondary"

@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, type NavigateOptions } from "react-router-dom";
 
 export const BasePathContext = createContext<string>("");
 export const PortalContainerContext = createContext<HTMLElement | null>(null);
@@ -10,11 +10,20 @@ export function usePortalContainer() {
 
 export function useNav() {
   const basePath = useContext(BasePathContext);
-  const navigate = useNavigate();
+  const rawNavigate = useNavigate();
 
-  const to = (path: string) => (basePath ? `${basePath}/${path}` : path);
+  const to = (path: string) => (basePath ? `${basePath}${path}` : path);
 
-  const nav = (path: string) => navigate(to(path));
+  const navigate = (
+    pathOrDelta: string | number,
+    options?: NavigateOptions,
+  ) => {
+    if (typeof pathOrDelta === "number") {
+      rawNavigate(pathOrDelta);
+    } else {
+      rawNavigate(to(pathOrDelta), options);
+    }
+  };
 
-  return { to, nav };
+  return { to, navigate, basePath };
 }

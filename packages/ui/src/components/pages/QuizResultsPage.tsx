@@ -17,7 +17,7 @@ import { Button } from "@code-notes/ui/components/atoms";
 
 export const QuizResultsPage = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
-  const { to, nav } = useNav();
+  const { to, navigate } = useNav();
   const { quizHistory, fetchQuizHistory, questions } = useStore();
 
   const [session, setSession] = useState<QuizSession | null>(null);
@@ -46,7 +46,7 @@ export const QuizResultsPage = () => {
             Quiz not found
           </p>
           <Button
-            onClick={() => nav("quiz")}
+            onClick={() => navigate("/quiz")}
             className="clay-card px-6 py-3"
             style={{
               backgroundColor: "var(--color-primary)",
@@ -78,7 +78,7 @@ export const QuizResultsPage = () => {
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <Link
-        to={to("")}
+        to={to("/")}
         className="inline-flex items-center gap-2 text-sm mb-6 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[var(--color-bg-muted)] border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" />
@@ -293,7 +293,7 @@ export const QuizResultsPage = () => {
       {/* Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Button
-          onClick={() => nav("quiz")}
+          onClick={() => navigate("/quiz")}
           className="clay-card p-4 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 h-auto"
           style={{
             backgroundColor: "var(--color-primary)",
@@ -304,7 +304,7 @@ export const QuizResultsPage = () => {
           Start New Quiz
         </Button>
         <Button
-          onClick={() => nav("progress")}
+          onClick={() => navigate("/progress")}
           className="clay-card p-4 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 h-auto"
           style={{
             backgroundColor: "var(--color-accent)",

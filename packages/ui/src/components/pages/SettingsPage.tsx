@@ -7,11 +7,12 @@ import {
   Database,
   LogIn,
   LogOut,
-  User,
+  Monitor,
+  Moon,
   Palette,
   Sun,
-  Moon,
   Terminal,
+  User,
 } from "lucide-react";
 import { Button, Card } from "@code-notes/ui/components/atoms";
 import { SyncSettings } from "@code-notes/ui/components/organisms";
@@ -19,7 +20,7 @@ import { SyncSettings } from "@code-notes/ui/components/organisms";
 interface SettingsPageProps {}
 
 export const SettingsPage = ({}: SettingsPageProps) => {
-  const { to, nav } = useNav();
+  const { to, navigate } = useNav();
   const { isAuthenticated, logout } = useAuth();
   const { theme, setTheme } = useTheme();
 
@@ -32,13 +33,18 @@ export const SettingsPage = ({}: SettingsPageProps) => {
         label: "Cyber",
         icon: <Terminal className="h-4 w-4" />,
       },
+      {
+        value: "system",
+        label: "System",
+        icon: <Monitor className="h-4 w-4" />,
+      },
     ];
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
         <Link
-          to={to("")}
+          to={to("/")}
           className="inline-flex items-center gap-2 text-sm mb-4 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-(--color-bg-muted) border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -69,7 +75,7 @@ export const SettingsPage = ({}: SettingsPageProps) => {
               <p className="mb-4" style={{ color: "var(--color-text-muted)" }}>
                 Choose your preferred appearance
               </p>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {themeOptions.map((option) => (
                   <button
                     key={option.value}
@@ -109,7 +115,7 @@ export const SettingsPage = ({}: SettingsPageProps) => {
                 backup or transfer your data.
               </p>
               <Link
-                to={to("data-management")}
+                to={to("/data-management")}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 bg-(--color-primary) text-white hover:bg-[var(--color-primary-light)] hover:shadow-[var(--shadow-clay-md)] cursor-pointer border-2 border-[var(--color-primary-dark)]"
               >
                 <Database className="w-4 h-4" />
@@ -164,7 +170,7 @@ export const SettingsPage = ({}: SettingsPageProps) => {
                 >
                   Connect your account to sync data
                 </p>
-                <Button className="w-full" onClick={() => nav("/login")}>
+                <Button className="w-full" onClick={() => navigate("/login")}>
                   <LogIn className="w-4 h-4 mr-2" />
                   Login / Register
                 </Button>
