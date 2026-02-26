@@ -48,85 +48,15 @@ export class CodeNotesDB extends Dexie {
   constructor() {
     super("CodeNotesDB");
 
-    // Version 1: Original schema with snake_case sync fields
     this.version(1).stores({
-      topics: "id, name, createdAt, updatedAt, sync_version, synced_at",
+      topics: "id, name, createdAt, updatedAt, syncVersion, syncedAt",
       questions:
-        "id, topicId, questionNumber, createdAt, updatedAt, sync_version, synced_at",
-      quizSessions: "id, startedAt, status, sync_version, synced_at",
-      progress: "questionId, nextReviewAt, status, sync_version, synced_at",
+        "id, topicId, questionNumber, createdAt, updatedAt, syncVersion, syncedAt",
+      quizSessions: "id, startedAt, status, syncVersion, syncedAt",
+      progress: "questionId, nextReviewAt, status, syncVersion, syncedAt",
       _syncMeta: "key",
       _pendingChanges: "++id, tableName, rowId",
     });
-
-    // Version 2: Migrate to camelCase sync fields
-    this.version(2)
-      .stores({
-        topics: "id, name, createdAt, updatedAt, syncVersion, syncedAt",
-        questions:
-          "id, topicId, questionNumber, createdAt, updatedAt, syncVersion, syncedAt",
-        quizSessions: "id, startedAt, status, syncVersion, syncedAt",
-        progress: "questionId, nextReviewAt, status, syncVersion, syncedAt",
-        _syncMeta: "key",
-        _pendingChanges: "++id, tableName, rowId",
-      })
-      .upgrade((tx) => {
-        // Migrate topics: rename sync_version → syncVersion, synced_at → syncedAt
-        tx.table("topics")
-          .toCollection()
-          .modify((topic: Record<string, unknown>) => {
-            if ("sync_version" in topic) {
-              topic.syncVersion = topic.sync_version;
-              delete topic.sync_version;
-            }
-            if ("synced_at" in topic) {
-              topic.syncedAt = topic.synced_at;
-              delete topic.synced_at;
-            }
-          });
-
-        // Migrate questions
-        tx.table("questions")
-          .toCollection()
-          .modify((question: Record<string, unknown>) => {
-            if ("sync_version" in question) {
-              question.syncVersion = question.sync_version;
-              delete question.sync_version;
-            }
-            if ("synced_at" in question) {
-              question.syncedAt = question.synced_at;
-              delete question.synced_at;
-            }
-          });
-
-        // Migrate quizSessions
-        tx.table("quizSessions")
-          .toCollection()
-          .modify((session: Record<string, unknown>) => {
-            if ("sync_version" in session) {
-              session.syncVersion = session.sync_version;
-              delete session.sync_version;
-            }
-            if ("synced_at" in session) {
-              session.syncedAt = session.synced_at;
-              delete session.synced_at;
-            }
-          });
-
-        // Migrate progress
-        tx.table("progress")
-          .toCollection()
-          .modify((progress: Record<string, unknown>) => {
-            if ("sync_version" in progress) {
-              progress.syncVersion = progress.sync_version;
-              delete progress.sync_version;
-            }
-            if ("synced_at" in progress) {
-              progress.syncedAt = progress.synced_at;
-              delete progress.synced_at;
-            }
-          });
-      });
 
     // Map table names
     this.topics = this.table("topics");
