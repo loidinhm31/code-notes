@@ -1,5 +1,5 @@
 import type { Question, Topic, TopicStats } from "@code-notes/shared";
-import { db } from "./database";
+import { getDb } from "./database";
 import { IQueryService } from "@code-notes/ui/adapters/factory/interfaces";
 
 export class WebQueryAdapter implements IQueryService {
@@ -9,29 +9,29 @@ export class WebQueryAdapter implements IQueryService {
     const trimmed = query.trim().toLowerCase();
 
     if (trimmed === ".topics" || trimmed === "topics") {
-      const topics = await db.topics.toArray();
+      const topics = await getDb().topics.toArray();
       return JSON.stringify(topics, null, 2);
     }
 
     if (trimmed === ".questions" || trimmed === "questions") {
-      const questions = await db.questions.toArray();
+      const questions = await getDb().questions.toArray();
       return JSON.stringify(questions, null, 2);
     }
 
     if (trimmed === ".progress" || trimmed === "progress") {
-      const progress = await db.progress.toArray();
+      const progress = await getDb().progress.toArray();
       return JSON.stringify(progress, null, 2);
     }
 
     // Default: return all data
-    const topics = await db.topics.toArray();
-    const questions = await db.questions.toArray();
+    const topics = await getDb().topics.toArray();
+    const questions = await getDb().questions.toArray();
     return JSON.stringify({ topics, questions }, null, 2);
   }
 
   async searchQuestions(keyword: string): Promise<Question[]> {
     const lowerKeyword = keyword.toLowerCase();
-    const allQuestions = await db.questions.toArray();
+    const allQuestions = await getDb().questions.toArray();
     return allQuestions.filter(
       (q) =>
         q.question.toLowerCase().includes(lowerKeyword) ||
@@ -42,7 +42,7 @@ export class WebQueryAdapter implements IQueryService {
 
   async searchTopics(keyword: string): Promise<Topic[]> {
     const lowerKeyword = keyword.toLowerCase();
-    const allTopics = await db.topics.toArray();
+    const allTopics = await getDb().topics.toArray();
     return allTopics.filter(
       (t) =>
         t.name.toLowerCase().includes(lowerKeyword) ||
@@ -51,11 +51,11 @@ export class WebQueryAdapter implements IQueryService {
   }
 
   async getTopicStats(): Promise<TopicStats[]> {
-    const topics = await db.topics.toArray();
+    const topics = await getDb().topics.toArray();
     const stats: TopicStats[] = [];
 
     for (const topic of topics) {
-      const questionCount = await db.questions
+      const questionCount = await getDb().questions
         .where("topicId")
         .equals(topic.id)
         .count();

@@ -1,4 +1,4 @@
-import { db } from "./database";
+import { getDb } from "./database";
 import type { IQuizService } from "@code-notes/ui/adapters/factory/interfaces";
 import type {
   QuizSession,
@@ -15,7 +15,7 @@ export class WebQuizAdapter implements IQuizService {
     if (dto.topicIds && dto.topicIds.length > 0) {
       // TopicFocused: get questions from specified topics
       for (const topicId of dto.topicIds) {
-        const questions = await db.questions
+        const questions = await getDb().questions
           .where("topicId")
           .equals(topicId)
           .toArray();
@@ -23,13 +23,13 @@ export class WebQuizAdapter implements IQuizService {
       }
     } else {
       // Get all questions
-      const questions = await db.questions.toArray();
+      const questions = await getDb().questions.toArray();
       questionIds = questions.map((q) => q.id);
     }
 
     // Filter by difficulty if specified
     if (dto.difficulty) {
-      const filtered = await db.questions
+      const filtered = await getDb().questions
         .filter(
           (q) => questionIds.includes(q.id) && q.difficulty === dto.difficulty,
         )
@@ -56,17 +56,17 @@ export class WebQuizAdapter implements IQuizService {
       results: [],
     };
 
-    await db.quizSessions.add(session);
+    await getDb().quizSessions.add(session);
     return session;
   }
 
   async getSession(sessionId: string): Promise<QuizSession | null> {
-    return (await db.quizSessions.get(sessionId)) || null;
+    return (await getDb().quizSessions.get(sessionId)) || null;
   }
 
   async getActiveSession(): Promise<QuizSession | null> {
     // Find a session that hasn't been completed
-    const sessions = await db.quizSessions
+    const sessions = await getDb().quizSessions
       .orderBy("startedAt")
       .reverse()
       .toArray();
@@ -77,27 +77,27 @@ export class WebQuizAdapter implements IQuizService {
     sessionId: string,
     result: QuizResult,
   ): Promise<QuizSession> {
-    const session = await db.quizSessions.get(sessionId);
+    const session = await getDb().quizSessions.get(sessionId);
     if (!session) throw new Error("Session not found");
 
     session.results.push(result);
     session.currentIndex = session.results.length;
 
-    await db.quizSessions.put(session);
+    await getDb().quizSessions.put(session);
     return session;
   }
 
   async completeSession(sessionId: string): Promise<QuizSession> {
-    const session = await db.quizSessions.get(sessionId);
+    const session = await getDb().quizSessions.get(sessionId);
     if (!session) throw new Error("Session not found");
 
     session.completedAt = new Date().toISOString();
-    await db.quizSessions.put(session);
+    await getDb().quizSessions.put(session);
     return session;
   }
 
   async getHistory(limit?: number): Promise<QuizSession[]> {
-    let query = db.quizSessions.orderBy("startedAt").reverse();
+    let query = getDb().quizSessions.orderBy("startedAt").reverse();
     const sessions = await query.toArray();
 
     // Filter to completed sessions

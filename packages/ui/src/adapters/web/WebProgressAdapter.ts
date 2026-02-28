@@ -1,4 +1,4 @@
-import { db } from "./database";
+import { getDb } from "./database";
 import type {
   QuestionProgress,
   UpdateProgressDto,
@@ -9,20 +9,20 @@ import { IProgressService } from "@code-notes/ui/adapters/factory/interfaces";
 
 export class WebProgressAdapter implements IProgressService {
   async getAll(): Promise<QuestionProgress[]> {
-    return await db.progress.toArray();
+    return await getDb().progress.toArray();
   }
 
   async getByQuestion(questionId: string): Promise<QuestionProgress | null> {
-    return (await db.progress.get(questionId)) || null;
+    return (await getDb().progress.get(questionId)) || null;
   }
 
   async getByTopic(topicId: string): Promise<QuestionProgress[]> {
-    const questions = await db.questions
+    const questions = await getDb().questions
       .where("topicId")
       .equals(topicId)
       .toArray();
     const questionIds = new Set(questions.map((q) => q.id));
-    const allProgress = await db.progress.toArray();
+    const allProgress = await getDb().progress.toArray();
     return allProgress.filter((p) => questionIds.has(p.questionId));
   }
 
@@ -31,11 +31,11 @@ export class WebProgressAdapter implements IProgressService {
     dto: UpdateProgressDto,
   ): Promise<QuestionProgress> {
     const now = new Date().toISOString();
-    let existing = await db.progress.get(questionId);
+    let existing = await getDb().progress.get(questionId);
 
     if (!existing) {
       // Find question to get topicId
-      const question = await db.questions.get(questionId);
+      const question = await getDb().questions.get(questionId);
       existing = {
         questionId,
         topicId: question?.topicId || "",
@@ -76,12 +76,12 @@ export class WebProgressAdapter implements IProgressService {
       updated.timesReviewed,
     );
 
-    await db.progress.put(updated);
+    await getDb().progress.put(updated);
     return updated;
   }
 
   async reset(questionId: string): Promise<boolean> {
-    const existing = await db.progress.get(questionId);
+    const existing = await getDb().progress.get(questionId);
     if (!existing) return false;
 
     const now = new Date().toISOString();
@@ -96,13 +96,13 @@ export class WebProgressAdapter implements IProgressService {
       nextReviewAt: undefined,
       updatedAt: now,
     };
-    await db.progress.put(reset);
+    await getDb().progress.put(reset);
     return true;
   }
 
   async getStatistics(): Promise<ProgressStatistics> {
-    const totalQuestions = await db.questions.count();
-    const allProgress = await db.progress.toArray();
+    const totalQuestions = await getDb().questions.count();
+    const allProgress = await getDb().progress.toArray();
 
     const counts: Record<ProgressStatus, number> = {
       NotStudied: 0,
@@ -148,13 +148,13 @@ export class WebProgressAdapter implements IProgressService {
 
   async getDueForReview(): Promise<QuestionProgress[]> {
     const now = new Date().toISOString();
-    const allProgress = await db.progress.toArray();
+    const allProgress = await getDb().progress.toArray();
     return allProgress.filter((p) => p.nextReviewAt && p.nextReviewAt <= now);
   }
 
   async ensureForAllQuestions(): Promise<number> {
-    const questions = await db.questions.toArray();
-    const existingIds = new Set(await db.progress.toCollection().primaryKeys());
+    const questions = await getDb().questions.toArray();
+    const existingIds = new Set(await getDb().progress.toCollection().primaryKeys());
     const now = new Date().toISOString();
     let created = 0;
 
@@ -177,7 +177,7 @@ export class WebProgressAdapter implements IProgressService {
     }
 
     if (newProgress.length > 0) {
-      await db.progress.bulkAdd(newProgress);
+      await getDb().progress.bulkAdd(newProgress);
     }
 
     return created;

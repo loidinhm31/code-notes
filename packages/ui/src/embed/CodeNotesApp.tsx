@@ -27,12 +27,14 @@ import {
   setQuizService,
   setSyncService,
   setTopicsService,
+  getSyncService,
 } from "@code-notes/ui/adapters/factory";
 import { QmServerAuthAdapter } from "@code-notes/ui/adapters/shared";
 
 // Web adapters (used for both platforms)
 import {
   IndexedDBSyncAdapter,
+  IndexedDBSyncStorage,
   WebDataManagementAdapter,
   webPlatform,
   WebProgressAdapter,
@@ -40,6 +42,8 @@ import {
   WebQuestionsAdapter,
   WebQuizAdapter,
   WebTopicsAdapter,
+  initDb,
+  deleteCurrentDb,
 } from "@code-notes/ui/adapters/web";
 import { env } from "@code-notes/shared";
 
@@ -65,9 +69,42 @@ export function CodeNotesApp({
   basePath,
   className,
   onLogoutRequest,
+  registerLogoutCleanup,
 }: CodeNotesEmbedProps) {
-  // Initialize services synchronously before first render
+  const [dbReady, setDbReady] = useState(false);
+
+  useEffect(() => {
+    setDbReady(false);
+    initDb(authTokens?.userId)
+      .then(() => setDbReady(true))
+      .catch(console.error);
+  }, [authTokens?.userId]);
+
+  // Register logout cleanup with hub after DB is ready
+  useEffect(() => {
+    if (!dbReady || !registerLogoutCleanup) return;
+    const unregister = registerLogoutCleanup("code-notes", async () => {
+      try {
+        const storage = new IndexedDBSyncStorage();
+        const hasPending = await storage.hasPendingChanges();
+        if (hasPending) {
+          const syncService = getSyncService();
+          const result = await syncService.syncNow();
+          if (!result.success) return { success: false, error: result.error };
+        }
+        await deleteCurrentDb();
+        return { success: true };
+      } catch (e) {
+        return { success: false, error: e instanceof Error ? e.message : "Cleanup failed" };
+      }
+    });
+    return unregister;
+  }, [dbReady, registerLogoutCleanup]);
+
+  // Initialize services only after DB is ready
   const platform = useMemo<IPlatformServices>(() => {
+    if (!dbReady) return {} as IPlatformServices;
+
     setTopicsService(new WebTopicsAdapter());
     setQuestionsService(new WebQuestionsAdapter());
     setQueryService(new WebQueryAdapter());
@@ -92,7 +129,7 @@ export function CodeNotesApp({
     // - Tauri: uses @tauri-apps/plugin-opener for native URL handling
     // - Web: uses window.open for browser URL handling
     return isTauri() ? tauriPlatform : webPlatform;
-  }, []);
+  }, [dbReady]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(
@@ -100,12 +137,12 @@ export function CodeNotesApp({
   );
 
   useEffect(() => {
-    setPortalContainer(containerRef.current);
-  }, []);
+    if (containerRef.current) setPortalContainer(containerRef.current);
+  }, [dbReady]);
 
   // If external auth tokens are provided, save them to the auth service
   useEffect(() => {
-    if (authTokens?.accessToken && authTokens?.refreshToken) {
+    if (dbReady && authTokens?.accessToken && authTokens?.refreshToken) {
       const auth = getAuthService() as QmServerAuthAdapter;
       auth
         .saveTokensExternal?.(
@@ -115,7 +152,9 @@ export function CodeNotesApp({
         )
         .catch(console.error);
     }
-  }, [authTokens]);
+  }, [dbReady, authTokens]);
+
+  if (!dbReady) return null;
 
   // Determine if we should skip auth (tokens provided externally)
   const skipAuth = !!(authTokens?.accessToken && authTokens?.refreshToken);

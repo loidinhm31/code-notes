@@ -53,4 +53,10 @@ export interface CodeNotesEmbedProps {
    * Defaults to the value of `embedded` if not specified.
    */
   skipAuth?: boolean;
+
+  /** Register a cleanup callback for logout (sync + delete DB). Returns unregister fn. */
+  registerLogoutCleanup?: (
+    appId: string,
+    fn: () => Promise<{ success: boolean; error?: string }>,
+  ) => () => void;
 }

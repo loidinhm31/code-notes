@@ -45,8 +45,8 @@ export class CodeNotesDB extends Dexie {
   _syncMeta!: Table<SyncMeta, string>;
   _pendingChanges!: Table<PendingChange, number>;
 
-  constructor() {
-    super("CodeNotesDB");
+  constructor(dbName = "CodeNotesDB") {
+    super(dbName);
 
     this.version(1).stores({
       topics: "id, name, createdAt, updatedAt, syncVersion, syncedAt",
@@ -90,7 +90,60 @@ export class CodeNotesDB extends Dexie {
   }
 }
 
-export const db = new CodeNotesDB();
+// =============================================================================
+// Per-user DB management
+// =============================================================================
+
+let _db: CodeNotesDB | null = null;
+let _currentUserId: string | null = null;
+
+async function hashUserId(userId: string): Promise<string> {
+  const encoded = new TextEncoder().encode(userId);
+  const hash = await crypto.subtle.digest("SHA-256", encoded);
+  return Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
+    .slice(0, 12);
+}
+
+/**
+ * Initialize (or reinitialize) the DB for a specific user.
+ * If userId is undefined (standalone mode), uses the legacy "CodeNotesDB" name.
+ * Calling with the same userId is a no-op.
+ */
+export async function initDb(userId?: string): Promise<CodeNotesDB> {
+  if (!userId) {
+    if (!_db || _currentUserId !== null) {
+      if (_db) _db.close();
+      _db = new CodeNotesDB("CodeNotesDB");
+      _currentUserId = null;
+    }
+    return _db;
+  }
+  if (_db && _currentUserId === userId) return _db;
+  if (_db) _db.close();
+  const prefix = await hashUserId(userId);
+  _db = new CodeNotesDB(`CodeNotesDB_${prefix}`);
+  _currentUserId = userId;
+  return _db;
+}
+
+/** Returns the active DB instance. Throws if initDb() has not been called. */
+export function getDb(): CodeNotesDB {
+  if (!_db) throw new Error("CodeNotesDB not initialized. Call initDb() first.");
+  return _db;
+}
+
+/** Close and delete the current user's IndexedDB. Used on logout. */
+export async function deleteCurrentDb(): Promise<void> {
+  if (_db) {
+    const name = _db.name;
+    _db.close();
+    await Dexie.delete(name);
+    _db = null;
+    _currentUserId = null;
+  }
+}
 
 /**
  * Get current Unix timestamp in seconds
@@ -112,7 +165,7 @@ export async function trackDelete(
   id: string,
   syncVersion: number,
 ): Promise<void> {
-  await db._pendingChanges.add({
+  await getDb()._pendingChanges.add({
     tableName,
     rowId: id,
     operation: "delete",

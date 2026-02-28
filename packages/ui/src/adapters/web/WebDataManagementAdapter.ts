@@ -8,7 +8,7 @@ import type {
 } from "@code-notes/shared";
 import { IDataManagementService } from "@code-notes/ui/adapters/factory/interfaces";
 import { ExportResult } from "@code-notes/shared";
-import { db } from "@code-notes/ui/adapters/web";
+import { getDb } from "@code-notes/ui/adapters/web";
 
 // Structure matches the JSON format used for export/import
 interface DatabaseExport {
@@ -30,8 +30,8 @@ interface DatabaseExport {
 
 export class WebDataManagementAdapter implements IDataManagementService {
   async getDatabaseStats(): Promise<DatabaseStats> {
-    const topicsCount = await db.topics.count();
-    const questionsCount = await db.questions.count();
+    const topicsCount = await getDb().topics.count();
+    const questionsCount = await getDb().questions.count();
 
     return {
       topicsCount: topicsCount,
@@ -44,10 +44,10 @@ export class WebDataManagementAdapter implements IDataManagementService {
     filename: string = "code-notes-backup.json",
   ): Promise<ExportResult> {
     try {
-      const topics = await db.topics.toArray();
-      const questions = await db.questions.toArray();
-      const progress = await db.progress.toArray();
-      const quizSessions = await db.quizSessions.toArray();
+      const topics = await getDb().topics.toArray();
+      const questions = await getDb().questions.toArray();
+      const progress = await getDb().progress.toArray();
+      const quizSessions = await getDb().quizSessions.toArray();
 
       const exportData: DatabaseExport = {
         version: "2.1",
@@ -133,74 +133,74 @@ export class WebDataManagementAdapter implements IDataManagementService {
 
       if (!merge) {
         // Clear all tables
-        await db.transaction(
+        await getDb().transaction(
           "rw",
-          db.topics,
-          db.questions,
-          db.progress,
-          db.quizSessions,
+          getDb().topics,
+          getDb().questions,
+          getDb().progress,
+          getDb().quizSessions,
           async () => {
-            await db.topics.clear();
-            await db.questions.clear();
-            await db.progress.clear();
-            await db.quizSessions.clear();
+            await getDb().topics.clear();
+            await getDb().questions.clear();
+            await getDb().progress.clear();
+            await getDb().quizSessions.clear();
           },
         );
       }
 
-      await db.transaction(
+      await getDb().transaction(
         "rw",
-        db.topics,
-        db.questions,
-        db.progress,
-        db.quizSessions,
+        getDb().topics,
+        getDb().questions,
+        getDb().progress,
+        getDb().quizSessions,
         async () => {
           if (merge) {
             const existingTopicIds = new Set(
-              await db.topics.toCollection().primaryKeys(),
+              await getDb().topics.toCollection().primaryKeys(),
             );
             const newTopics = topics.filter((t) => !existingTopicIds.has(t.id));
-            if (newTopics.length > 0) await db.topics.bulkAdd(newTopics);
+            if (newTopics.length > 0) await getDb().topics.bulkAdd(newTopics);
 
             const existingQuestionIds = new Set(
-              await db.questions.toCollection().primaryKeys(),
+              await getDb().questions.toCollection().primaryKeys(),
             );
             const newQuestions = questions.filter(
               (q) => !existingQuestionIds.has(q.id),
             );
             if (newQuestions.length > 0)
-              await db.questions.bulkAdd(newQuestions);
+              await getDb().questions.bulkAdd(newQuestions);
 
             const existingProgressIds = new Set(
-              await db.progress.toCollection().primaryKeys(),
+              await getDb().progress.toCollection().primaryKeys(),
             );
             const newProgress = progress.filter(
               (p) => !existingProgressIds.has(p.questionId),
             );
-            if (newProgress.length > 0) await db.progress.bulkAdd(newProgress);
+            if (newProgress.length > 0) await getDb().progress.bulkAdd(newProgress);
 
             const existingSessionIds = new Set(
-              await db.quizSessions.toCollection().primaryKeys(),
+              await getDb().quizSessions.toCollection().primaryKeys(),
             );
             const newSessions = sessions.filter(
               (s) => !existingSessionIds.has(s.id),
             );
             if (newSessions.length > 0)
-              await db.quizSessions.bulkAdd(newSessions);
+              await getDb().quizSessions.bulkAdd(newSessions);
           } else {
             // Replace mode: We already cleared. So just add all.
-            if (topics.length > 0) await db.topics.bulkAdd(topics);
-            if (questions.length > 0) await db.questions.bulkAdd(questions);
-            if (progress.length > 0) await db.progress.bulkAdd(progress);
-            if (sessions.length > 0) await db.quizSessions.bulkAdd(sessions);
+            if (topics.length > 0) await getDb().topics.bulkAdd(topics);
+            if (questions.length > 0) await getDb().questions.bulkAdd(questions);
+            if (progress.length > 0) await getDb().progress.bulkAdd(progress);
+            if (sessions.length > 0) await getDb().quizSessions.bulkAdd(sessions);
           }
         },
       );
 
-      const finalTopicsCount = await db.topics.count();
-      const finalQuestionsCount = await db.questions.count();
-      const finalProgressCount = await db.progress.count();
-      const finalSessionsCount = await db.quizSessions.count();
+      const finalTopicsCount = await getDb().topics.count();
+      const finalQuestionsCount = await getDb().questions.count();
+      const finalProgressCount = await getDb().progress.count();
+      const finalSessionsCount = await getDb().quizSessions.count();
 
       return {
         success: true,

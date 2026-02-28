@@ -11,7 +11,7 @@
  * - After successful sync: syncedAt is set, _pendingChanges entries removed
  */
 
-import { db, getCurrentTimestamp, SYNC_META_KEYS } from "../database";
+import { getDb, getCurrentTimestamp, SYNC_META_KEYS } from "../database";
 import type { Checkpoint, PullRecord, SyncRecord } from "@code-notes/shared";
 import type {
   Topic,
@@ -35,7 +35,7 @@ export class IndexedDBSyncStorage {
     const records: SyncRecord[] = [];
 
     // 1. Get unsynced topics
-    const topics = await db.topics.toArray();
+    const topics = await getDb().topics.toArray();
     for (const topic of topics) {
       if (topic.syncedAt === undefined || topic.syncedAt === null) {
         const subtopics = topic.subtopics
@@ -62,7 +62,7 @@ export class IndexedDBSyncStorage {
     }
 
     // 2. Get unsynced questions
-    const questions = await db.questions.toArray();
+    const questions = await getDb().questions.toArray();
     for (const question of questions) {
       if (question.syncedAt === undefined || question.syncedAt === null) {
         const answer =
@@ -92,7 +92,7 @@ export class IndexedDBSyncStorage {
     }
 
     // 3. Get unsynced progress
-    const progress = await db.progress.toArray();
+    const progress = await getDb().progress.toArray();
     for (const p of progress) {
       if (p.syncedAt === undefined || p.syncedAt === null) {
         records.push({
@@ -118,7 +118,7 @@ export class IndexedDBSyncStorage {
     }
 
     // 4. Get unsynced quiz sessions
-    const sessions = await db.quizSessions.toArray();
+    const sessions = await getDb().quizSessions.toArray();
     for (const session of sessions) {
       if (session.syncedAt === undefined || session.syncedAt === null) {
         const topicIds = session.topicIds
@@ -152,7 +152,7 @@ export class IndexedDBSyncStorage {
     }
 
     // 5. Get pending deletes from _pendingChanges table
-    const pendingDeletes = await db._pendingChanges
+    const pendingDeletes = await getDb()._pendingChanges
       .filter((change) => change.operation === "delete")
       .toArray();
     for (const change of pendingDeletes) {
@@ -174,31 +174,38 @@ export class IndexedDBSyncStorage {
   async getPendingChangesCount(): Promise<number> {
     let count = 0;
 
-    const topics = await db.topics.toArray();
+    const topics = await getDb().topics.toArray();
     count += topics.filter(
       (t) => t.syncedAt === undefined || t.syncedAt === null,
     ).length;
 
-    const questions = await db.questions.toArray();
+    const questions = await getDb().questions.toArray();
     count += questions.filter(
       (q) => q.syncedAt === undefined || q.syncedAt === null,
     ).length;
 
-    const progress = await db.progress.toArray();
+    const progress = await getDb().progress.toArray();
     count += progress.filter(
       (p) => p.syncedAt === undefined || p.syncedAt === null,
     ).length;
 
-    const sessions = await db.quizSessions.toArray();
+    const sessions = await getDb().quizSessions.toArray();
     count += sessions.filter(
       (s) => s.syncedAt === undefined || s.syncedAt === null,
     ).length;
 
-    count += await db._pendingChanges
+    count += await getDb()._pendingChanges
       .filter((change) => change.operation === "delete")
       .count();
 
     return count;
+  }
+
+  /**
+   * Returns true if there are any local changes not yet synced.
+   */
+  async hasPendingChanges(): Promise<boolean> {
+    return (await this.getPendingChangesCount()) > 0;
   }
 
   /**
@@ -211,19 +218,19 @@ export class IndexedDBSyncStorage {
     data: Record<string, unknown>,
     version: number,
   ): Promise<void> {
-    const existing = await db._pendingChanges
+    const existing = await getDb()._pendingChanges
       .where({ tableName, rowId })
       .first();
 
     if (existing) {
-      await db._pendingChanges.update(existing.id!, {
+      await getDb()._pendingChanges.update(existing.id!, {
         operation,
         data,
         version,
         createdAt: getCurrentTimestamp(),
       });
     } else {
-      await db._pendingChanges.add({
+      await getDb()._pendingChanges.add({
         tableName,
         rowId,
         operation,
@@ -242,21 +249,21 @@ export class IndexedDBSyncStorage {
   ): Promise<void> {
     const now = getCurrentTimestamp();
 
-    await db.transaction(
+    await getDb().transaction(
       "rw",
       [
-        db._pendingChanges,
-        db.topics,
-        db.questions,
-        db.progress,
-        db.quizSessions,
+        getDb()._pendingChanges,
+        getDb().topics,
+        getDb().questions,
+        getDb().progress,
+        getDb().quizSessions,
       ],
       async () => {
         for (const { tableName, rowId } of recordIds) {
           const localTableName = this.serverToLocalTableName(tableName);
 
           // Remove from pending changes
-          await db._pendingChanges
+          await getDb()._pendingChanges
             .where({ tableName: localTableName, rowId })
             .delete();
 
@@ -305,9 +312,9 @@ export class IndexedDBSyncStorage {
         this.getTableOrder(b.tableName) - this.getTableOrder(a.tableName),
     );
 
-    await db.transaction(
+    await getDb().transaction(
       "rw",
-      [db.topics, db.questions, db.progress, db.quizSessions],
+      [getDb().topics, getDb().questions, getDb().progress, getDb().quizSessions],
       async () => {
         for (const record of nonDeleted) {
           await this.upsertRecord(record, now);
@@ -356,7 +363,7 @@ export class IndexedDBSyncStorage {
           syncVersion: record.version,
           syncedAt: syncedAt,
         };
-        await db.topics.put(topic);
+        await getDb().topics.put(topic);
         break;
       }
 
@@ -399,7 +406,7 @@ export class IndexedDBSyncStorage {
           syncVersion: record.version,
           syncedAt: syncedAt,
         };
-        await db.questions.put(question);
+        await getDb().questions.put(question);
         break;
       }
 
@@ -420,7 +427,7 @@ export class IndexedDBSyncStorage {
           syncVersion: record.version,
           syncedAt: syncedAt,
         };
-        await db.progress.put(progressRecord);
+        await getDb().progress.put(progressRecord);
         break;
       }
 
@@ -473,7 +480,7 @@ export class IndexedDBSyncStorage {
           syncVersion: record.version,
           syncedAt: syncedAt,
         };
-        await db.quizSessions.put(session);
+        await getDb().quizSessions.put(session);
         break;
       }
 
@@ -499,7 +506,7 @@ export class IndexedDBSyncStorage {
   // =========================================================================
 
   async getCheckpoint(): Promise<Checkpoint | undefined> {
-    const checkpointJson = await db.getSyncMeta(SYNC_META_KEYS.CHECKPOINT);
+    const checkpointJson = await getDb().getSyncMeta(SYNC_META_KEYS.CHECKPOINT);
     if (!checkpointJson) return undefined;
     try {
       return JSON.parse(checkpointJson) as Checkpoint;
@@ -509,16 +516,16 @@ export class IndexedDBSyncStorage {
   }
 
   async saveCheckpoint(checkpoint: Checkpoint): Promise<void> {
-    await db.setSyncMeta(SYNC_META_KEYS.CHECKPOINT, JSON.stringify(checkpoint));
+    await getDb().setSyncMeta(SYNC_META_KEYS.CHECKPOINT, JSON.stringify(checkpoint));
   }
 
   async getLastSyncAt(): Promise<number | undefined> {
-    const value = await db.getSyncMeta(SYNC_META_KEYS.LAST_SYNC_AT);
+    const value = await getDb().getSyncMeta(SYNC_META_KEYS.LAST_SYNC_AT);
     return value ? parseInt(value, 10) : undefined;
   }
 
   async saveLastSyncAt(timestamp: number): Promise<void> {
-    await db.setSyncMeta(SYNC_META_KEYS.LAST_SYNC_AT, timestamp.toString());
+    await getDb().setSyncMeta(SYNC_META_KEYS.LAST_SYNC_AT, timestamp.toString());
   }
 
   // =========================================================================
@@ -530,7 +537,7 @@ export class IndexedDBSyncStorage {
   }
 
   async clearPendingChanges(): Promise<void> {
-    await db._pendingChanges.clear();
+    await getDb()._pendingChanges.clear();
   }
 
   // =========================================================================
@@ -540,13 +547,13 @@ export class IndexedDBSyncStorage {
   private getTable(tableName: string) {
     switch (tableName) {
       case "topics":
-        return db.topics;
+        return getDb().topics;
       case "questions":
-        return db.questions;
+        return getDb().questions;
       case "progress":
-        return db.progress;
+        return getDb().progress;
       case "quizSessions":
-        return db.quizSessions;
+        return getDb().quizSessions;
       default:
         return undefined;
     }
