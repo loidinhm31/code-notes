@@ -92,7 +92,7 @@ export const QuestionsPage = () => {
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
         <Link
-          to={to("")}
+          to={to("/")}
           className="inline-flex items-center gap-2 text-sm mb-4 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[var(--color-bg-muted)] border-2 border-transparent hover:border-[var(--color-border-light)] cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -246,7 +246,7 @@ export const QuestionsPage = () => {
             {displayQuestions.map((question) => (
               <Link
                 key={question.id}
-                to={to(`questions/${question.id}`)}
+                to={to(`/questions/${question.id}`)}
                 className="clay-card block p-5 cursor-pointer"
               >
                 <div className="flex items-start gap-4">

@@ -109,7 +109,7 @@ export const TopicsPage = () => {
               asChild
               className="inline-flex items-center gap-2"
             >
-              <Link to={to("settings")}>
+              <Link to={to("/settings")}>
                 <Settings className="w-5 h-5" />
                 Go to Settings
               </Link>
@@ -251,7 +251,7 @@ export const TopicsPage = () => {
 
                   {/* Clickable card content */}
                   <Link
-                    to={to(`topics/${topic.id}`)}
+                    to={to(`/topics/${topic.id}`)}
                     className="block cursor-pointer"
                   >
                     <div className="flex items-start gap-3">
