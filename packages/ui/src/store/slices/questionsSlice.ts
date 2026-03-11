@@ -50,7 +50,8 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
     set({ loading: true, error: null });
     try {
       const questions = await questionService.getAll();
-      set({ questions, loading: false });
+      console.log(questions)
+      set({ questions: questions.sort((a, b) => a.order - b.order || a.questionNumber - b.questionNumber), loading: false });
     } catch (error) {
       set({
         error:
@@ -65,7 +66,7 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
     set({ loading: true, error: null });
     try {
       const questions = await questionService.getByTopicId(topicId);
-      set({ questions, loading: false });
+      set({ questions: questions.sort((a, b) => a.questionNumber - b.questionNumber), loading: false });
     } catch (error) {
       set({
         error:
@@ -178,7 +179,7 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
       }
 
       set({
-        questionsSearchResults: results,
+        questionsSearchResults: results.sort((a, b) => a.order - b.order || a.questionNumber - b.questionNumber),
         searchFilters,
         isSearchingQuestions: false,
       });
