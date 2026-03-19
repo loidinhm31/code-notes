@@ -5,3 +5,4 @@ export {
   CODE_NOTES_THEME_STORAGE_KEY,
 } from "./ThemeContext";
 export type { Theme } from "./ThemeContext";
+export * from "./SyncToastContext";

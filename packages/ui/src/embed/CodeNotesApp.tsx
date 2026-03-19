@@ -16,6 +16,10 @@ import { PlatformProvider } from "@code-notes/ui/platform";
 import type { CodeNotesEmbedProps } from "./types";
 import { BasePathContext, PortalContainerContext } from "@code-notes/ui/hooks";
 import { useAutoSync } from "../hooks/useAutoSync";
+import { useSyncToast } from "../hooks/useSyncToast";
+import { SyncToastProvider } from "@code-notes/ui/contexts";
+import { SyncToast } from "@code-notes/ui/components/atoms";
+import type { ISyncService } from "@code-notes/ui/adapters/factory/interfaces";
 
 // Adapters
 import {
@@ -52,6 +56,23 @@ import { env } from "@code-notes/shared";
 import { tauriPlatform } from "@code-notes/ui/adapters/tauri";
 import { AppShell } from "@code-notes/ui/components/templates";
 import { ThemeProvider } from "@code-notes/ui/contexts";
+
+function SyncAutoSyncManager({
+  syncService,
+  enabled,
+}: {
+  syncService: ISyncService | null;
+  enabled: boolean;
+}) {
+  const { handleSyncStart, handleSyncResult } = useSyncToast();
+  useAutoSync({
+    syncService,
+    enabled,
+    onSyncStart: handleSyncStart,
+    onSyncResult: handleSyncResult,
+  });
+  return null;
+}
 
 /**
  * Check if running in Tauri
@@ -133,10 +154,7 @@ export function CodeNotesApp({
   }, [dbReady]);
 
   const isAuthenticated = !!(authTokens?.accessToken && authTokens?.refreshToken);
-  useAutoSync({
-    syncService: dbReady ? getSyncService() : null,
-    enabled: dbReady && isAuthenticated && embedded,
-  });
+  const autoSyncEnabled = dbReady && isAuthenticated && embedded;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(
@@ -180,11 +198,18 @@ export function CodeNotesApp({
         <PlatformProvider services={platform}>
           <BasePathContext.Provider value={basePath || ""}>
             <PortalContainerContext.Provider value={portalContainer}>
-              {useRouter ? (
-                <BrowserRouter basename={basePath}>{content}</BrowserRouter>
-              ) : (
-                content
-              )}
+              <SyncToastProvider position="top-right">
+                {useRouter ? (
+                  <BrowserRouter basename={basePath}>{content}</BrowserRouter>
+                ) : (
+                  content
+                )}
+                <SyncAutoSyncManager
+                  syncService={dbReady ? getSyncService() : null}
+                  enabled={autoSyncEnabled}
+                />
+                <SyncToast />
+              </SyncToastProvider>
             </PortalContainerContext.Provider>
           </BasePathContext.Provider>
         </PlatformProvider>
