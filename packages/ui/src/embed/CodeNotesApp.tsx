@@ -15,6 +15,7 @@ import type { IPlatformServices } from "@code-notes/ui/platform";
 import { PlatformProvider } from "@code-notes/ui/platform";
 import type { CodeNotesEmbedProps } from "./types";
 import { BasePathContext, PortalContainerContext } from "@code-notes/ui/hooks";
+import { useAutoSync } from "../hooks/useAutoSync";
 
 // Adapters
 import {
@@ -130,6 +131,12 @@ export function CodeNotesApp({
     // - Web: uses window.open for browser URL handling
     return isTauri() ? tauriPlatform : webPlatform;
   }, [dbReady]);
+
+  const isAuthenticated = !!(authTokens?.accessToken && authTokens?.refreshToken);
+  useAutoSync({
+    syncService: dbReady ? getSyncService() : null,
+    enabled: dbReady && isAuthenticated && embedded,
+  });
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(
