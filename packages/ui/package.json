@@ -30,6 +30,8 @@
     "build": "tsc",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run",
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
@@ -68,7 +70,8 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/uuid": "^11.0.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
     "react": "^19.1.0",
