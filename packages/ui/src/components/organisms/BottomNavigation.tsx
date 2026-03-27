@@ -7,11 +7,12 @@ import {
   X,
   Upload,
   Settings,
+  Search,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useNav } from "@code-notes/ui/hooks";
 
-type Page = "topics" | "quiz" | "progress" | "import" | "settings";
+type Page = "topics" | "quiz" | "progress" | "search" | "import" | "settings";
 
 const mainNavItems: {
   id: Page;
@@ -22,6 +23,7 @@ const mainNavItems: {
   { id: "topics", label: "Topics", icon: BookOpen, path: "/" },
   { id: "quiz", label: "Quiz", icon: Brain, path: "/quiz" },
   { id: "progress", label: "Progress", icon: ChartBar, path: "/progress" },
+  { id: "search", label: "Search", icon: Search, path: "/search" },
 ];
 
 const menuItems: {

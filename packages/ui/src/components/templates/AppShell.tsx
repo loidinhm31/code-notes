@@ -55,6 +55,11 @@ const QuizResultsPage = lazy(() =>
     default: m.QuizResultsPage,
   })),
 );
+const SearchPage = lazy(() =>
+  import("@code-notes/ui/components/pages").then((m) => ({
+    default: m.SearchPage,
+  })),
+);
 
 export interface AppShellProps {
   skipAuth?: boolean;
@@ -150,6 +155,7 @@ export function AppShell({
                 path="quiz/results/:sessionId"
                 element={<QuizResultsPage />}
               />
+              <Route path="search" element={<SearchPage />} />
               {/* Fallback redirect */}
               <Route path="*" element={<Navigate to={to("/")} replace />} />
             </Routes>

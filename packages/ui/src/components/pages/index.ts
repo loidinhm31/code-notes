@@ -9,3 +9,4 @@ export * from "./DataManagementPage";
 export * from "./SettingsPage";
 export * from "./ImportPage";
 export * from "./LoginPage";
+export * from "./SearchPage";

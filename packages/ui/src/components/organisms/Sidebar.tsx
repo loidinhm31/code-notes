@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   AlertCircle,
   AlertTriangle,
+  Search,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useSyncStatus, useNav } from "@code-notes/ui/hooks";
@@ -36,6 +37,7 @@ export function Sidebar({ isCollapsed, onToggleCollapse }: SidebarProps) {
     { id: "topics", label: "Topics", icon: BookOpen, path: "/" },
     { id: "quiz", label: "Quiz", icon: Brain, path: "/quiz" },
     { id: "progress", label: "Progress", icon: ChartBar, path: "/progress" },
+    { id: "search", label: "Search", icon: Search, path: "/search" },
     { id: "import", label: "Import", icon: Upload, path: "/import" },
     { id: "settings", label: "Settings", icon: Settings, path: "/settings" },
   ];
