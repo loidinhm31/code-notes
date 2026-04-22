@@ -145,9 +145,9 @@ importers:
 
   packages/shared:
     dependencies:
-      '@qm-hub/sync-client-types':
-        specifier: ^0.2.2
-        version: 0.2.2
+      '@glean-oak/sync-client-types':
+        specifier: 0.2.3
+        version: 0.2.3
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -768,8 +768,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@qm-hub/sync-client-types@0.2.2':
-    resolution: {integrity: sha512-JT5MVxT2j0xtOM5IP/CtwH3rXiCcBRiaVftylvVdIUku247nc4sNBoqtrAK9thTR8DAsks3BINm3FE+ogbAFyg==}
+  '@glean-oak/sync-client-types@0.2.3':
+    resolution: {integrity: sha512-bLrUZGzK371ha+Jiooqi0BZvXCCXzzxwXiG60Mv1XzFVoySb7opKlK6oMQI3f1QTFCkEAyC1q5GhJQmTDthtqg==}
 
   '@radix-ui/number@1.1.1':
     resolution: {integrity: sha512-MkKCwxlXTgz6CFoJx3pCwn07GKp36+aZyu/u2Ln2VrA5DcdyCZkASEDBTd8x5whTQQL5CiYf4prXKLcgQdv29g==}
@@ -3264,7 +3264,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@qm-hub/sync-client-types@0.2.2': {}
+  '@glean-oak/sync-client-types@0.2.3': {}
 
   '@radix-ui/number@1.1.1': {}
 

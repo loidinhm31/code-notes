@@ -128,7 +128,7 @@ Updated **State Management** section (line 78) to add:
 - Subsection explaining internal caching strategy + index initialization pattern
 - Filter behavior clarification
 
-**Location**: `/home/loidinh/ws/sharing/qm-sync/embed-app/code-notes/CLAUDE.md:78-98`
+**Location**: `/home/loidinh/ws/sharing/glean-oak-sync/embed-app/code-notes/CLAUDE.md:78-98`
 
 ## Integration Points
 

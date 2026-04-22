@@ -2,7 +2,7 @@
  * IndexedDB Sync Adapter
  *
  * Implements ISyncService for web applications using IndexedDB/Dexie.
- * Combines QmSyncClient and IndexedDBSyncStorage to provide full sync functionality.
+ * Combines GleanOakClient and IndexedDBSyncStorage to provide full sync functionality.
  */
 
 import type {
@@ -13,7 +13,7 @@ import type {
 import {
   createSyncClientConfig,
   type HttpClientFn,
-  QmSyncClient,
+  GleanOakClient,
 } from "@code-notes/shared";
 import { IndexedDBSyncStorage } from "./IndexedDBSyncStorage";
 import { getCurrentTimestamp } from "../database";
@@ -57,7 +57,7 @@ export interface IndexedDBSyncAdapterConfig {
  * ISyncService implementation for IndexedDB.
  */
 export class IndexedDBSyncAdapter implements ISyncService {
-  private client: QmSyncClient | null = null;
+  private client: GleanOakClient | null = null;
   private storage: IndexedDBSyncStorage;
   private config: IndexedDBSyncAdapterConfig;
   private initialized = false;
@@ -76,7 +76,7 @@ export class IndexedDBSyncAdapter implements ISyncService {
     return `${config.serverUrl}|${config.appId}|${config.apiKey}`;
   }
 
-  private ensureClient(): QmSyncClient {
+  private ensureClient(): GleanOakClient {
     const config = this.config.getConfig();
     const hash = this.getConfigHash(config);
 
@@ -87,7 +87,7 @@ export class IndexedDBSyncAdapter implements ISyncService {
         config.appId,
         config.apiKey,
       );
-      this.client = new QmSyncClient(clientConfig, this.config.httpClient);
+      this.client = new GleanOakClient(clientConfig, this.config.httpClient);
       this.lastConfigHash = hash;
       this.initialized = false;
       // Write rotated tokens back to persistent storage immediately so the
@@ -251,7 +251,7 @@ export class IndexedDBSyncAdapter implements ISyncService {
           phase: "pulling",
           recordsPushed: pushed,
           recordsPulled: pulled,
-          hasMore,
+          hasMore: hasMore ?? false,
           currentPage: page,
         });
 
@@ -266,14 +266,14 @@ export class IndexedDBSyncAdapter implements ISyncService {
           pulled += pullResponse.records.length;
 
           currentCheckpoint = pullResponse.checkpoint;
-          hasMore = pullResponse.hasMore;
+          hasMore = pullResponse.hasMore ?? false;
 
           // Emit progress after each page
           onProgress({
             phase: "pulling",
             recordsPushed: pushed,
             recordsPulled: pulled,
-            hasMore,
+            hasMore: hasMore ?? false,
             currentPage: page,
           });
         }
@@ -338,7 +338,7 @@ export class IndexedDBSyncAdapter implements ISyncService {
     return this.storage;
   }
 
-  getClient(): QmSyncClient {
+  getClient(): GleanOakClient {
     return this.ensureClient();
   }
 }

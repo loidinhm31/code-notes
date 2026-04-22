@@ -2,7 +2,7 @@
 
 ## Overview
 
-Code Notes is a cross-platform note-taking application for code questions and quizzes. It supports web browsers and Tauri desktop (including Android), and can be embedded into `qm-hub-app` via Shadow DOM. Built as a Turborepo monorepo with offline-first IndexedDB storage and checkpoint-based sync.
+Code Notes is a cross-platform note-taking application for code questions and quizzes. It supports web browsers and Tauri desktop (including Android), and can be embedded into `glean-oak-app` via Shadow DOM. Built as a Turborepo monorepo with offline-first IndexedDB storage and checkpoint-based sync.
 
 ```mermaid
 C4Context
@@ -12,8 +12,8 @@ C4Context
 
     System(codeNotes, "Code Notes", "Cross-platform Q&A and quiz app")
 
-    System_Ext(qmHub, "qm-hub-app", "Admin panel hosting embedded apps")
-    System_Ext(qmServer, "qm-hub-server", "Axum API server with MongoDB")
+    System_Ext(qmHub, "glean-oak-app", "Admin panel hosting embedded apps")
+    System_Ext(qmServer, "glean-oak-server", "Axum API server with MongoDB")
 
     Rel(user, codeNotes, "Creates topics, questions, takes quizzes")
     Rel(user, qmHub, "Uses embedded Code Notes")
@@ -256,7 +256,7 @@ flowchart LR
 
 ## Sync Architecture
 
-Offline-first with checkpoint-based delta sync against `qm-hub-server`.
+Offline-first with checkpoint-based delta sync against `glean-oak-server`.
 
 ```mermaid
 sequenceDiagram
@@ -264,8 +264,8 @@ sequenceDiagram
     participant IDB as IndexedDB
     participant Sync as IndexedDBSyncAdapter
     participant Storage as IndexedDBSyncStorage
-    participant Client as QmSyncClient
-    participant Server as qm-hub-server
+    participant Client as GleanOakClient
+    participant Server as glean-oak-server
 
     App->>Sync: syncNow()
     Sync->>Client: Refresh tokens
@@ -317,18 +317,18 @@ flowchart LR
 
     Auth -->|"App identity"| APIKey
     Auth -->|"User identity"| JWT
-    APIKey --> Server["qm-hub-server"]
+    APIKey --> Server["glean-oak-server"]
     JWT --> Server
 
     classDef header fill:#fecaca,stroke:#ef4444
     class APIKey,JWT header
 ```
 
-## Embedding in qm-hub-app
+## Embedding in glean-oak-app
 
 ```mermaid
 flowchart TB
-    subgraph QmHub["qm-hub-app"]
+    subgraph GleanOak["glean-oak-app"]
         Router["BrowserRouter"]
         Shadow["ShadowWrapper<br/>(Shadow DOM isolation)"]
     end
@@ -349,11 +349,11 @@ flowchart TB
     BasePath --> Portal
     Portal --> Shell
 
-    QmHub -->|"props: authTokens,<br/>basePath, embedded,<br/>useRouter=false"| CodeNotes
+    GleanOak -->|"props: authTokens,<br/>basePath, embedded,<br/>useRouter=false"| CodeNotes
 
     classDef host fill:#fee2e2,stroke:#ef4444
     classDef embed fill:#dbeafe,stroke:#3b82f6
-    class QmHub,Router,Shadow host
+    class GleanOak,Router,Shadow host
     class Theme,Platform,BasePath,Portal,Shell embed
 ```
 

@@ -46,6 +46,6 @@ export const hasNativeFileSystem = (): boolean => isTauri();
 
 /**
  * Check if auth/sync features are available
- * Available on all platforms via qm-hub-server
+ * Available on all platforms via glean-oak-server
  */
 export const hasAuthSupport = (): boolean => true;

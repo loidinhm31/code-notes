@@ -119,7 +119,7 @@ import { CodeNotesApp } from "@code-notes/ui/embed";
 
 ### Sync Architecture
 
-- Uses `@qm-hub/sync-client-types` for sync type definitions
+- Uses `@glean-oak/sync-client-types` for sync type definitions
 - `IndexedDBSyncAdapter` handles sync operations
 - `QmServerAuthAdapter` manages authentication tokens
 - Sync metadata stored in `_syncMeta` and `_pendingChanges` tables

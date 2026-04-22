@@ -1,7 +1,7 @@
 /**
  * IndexedDB Sync Storage
  *
- * Implements the LocalStorage pattern from qm-sync-client for IndexedDB/Dexie.
+ * Implements the LocalStorage pattern from glean-oak-sync-client for IndexedDB/Dexie.
  * Provides methods for tracking pending changes, applying remote changes,
  * and managing sync checkpoints.
  *
@@ -333,7 +333,7 @@ export class IndexedDBSyncStorage {
     record: PullRecord,
     syncedAt: number,
   ): Promise<void> {
-    const data = record.data;
+    const data = record.data as any;
 
     switch (record.tableName) {
       case "topics": {
