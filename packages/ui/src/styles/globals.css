@@ -591,6 +591,29 @@
     border-left-color: var(--color-primary);
   }
 
+  /* Cyber mode prose overrides */
+  .cyber .prose blockquote {
+    background-color: rgba(59, 130, 246, 0.08);
+    border-left: 4px solid var(--color-primary);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 0.75rem 1.25rem;
+    color: var(--color-text-primary);
+    margin: 1.5rem 0;
+  }
+
+  .cyber .prose pre,
+  .cyber .prose pre[class*="language-"],
+  .cyber .prose pre:has(code[class*="language-"]) {
+    background-color: #0b1120 !important;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
+    padding: 1.5rem !important;
+  }
+
+  .cyber .prose pre code {
+    line-height: 1.7;
+  }
+
   .prose a {
     color: var(--color-primary);
     text-underline-offset: 4px;
