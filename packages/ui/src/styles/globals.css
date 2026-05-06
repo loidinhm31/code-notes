@@ -37,15 +37,24 @@
   /* Status Colors */
   --color-success: #10b981;
   --color-success-light: #34d399;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fbbf24;
   --color-error: #ef4444;
   --color-error-light: #f87171;
 
-  /* Pastel Colors - Updated to complement navy/blue/orange */
-  --color-peach: #fed7aa;
-  --color-lavender: #c7d2fe;
-  --color-mint: #a7f3d0;
-  --color-sky: #bae6fd;
-  --color-lilac: #ddd6fe;
+  /* Pattern & Badge Variables (Light) */
+  --color-pattern-line: rgba(96, 165, 250, 0.08);
+  --color-pattern-accent: rgba(249, 115, 22, 0.03);
+
+  --color-badge-beginner-bg: #dcfce7;
+  --color-badge-beginner-text: #166534;
+  --color-badge-intermediate-bg: #fef9c3;
+  --color-badge-intermediate-text: #854d0e;
+  --color-badge-advanced-bg: #fee2e2;
+  --color-badge-advanced-text: #991b1b;
+
+  --color-code-bg: #1a1a2e;
+  --color-code-text: #e2e8f0;
 
   /* Background Colors */
   --color-bg-light: #f8fafc;
@@ -220,6 +229,20 @@
   --color-border: #3b82f6;
   --color-border-light: #60a5fa;
 
+  /* Pattern & Badge Variables (Dark) */
+  --color-pattern-line: rgba(59, 130, 246, 0.1);
+  --color-pattern-accent: rgba(251, 146, 60, 0.05);
+
+  --color-badge-beginner-bg: #064e3b;
+  --color-badge-beginner-text: #d1fae5;
+  --color-badge-intermediate-bg: #78350f;
+  --color-badge-intermediate-text: #fef3c7;
+  --color-badge-advanced-bg: #7f1d1d;
+  --color-badge-advanced-text: #fee2e2;
+
+  --color-code-bg: #0b1120;
+  --color-code-text: #f1f5f9;
+
   /* Dark mode shadows with glow effect */
   --shadow-clay-sm:
           0 4px 8px rgba(0, 0, 0, 0.3), 0 0 4px rgba(59, 130, 246, 0.1);
@@ -301,6 +324,17 @@
   /* Borders - Blue glow */
   --color-border: #334155;
   --color-border-light: #475569;
+
+  /* Pattern & Badge Variables (Cyber) */
+  --color-pattern-line: rgba(59, 130, 246, 0.15);
+  --color-pattern-accent: rgba(249, 115, 22, 0.08);
+
+  --color-badge-beginner-bg: #064e3b;
+  --color-badge-beginner-text: #d1fae5;
+  --color-badge-intermediate-bg: #78350f;
+  --color-badge-intermediate-text: #fef3c7;
+  --color-badge-advanced-bg: #7f1d1d;
+  --color-badge-advanced-text: #fee2e2;
 
   /* Shadows - Blue glow */
   --shadow-clay-sm:
@@ -400,31 +434,12 @@
   }
 
   /* Circuit Board Pattern Backgrounds - Tech Aesthetic */
-  .circuit-pattern-light {
+  .circuit-pattern {
     background-color: var(--color-bg-light);
     background-image:
-      /* Horizontal lines */
-      linear-gradient(90deg, rgba(96, 165, 250, 0.08) 1px, transparent 1px),
-      /* Vertical lines */
-      linear-gradient(rgba(96, 165, 250, 0.08) 1px, transparent 1px),
-      /* Diagonal accent lines */
-      linear-gradient(45deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
-    background-size:
-      60px 60px,
-      60px 60px,
-      40px 40px;
-    background-position:
-      0 0,
-      0 0,
-      0 0;
-  }
-
-  .circuit-pattern-dark {
-    background-color: var(--color-bg-light);
-    background-image:
-      linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-      linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-      linear-gradient(45deg, rgba(251, 146, 60, 0.05) 1px, transparent 1px);
+      linear-gradient(90deg, var(--color-pattern-line) 1px, transparent 1px),
+      linear-gradient(var(--color-pattern-line) 1px, transparent 1px),
+      linear-gradient(45deg, var(--color-pattern-accent) 1px, transparent 1px);
     background-size:
       60px 60px,
       60px 60px,
@@ -508,6 +523,21 @@
     box-shadow: var(--shadow-clay-sm);
   }
 
+  .badge-beginner {
+    background-color: var(--color-badge-beginner-bg);
+    color: var(--color-badge-beginner-text);
+  }
+
+  .badge-intermediate {
+    background-color: var(--color-badge-intermediate-bg);
+    color: var(--color-badge-intermediate-text);
+  }
+
+  .badge-advanced {
+    background-color: var(--color-badge-advanced-bg);
+    color: var(--color-badge-advanced-text);
+  }
+
   .nav-link {
     display: inline-flex;
     align-items: center;
@@ -583,19 +613,23 @@
     -webkit-overflow-scrolling: touch;
     margin: 1rem 0;
     border: 1px solid var(--color-border-light);
+    background-color: var(--color-code-bg);
+    color: var(--color-code-text);
+    padding: 1.25rem;
   }
 
   /* Ensure prism-highlighted pre blocks are not overridden */
   .prose pre[class*="language-"],
   .prose pre:has(code[class*="language-"]) {
-    background: #2d2d2d;
+    background-color: var(--color-code-bg);
+    color: var(--color-code-text);
     border-color: rgba(255, 255, 255, 0.08);
   }
 
   /* Plain pre blocks without language class (light/dark-aware) */
   .prose pre:not([class*="language-"]):not(:has(code[class*="language-"])) {
-    background: #1a1a2e;
-    color: #e2e8f0;
+    background-color: var(--color-code-bg);
+    color: var(--color-code-text);
   }
 
   .prose pre code {
@@ -604,6 +638,7 @@
     border-radius: 0;
     font-size: 0.875em;
     font-family: "JetBrains Mono", ui-monospace, monospace;
+    color: inherit;
   }
 
   .prose blockquote {
@@ -640,10 +675,9 @@
   .cyber .prose pre,
   .cyber .prose pre[class*="language-"],
   .cyber .prose pre:has(code[class*="language-"]) {
-    background-color: #0b1120 !important;
+    background-color: var(--color-code-bg) !important;
     border: 1px solid var(--color-border);
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
-    padding: 1.5rem !important;
   }
 
   .cyber .prose pre code {
@@ -663,14 +697,7 @@
   .prose table {
     width: 100%;
     border-collapse: collapse;
-    margin: 1.5rem 0;
-    background: var(--color-bg-white);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-clay-sm);
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    margin: 0;
   }
 
   @media (max-width: 768px) {
@@ -685,15 +712,20 @@
   }
 
   .prose thead th {
-    padding: 0.75rem 1rem;
+    padding: 0.875rem 1rem;
     text-align: left;
-    font-weight: 600;
+    font-weight: 700;
     font-family: var(--font-family-heading);
     border-bottom: 3px solid var(--color-primary-dark);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .prose thead th:last-child {
+    border-right: none;
   }
 
   .prose tbody tr {
-    border-bottom: 2px solid var(--color-border-light);
+    border-bottom: 1px solid var(--color-border-light);
     transition: background-color 150ms ease;
   }
 
@@ -706,8 +738,13 @@
   }
 
   .prose tbody td {
-    padding: 0.75rem 1rem;
+    padding: 0.875rem 1rem;
     color: var(--color-text-primary);
+    border-right: 1px solid var(--color-border-light);
+  }
+
+  .prose tbody td:last-child {
+    border-right: none;
   }
 
   .prose th,

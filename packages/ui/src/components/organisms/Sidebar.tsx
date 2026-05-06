@@ -241,14 +241,6 @@ export function Sidebar({ isCollapsed, onToggleCollapse }: SidebarProps) {
             </span>
           )}
         </button>
-        {!isCollapsed && (
-          <p
-            className="text-xs text-center mt-2"
-            style={{ color: "var(--color-text-muted)" }}
-          >
-            v1.0.0
-          </p>
-        )}
       </div>
     </aside>
   );

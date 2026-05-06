@@ -17,13 +17,20 @@ export const MarkdownRenderer = ({
 }: MarkdownRendererProps) => {
   return (
     <div
-      className={`prose prose-sm md:prose-base dark:prose-invert max-w-none ${className}`}
+      className={`prose prose-sm md:prose-base max-w-none ${className}`}
       style={{ fontSize: `${fontSize}%` }}
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypePrismPlus]}
         components={{
+          table: ({ children, ...props }) => (
+            <div className="my-6 w-full overflow-x-auto rounded-lg border-2 border-[var(--color-border-light)] bg-[var(--color-bg-white)] shadow-[var(--shadow-clay-sm)]">
+              <table {...props} className="w-full text-sm text-left border-collapse">
+                {children}
+              </table>
+            </div>
+          ),
           pre: ({ children, ...props }) => (
             <CodeBlock {...props}>{children}</CodeBlock>
           ),

@@ -89,7 +89,8 @@ export const QuestionsPage = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen-safe circuit-pattern">
+      <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
         <Link
           to={to("/")}
@@ -272,19 +273,13 @@ export const QuestionsPage = () => {
                         </span>
                       ))}
                       <span
-                        className="text-xs px-3 py-1 font-semibold"
-                        style={{
-                          backgroundColor:
-                            question.difficulty === "beginner"
-                              ? "var(--color-mint)"
-                              : question.difficulty === "intermediate"
-                                ? "var(--color-peach)"
-                                : "var(--color-lavender)",
-                          color: "var(--color-text-primary)",
-                          borderRadius: "var(--radius-xl)",
-                          border: "2px solid rgba(255, 255, 255, 0.5)",
-                          boxShadow: "var(--shadow-clay-sm)",
-                        }}
+                        className={`text-xs px-3 py-1 font-semibold rounded-full border-2 border-white/50 shadow-[var(--shadow-clay-sm)] ${
+                          question.difficulty === "beginner"
+                            ? "badge-beginner"
+                            : question.difficulty === "intermediate"
+                              ? "badge-intermediate"
+                              : "badge-advanced"
+                        }`}
                       >
                         {question.difficulty}
                       </span>
@@ -313,6 +308,7 @@ export const QuestionsPage = () => {
           />
         </Modal>
       )}
+      </div>
     </div>
   );
 };

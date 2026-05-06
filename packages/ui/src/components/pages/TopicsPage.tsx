@@ -132,7 +132,7 @@ export const TopicsPage = () => {
   }
 
   return (
-    <div className="min-h-screen-safe circuit-pattern-light dark:circuit-pattern-dark">
+    <div className="min-h-screen-safe circuit-pattern">
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
         <div className="mb-8 flex flex-col sm:flex-row items-start justify-between gap-4">
           <div>

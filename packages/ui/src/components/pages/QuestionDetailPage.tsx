@@ -156,7 +156,7 @@ export const QuestionDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen-safe circuit-pattern-light dark:circuit-pattern-dark">
+    <div className="min-h-screen-safe circuit-pattern">
       <div className="container mx-auto p-4 px-6 md:px-8 lg:px-12">
         <div className="mb-6">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4 mr-7">
@@ -277,10 +277,10 @@ export const QuestionDetailPage = () => {
                 <span
                   className={`text-xs px-2 py-1 rounded-full font-medium ${
                     currentQuestion.difficulty === "beginner"
-                      ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                      ? "badge-beginner"
                       : currentQuestion.difficulty === "intermediate"
-                        ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100"
-                        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"
+                        ? "badge-intermediate"
+                        : "badge-advanced"
                   }`}
                 >
                   {currentQuestion.difficulty}

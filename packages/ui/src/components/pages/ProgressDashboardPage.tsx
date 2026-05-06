@@ -76,7 +76,7 @@ export const ProgressDashboardPage = () => {
       : 0;
 
   return (
-    <div className="min-h-screen-safe circuit-pattern-light dark:circuit-pattern-dark">
+    <div className="min-h-screen-safe circuit-pattern">
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
         <div className="mb-8">
           <Button asChild className="mb-4">

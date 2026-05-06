@@ -38,17 +38,14 @@ export const CodeBlock = ({
           <Button
             variant="ghost"
             size="sm"
-            asChild
-            className="h-8 px-3 py-1 flex items-center gap-1 border-2 border-[var(--color-border-light)] bg-[var(--color-bg-white)] hover:bg-[var(--color-bg-muted)]"
+            className="h-8 px-3 py-1 gap-1 border-2 border-[var(--color-border-light)] bg-[var(--color-bg-white)] hover:bg-[var(--color-bg-muted)]"
           >
-            <div>
-              {isOpen ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-              <span className="text-xs">{isOpen ? "Hide" : "Show"}</span>
-            </div>
+            {isOpen ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
+            <span className="text-xs">{isOpen ? "Hide" : "Show"}</span>
           </Button>
         </div>
       </CollapsibleTrigger>
