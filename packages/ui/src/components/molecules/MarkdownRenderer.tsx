@@ -1,6 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypePrismPlus from "rehype-prism-plus";
+import { CodeBlock } from "./CodeBlock";
 import "prismjs/themes/prism-tomorrow.css";
 
 interface MarkdownRendererProps {
@@ -23,6 +24,9 @@ export const MarkdownRenderer = ({
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypePrismPlus]}
         components={{
+          pre: ({ children, ...props }) => (
+            <CodeBlock {...props}>{children}</CodeBlock>
+          ),
           hr: ({ ...props }) => (
             <hr {...props} className="my-6 border-dashed border-border" />
           ),

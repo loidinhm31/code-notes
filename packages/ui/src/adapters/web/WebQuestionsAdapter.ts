@@ -29,15 +29,17 @@ export class WebQuestionsAdapter implements IQuestionsService {
       .equals(dto.topicId)
       .count();
 
+    const questionNumber = dto.questionNumber || count + 1;
+
     const question: Question = {
       id,
       topicId: dto.topicId,
-      questionNumber: dto.questionNumber || count + 1,
+      questionNumber,
       question: dto.question,
       answer: dto.answer,
       tags: dto.tags || [],
       difficulty: dto.difficulty || "beginner",
-      order: dto.order || 0,
+      order: dto.order !== undefined ? dto.order : questionNumber,
       subtopic: dto.subtopic,
       createdAt: now,
       updatedAt: now,

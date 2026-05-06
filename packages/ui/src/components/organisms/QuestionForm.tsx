@@ -71,7 +71,7 @@ export const QuestionForm = ({
             | "beginner"
             | "intermediate"
             | "advanced",
-          order: formData.order,
+          order: formData.questionNumber, // Sync order with questionNumber
         };
         await updateQuestion(question.id, updateDto);
       } else {
@@ -92,7 +92,7 @@ export const QuestionForm = ({
             | "beginner"
             | "intermediate"
             | "advanced",
-          order: formData.order,
+          order: formData.questionNumber, // Sync order with questionNumber
         };
         await addQuestion(createDto);
       }

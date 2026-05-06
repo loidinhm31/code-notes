@@ -4,6 +4,7 @@ export * from "./ErrorBoundary";
 export * from "./Badge";
 export * from "./Button";
 export * from "./Card";
+export * from "./Collapsible";
 export * from "./Dialog";
 export * from "./Input";
 export * from "./Label";

@@ -51,7 +51,7 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
     try {
       const questions = await questionService.getAll();
       console.log(questions)
-      set({ questions: questions.sort((a, b) => a.order - b.order || a.questionNumber - b.questionNumber), loading: false });
+      set({ questions: questions.sort((a, b) => a.questionNumber - b.questionNumber), loading: false });
     } catch (error) {
       set({
         error:
@@ -179,7 +179,7 @@ export const createQuestionsSlice: StateCreator<QuestionsSlice> = (
       }
 
       set({
-        questionsSearchResults: results.sort((a, b) => a.order - b.order || a.questionNumber - b.questionNumber),
+        questionsSearchResults: results.sort((a, b) => a.questionNumber - b.questionNumber),
         searchFilters,
         isSearchingQuestions: false,
       });

@@ -85,7 +85,7 @@ export const QuestionDetailPage = () => {
     if (currentQuestion && questions.length > 0) {
       const sortedQuestions = [...questions]
         .filter((q) => q.topicId === currentQuestion.topicId)
-        .sort((a, b) => a.order - b.order);
+        .sort((a, b) => a.questionNumber - b.questionNumber);
 
       const currentIndex = sortedQuestions.findIndex(
         (q) => q.id === currentQuestion.id,
