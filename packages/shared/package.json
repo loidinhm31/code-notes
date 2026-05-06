@@ -23,7 +23,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@glean-oak/sync-client-types": "workspace:*",
+    "@glean-oak/sync-client-types": "0.2.3",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.4.1"
   }
