@@ -300,6 +300,11 @@ export const QuestionsPage = () => {
         >
           <QuestionForm
             topicId={topicId}
+            initialQuestionNumber={
+              questions.length > 0
+                ? Math.max(...questions.map((q) => q.questionNumber)) + 1
+                : 1
+            }
             onSuccess={() => {
               setShowCreateModal(false);
               fetchQuestionsByTopic(topicId);

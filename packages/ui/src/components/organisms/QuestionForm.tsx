@@ -20,6 +20,7 @@ import {
 interface QuestionFormProps {
   question?: Question;
   topicId?: string;
+  initialQuestionNumber?: number;
   onSuccess?: () => void;
   onCancel?: () => void;
 }
@@ -29,6 +30,7 @@ const DIFFICULTIES = ["beginner", "intermediate", "advanced"] as const;
 export const QuestionForm = ({
   question,
   topicId,
+  initialQuestionNumber,
   onSuccess,
   onCancel,
 }: QuestionFormProps) => {
@@ -39,7 +41,7 @@ export const QuestionForm = ({
   const [formData, setFormData] = useState({
     topicId: question?.topicId || topicId || "",
     subtopic: question?.subtopic || "",
-    questionNumber: question?.questionNumber || 1,
+    questionNumber: question?.questionNumber || initialQuestionNumber || 1,
     question: question?.question || "",
     answerMarkdown: question?.answer.markdown || "",
     tags: question?.tags?.join(", ") || "",
