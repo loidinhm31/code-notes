@@ -18,7 +18,7 @@ export const MarkdownRenderer = ({
   return (
     <div
       className={`prose prose-sm md:prose-base max-w-none ${className}`}
-      style={{ fontSize: `${fontSize}%` }}
+      style={{ fontSize: `${fontSize}%`, lineHeight: 1.7 }}
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}

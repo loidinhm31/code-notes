@@ -261,7 +261,7 @@ export const QuestionDetailPage = () => {
             <div className="flex-1">
               <h1
                 className="text-2xl md:text-3xl font-bold mb-3"
-                style={{ fontSize: `${fontSize}%` }}
+                style={{ fontSize: `${fontSize}%`, lineHeight: 1.6 }}
               >
                 {currentQuestion.question}
               </h1>
