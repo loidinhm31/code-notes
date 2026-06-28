@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "@code-notes/ui/store";
 import { Link } from "react-router-dom";
 import { useNav } from "@code-notes/ui/hooks";
@@ -134,7 +134,7 @@ export const TopicsPage = () => {
   return (
     <div className="min-h-screen-safe circuit-pattern">
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-        <div className="mb-8 flex flex-col sm:flex-row items-start justify-between gap-4">
+        <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1
               className="text-4xl font-bold mb-2"
@@ -146,6 +146,15 @@ export const TopicsPage = () => {
               Browse questions by topic
             </p>
           </div>
+          {topics.length > 0 && (
+            <Button
+              onClick={() => setShowCreateModal(true)}
+              className="flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Create Topic</span>
+            </Button>
+          )}
         </div>
 
         {/* Search Input */}
